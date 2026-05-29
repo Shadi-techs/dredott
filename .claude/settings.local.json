@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Projects\\\\DREDOTT-stay\" -Recurse -Depth 2 | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"c:\\\\Projects\\\\DREDOTT-stay\", \".\"\\) })"
+    ]
+  }
+}

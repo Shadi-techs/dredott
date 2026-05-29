@@ -1,0 +1,714 @@
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.107:3000
+- Environments: .env.local
+✓ Ready in 625ms
+
+[browser] GoTrueClient@sb-ygtftwzjmtvybxiyduqo-auth-token:30 (2.105.1) 2026-05-04T23:11:52.081Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key. (src/lib/supabase/client.ts:9:15)
+[browser] GoTrueClient@sb-ygtftwzjmtvybxiyduqo-auth-token:31 (2.105.1) 2026-05-04T23:11:52.085Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key. (src/lib/supabase/client.ts:9:15)
+ GET /en 200 in 2.6s (next.js: 1302ms, generate-params: 743ms, application-code: 1255ms)
+✓ Compiled in 939ms
+ GET /en 200 in 502ms (next.js: 112ms, generate-params: 7ms, application-code: 390ms)
+ GET /en 200 in 311ms (next.js: 6ms, generate-params: 56µs, application-code: 305ms)
+ GET /en 200 in 226ms (next.js: 47ms, generate-params: 30µs, application-code: 179ms)
+ GET /en 200 in 226ms (next.js: 93ms, generate-params: 40µs, application-code: 133ms)
+ GET /en 200 in 230ms (next.js: 6ms, generate-params: 55µs, application-code: 224ms)
+ GET /en 200 in 229ms (next.js: 137ms, generate-params: 32µs, application-code: 91ms)
+[browser] GoTrueClient@sb-ygtftwzjmtvybxiyduqo-auth-token:1 (2.105.1) 2026-05-04T23:12:28.541Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key. (src/lib/supabase/client.ts:7:62)
+[browser] GoTrueClient@sb-ygtftwzjmtvybxiyduqo-auth-token:2 (2.105.1) 2026-05-04T23:13:19.636Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key. (src/lib/supabase/client.ts:14:41)
+ GET /en/properties 200 in 2.4s (next.js: 1478ms, application-code: 874ms)
+ GET /en 200 in 680ms (next.js: 25ms, generate-params: 10ms, application-code: 656ms)
+ GET /en 200 in 763ms (next.js: 16ms, generate-params: 11ms, application-code: 747ms)
+ GET /en 200 in 388ms (next.js: 17ms, generate-params: 11ms, application-code: 371ms)
+ GET /en 200 in 354ms (next.js: 14ms, generate-params: 10ms, application-code: 339ms)
+ GET /en 200 in 1259ms (next.js: 469ms, generate-params: 18ms, application-code: 790ms)
+ GET /en 200 in 548ms (next.js: 9ms, generate-params: 368µs, application-code: 538ms)
+ GET /en 200 in 388ms (next.js: 109ms, generate-params: 44µs, application-code: 279ms)
+ GET /en 200 in 393ms (next.js: 14ms, generate-params: 64µs, application-code: 379ms)
+ GET /en 200 in 391ms (next.js: 214ms, generate-params: 37µs, application-code: 177ms)
+ GET /ar 200 in 462ms (next.js: 14ms, generate-params: 8ms, application-code: 448ms)
+ GET /it 200 in 285ms (next.js: 16ms, generate-params: 11ms, application-code: 269ms)
+ GET /ru 200 in 280ms (next.js: 13ms, generate-params: 8ms, application-code: 268ms)
+ GET /de 200 in 190ms (next.js: 17ms, generate-params: 10ms, application-code: 173ms)
+✓ Compiled in 624ms
+ GET /de 200 in 2.1s (next.js: 1726ms, generate-params: 15ms, application-code: 408ms)
+ GET /de 200 in 225ms (next.js: 5ms, generate-params: 31µs, application-code: 220ms)
+ GET /de 200 in 157ms (next.js: 45ms, generate-params: 25µs, application-code: 113ms)
+ GET /de 200 in 158ms (next.js: 87ms, generate-params: 24µs, application-code: 71ms)
+ GET /de 200 in 161ms (next.js: 7ms, generate-params: 29µs, application-code: 155ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 1126ms (next.js: 209ms, application-code: 917ms)
+✓ Compiled in 245ms
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 802ms (next.js: 306ms, application-code: 496ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 405ms (next.js: 119ms, application-code: 286ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 183ms (next.js: 6ms, application-code: 177ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 183ms (next.js: 39ms, application-code: 144ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 183ms (next.js: 73ms, application-code: 111ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 738ms (next.js: 212ms, application-code: 526ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 401ms (next.js: 125ms, application-code: 276ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 174ms (next.js: 5ms, application-code: 168ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 174ms (next.js: 36ms, application-code: 137ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah 200 in 174ms (next.js: 79ms, application-code: 95ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1 200 in 700ms (next.js: 10ms, application-code: 689ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 219ms (next.js: 9ms, application-code: 210ms)
+✓ Compiled in 356ms
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 642ms (next.js: 419ms, application-code: 223ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 242ms (next.js: 7ms, application-code: 235ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 162ms (next.js: 41ms, application-code: 121ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 165ms (next.js: 5ms, application-code: 159ms)
+ GET /de/properties?checkIn=2026-05-13&checkOut=2026-05-22&guests=2&area=montazah&beds=1&type=villa 200 in 165ms (next.js: 73ms, application-code: 92ms)
+ GET /en/about 200 in 784ms (next.js: 717ms, application-code: 67ms)
+ GET /en 200 in 1367ms (next.js: 575ms, generate-params: 6ms, application-code: 792ms)
+ GET /ar 200 in 403ms (next.js: 14ms, generate-params: 9ms, application-code: 389ms)
+ GET /ar 200 in 1515ms (next.js: 14ms, generate-params: 7ms, application-code: 1501ms)
+ GET /en 200 in 3.8s (next.js: 2.0s, generate-params: 1938ms, application-code: 1763ms)
+[browser] @supabase/gotrue-js: Lock "lock:sb-ygtftwzjmtvybxiyduqo-auth-token" was not released within 5000ms. This may indicate an orphaned lock from a component unmount (e.g., React Strict Mode). Forcefully acquiring the lock to recover.
+ GET /ar 200 in 1859ms (next.js: 148ms, generate-params: 41ms, application-code: 1711ms)
+ GET /it 200 in 293ms (next.js: 21ms, generate-params: 15ms, application-code: 272ms)
+ GET /ru 200 in 293ms (next.js: 18ms, generate-params: 11ms, application-code: 275ms)
+ GET /de 200 in 284ms (next.js: 32ms, generate-params: 18ms, application-code: 252ms)
+ GET /en 200 in 276ms (next.js: 18ms, generate-params: 11ms, application-code: 258ms)
+ GET /en 200 in 3.2s (next.js: 1741ms, generate-params: 1643ms, application-code: 1438ms)
+ GET /en/contact 200 in 1414ms (next.js: 1380ms, application-code: 33ms)
+✓ Compiled in 622ms
+ GET /en/contact 200 in 1609ms (next.js: 150ms, application-code: 1459ms)
+ GET /en 200 in 1205ms (next.js: 17ms, generate-params: 6ms, application-code: 1187ms)
+✓ Compiled in 156ms
+ GET /en 200 in 2.8s (next.js: 2.4s, generate-params: 6ms, application-code: 497ms)
+ GET /en 200 in 374ms (next.js: 6ms, generate-params: 53µs, application-code: 368ms)
+ GET /en 200 in 374ms (next.js: 6ms, generate-params: 34µs, application-code: 368ms)
+ GET /en 200 in 374ms (next.js: 42ms, generate-params: 26µs, application-code: 332ms)
+ GET /en 200 in 374ms (next.js: 91ms, generate-params: 24µs, application-code: 283ms)
+ GET /en 200 in 374ms (next.js: 129ms, generate-params: 22µs, application-code: 246ms)
+ GET /en 200 in 454ms (next.js: 17ms, generate-params: 97µs, application-code: 437ms)
+ GET /en 200 in 352ms (next.js: 10ms, generate-params: 21µs, application-code: 342ms)
+ GET /en 200 in 319ms (next.js: 13ms, generate-params: 35µs, application-code: 307ms)
+ GET /en 200 in 313ms (next.js: 109ms, generate-params: 27µs, application-code: 203ms)
+ GET /en 200 in 319ms (next.js: 68ms, generate-params: 26µs, application-code: 251ms)
+ GET /en 200 in 315ms (next.js: 158ms, generate-params: 46µs, application-code: 156ms)
+ GET /en 200 in 332ms (next.js: 10ms, generate-params: 6ms, application-code: 322ms)
+ GET /en 200 in 279ms (next.js: 9ms, generate-params: 23µs, application-code: 270ms)
+ GET /en 200 in 273ms (next.js: 5ms, generate-params: 23µs, application-code: 268ms)
+ GET /en 200 in 273ms (next.js: 44ms, generate-params: 30µs, application-code: 229ms)
+ GET /en 200 in 274ms (next.js: 86ms, generate-params: 23µs, application-code: 187ms)
+ GET /en 200 in 201ms (next.js: 14ms, generate-params: 28µs, application-code: 186ms)
+ GET /en 200 in 404ms (next.js: 8ms, generate-params: 68µs, application-code: 396ms)
+ GET /en 200 in 351ms (next.js: 10ms, generate-params: 30µs, application-code: 341ms)
+ GET /en 200 in 351ms (next.js: 4ms, generate-params: 37µs, application-code: 347ms)
+ GET /en 200 in 351ms (next.js: 43ms, generate-params: 22µs, application-code: 308ms)
+ GET /en 200 in 352ms (next.js: 94ms, generate-params: 23µs, application-code: 258ms)
+ GET /en 200 in 265ms (next.js: 71ms, generate-params: 67µs, application-code: 194ms)
+ GET /en 200 in 392ms (next.js: 12ms, generate-params: 7ms, application-code: 381ms)
+ GET /en 200 in 329ms (next.js: 9ms, generate-params: 48µs, application-code: 320ms)
+ GET /en 200 in 324ms (next.js: 78ms, generate-params: 26µs, application-code: 246ms)
+ GET /en 200 in 327ms (next.js: 7ms, generate-params: 43µs, application-code: 320ms)
+ GET /en 200 in 328ms (next.js: 122ms, generate-params: 35µs, application-code: 207ms)
+ GET /en 200 in 265ms (next.js: 10ms, generate-params: 23µs, application-code: 255ms)
+ GET /en 200 in 651ms (next.js: 6ms, generate-params: 27µs, application-code: 645ms)
+ GET /en 200 in 588ms (next.js: 8ms, generate-params: 47µs, application-code: 581ms)
+ GET /en 200 in 405ms (next.js: 16ms, generate-params: 34µs, application-code: 389ms)
+ GET /en 200 in 403ms (next.js: 108ms, generate-params: 31µs, application-code: 296ms)
+ GET /en 200 in 247ms (next.js: 35ms, generate-params: 47µs, application-code: 212ms)
+ GET /en 200 in 152ms (next.js: 20ms, generate-params: 6ms, application-code: 132ms)
+✓ Compiled in 92ms
+✓ Compiled in 225ms
+ GET /en 200 in 1251ms (next.js: 879ms, generate-params: 10ms, application-code: 372ms)
+ GET /en 200 in 557ms (next.js: 20ms, generate-params: 44µs, application-code: 537ms)
+ GET /en 200 in 405ms (next.js: 8ms, generate-params: 41µs, application-code: 397ms)
+ GET /en 200 in 405ms (next.js: 78ms, generate-params: 39µs, application-code: 327ms)
+ GET /en 200 in 405ms (next.js: 129ms, generate-params: 25µs, application-code: 276ms)
+ GET /en 200 in 406ms (next.js: 174ms, generate-params: 33µs, application-code: 231ms)
+ GET /en 200 in 164ms (next.js: 19ms, generate-params: 41µs, application-code: 146ms)
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+✓ Compiled in 1527ms
+ GET /en 500 in 2.4s (next.js: 2.0s, application-code: 332ms)
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 29ms (next.js: 11ms, application-code: 18ms)
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 55ms (next.js: 15ms, application-code: 40ms)
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 31ms (next.js: 18ms, application-code: 13ms)
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 25ms (next.js: 7ms, application-code: 18ms)
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+✓ Compiled in 67ms
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 54ms (next.js: 44ms, application-code: 11ms)
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+✓ Compiled in 62ms
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 51ms (next.js: 42ms, application-code: 10ms)
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 54ms (next.js: 24ms, application-code: 30ms)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 1140ms (next.js: 1053ms, application-code: 87ms)
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+⨯ ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  [90m206 |[0m   }
+  [90m207 |[0m }
+[31m[1m>[0m [90m208 |[0m
+  [90m    |[0m [31m[1m^[0m
+
+EOF while parsing an object at line 208 column 0
+
+
+ GET /en 500 in 60ms (next.js: 25ms, application-code: 35ms)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] Uncaught Error: ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0
+
+
+    at <unknown> (Error: ./messages/ar.json:208:1)
+    at <unknown> (Error: (./messages/ar.json:208:1)
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+[browser] ./messages/ar.json:208:1
+Unable to make a module from invalid JSON
+  206 |   }
+  207 | }
+> 208 |
+      | ^
+
+EOF while parsing an object at line 208 column 0 
+✓ Compiled in 765ms
+✓ Finished writing to filesystem cache in 11.4s
+ GET /en 200 in 8.9s (next.js: 3.4s, generate-params: 8ms, application-code: 5.5s)
+ GET /en/login 200 in 1710ms (next.js: 1531ms, application-code: 180ms)
+ GET /en 200 in 289ms (next.js: 11ms, generate-params: 7ms, application-code: 278ms)
+ GET /en 200 in 727ms (next.js: 16ms, generate-params: 10ms, application-code: 711ms)
+ GET /en 200 in 390ms (next.js: 12ms, generate-params: 8ms, application-code: 378ms)
+ GET /en 200 in 488ms (next.js: 108ms, generate-params: 70ms, application-code: 380ms)
+ GET /en 200 in 347ms (next.js: 9ms, generate-params: 6ms, application-code: 338ms)
+✓ Compiled in 162ms
+ GET /en 200 in 853ms (next.js: 235ms, generate-params: 8ms, application-code: 617ms)
+ GET /en 200 in 524ms (next.js: 121ms, generate-params: 25µs, application-code: 403ms)
+ GET /en 200 in 311ms (next.js: 9ms, generate-params: 46µs, application-code: 301ms)
+ GET /en 200 in 310ms (next.js: 84ms, generate-params: 23µs, application-code: 226ms)
+ GET /en 200 in 308ms (next.js: 161ms, generate-params: 24µs, application-code: 147ms)
+ GET /en 200 in 311ms (next.js: 120ms, generate-params: 28µs, application-code: 191ms)
+ GET /en 200 in 119ms (next.js: 3ms, generate-params: 34µs, application-code: 116ms)
+ GET /en 200 in 58ms (next.js: 12ms, generate-params: 6ms, application-code: 46ms)
+✓ Compiled in 136ms
+ GET /en 200 in 820ms (next.js: 364ms, generate-params: 6ms, application-code: 456ms)
+ GET /en 200 in 356ms (next.js: 6ms, generate-params: 41µs, application-code: 350ms)
+ GET /en 200 in 345ms (next.js: 6ms, generate-params: 24µs, application-code: 339ms)
+ GET /en 200 in 345ms (next.js: 51ms, generate-params: 27µs, application-code: 294ms)
+ GET /en 200 in 352ms (next.js: 91ms, generate-params: 56µs, application-code: 260ms)
+ GET /en 200 in 353ms (next.js: 135ms, generate-params: 22µs, application-code: 218ms)
+ GET /en 200 in 117ms (next.js: 5ms, generate-params: 28µs, application-code: 112ms)
+ GET /en 200 in 61ms (next.js: 3ms, generate-params: 43µs, application-code: 57ms)
+✓ Compiled in 64ms
+ GET /en 200 in 562ms (next.js: 162ms, generate-params: 6ms, application-code: 399ms)
+ GET /en 200 in 441ms (next.js: 4ms, generate-params: 23µs, application-code: 437ms)
+ GET /en 200 in 390ms (next.js: 7ms, generate-params: 22µs, application-code: 384ms)
+ GET /en 200 in 390ms (next.js: 56ms, generate-params: 28µs, application-code: 334ms)
+ GET /en 200 in 389ms (next.js: 137ms, generate-params: 26µs, application-code: 252ms)
+ GET /en 200 in 391ms (next.js: 95ms, generate-params: 21µs, application-code: 296ms)
+ GET /en 200 in 191ms (next.js: 37ms, generate-params: 30µs, application-code: 154ms)
+ GET /en 200 in 54ms (next.js: 3ms, generate-params: 30µs, application-code: 51ms)
+ GET /en 200 in 2.9s (next.js: 11ms, generate-params: 8ms, application-code: 2.9s)
+ GET /en 200 in 942ms (next.js: 11ms, generate-params: 6ms, application-code: 931ms)
+ GET /en 200 in 360ms (next.js: 13ms, generate-params: 9ms, application-code: 346ms)
+ GET /en 200 in 721ms (next.js: 28ms, generate-params: 23ms, application-code: 693ms)
+[?25h
