@@ -104,7 +104,7 @@ function StatusBadge({ status }: { status: string }) {
 // ============================================
 
 function BookingDrawer({ booking, onClose }: { booking: Booking | null; onClose: () => void }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
 
   if (!booking) return null
@@ -380,7 +380,7 @@ function BookingDrawer({ booking, onClose }: { booking: Booking | null; onClose:
 // ============================================
 
 function TimelineView({ bookings, onSelect }: { bookings: Booking[]; onSelect: (b: Booking) => void }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
 
   const today = new Date()
@@ -537,7 +537,7 @@ function TimelineView({ bookings, onSelect }: { bookings: Booking[]; onSelect: (
 
 export default function BookingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
   const router = useRouter()

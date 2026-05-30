@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function RestrictedScreen({ title, requiredPerm }: Props) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
 

@@ -21,7 +21,7 @@ import { DENSITY } from '@/lib/owner/theme'
 
 export default function OwnerDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
   const tx = getStrings(locale as any)

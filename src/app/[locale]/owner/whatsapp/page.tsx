@@ -49,7 +49,7 @@ function TemplateModal({
   onClose: () => void
   onSave: () => void
 }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
 
   const supabase = createBrowserClient(
@@ -454,7 +454,7 @@ function TemplateModal({
 
 export default function WhatsAppPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
   const router = useRouter()

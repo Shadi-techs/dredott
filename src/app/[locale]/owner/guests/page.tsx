@@ -52,7 +52,7 @@ interface GuestBooking {
 // ============================================
 
 function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => void }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
 
   if (!guest) return null
@@ -355,7 +355,7 @@ function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => v
 
 export default function GuestsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
   const router = useRouter()

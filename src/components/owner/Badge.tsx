@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function Badge({ tone = 'neutral', dot = false, children }: Props) {
-  const { palette } = useOwnerTheme()  // ✅ Fixed
+  const { t, d } = useOwnerTheme()  // ✅ Fixed
   const t = palette
   
   const tones: Record<Tone, { bg: string; fg: string }> = {

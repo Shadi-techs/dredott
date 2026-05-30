@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function KpiCard({ label, value, delta = 0, sparkData = [], color }: Props) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const t = palette
   const d = DENSITY.regular
   
