@@ -12,7 +12,7 @@ import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock, User, AlertCircle } from 'lucide-react'
 
-export default function AdminLoginPage({ params }: { params: { locale: string } }) {
+export default function AdminLoginPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const router = useRouter()
 
