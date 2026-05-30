@@ -24,8 +24,7 @@ export function Button({
   variant = 'primary', size = 'md', icon: IconCmp,
   children, onClick, style, title, disabled, tone,
 }: Props) {
-  const { palette } = useOwnerTheme()  // ✅ Fixed: destructure palette
-  const t = palette
+  const { t, d } = useOwnerTheme()  // ✅ Fixed: destructure palette
   
   const sizes = {
     sm: { px: 10, py: 5,  fs: 12 },

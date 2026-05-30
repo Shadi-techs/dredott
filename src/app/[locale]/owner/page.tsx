@@ -106,7 +106,14 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
 
   if (loading) {
     return (
-      <div style={{ padding: d.pad, display: 'flex', justifyContent: 'center', paddingTop: 60 }}>
+      <div style={{ 
+        paddingLeft: d.pad, 
+        paddingRight: d.pad, 
+        paddingBottom: d.pad, 
+        paddingTop: 60, 
+        display: 'flex', 
+        justifyContent: 'center'
+      }}>
         <div style={{
           width: 32, height: 32, border: `3px solid ${t.border}`,
           borderTopColor: t.accent, borderRadius: '50%',

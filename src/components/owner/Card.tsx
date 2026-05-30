@@ -3,8 +3,6 @@
 
 import { ReactNode, CSSProperties, useState } from 'react'
 import { useOwnerTheme } from './ThemeProvider'
-import { DENSITY } from '@/lib/owner/theme'
-
 
 interface Props {
   children: ReactNode
@@ -14,10 +12,9 @@ interface Props {
 }
 
 export function Card({ children, padding, style, hover }: Props) {
-  const { palette } = useOwnerTheme()
-  const t = palette
-  const d = DENSITY.regular
+  const { t, d } = useOwnerTheme()
   const [hovered, setHovered] = useState(false)
+
   return (
     <div
       onMouseEnter={() => hover && setHovered(true)}
@@ -26,7 +23,7 @@ export function Card({ children, padding, style, hover }: Props) {
         background: t.surface,
         border: `1px solid ${t.border}`,
         borderRadius: 12,
-        padding: padding ?? d.cardPad,
+        padding: padding ?? 24,
         transition: 'box-shadow .2s, border-color .2s, transform .2s',
         boxShadow: hovered ? '0 8px 24px rgba(0,0,0,0.06)' : 'none',
         ...style,
