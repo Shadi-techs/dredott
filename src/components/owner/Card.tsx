@@ -9,14 +9,16 @@ interface Props {
   padding?: number
   style?: CSSProperties
   hover?: boolean
+  onClick?: () => void
 }
 
-export function Card({ children, padding, style, hover }: Props) {
+export function Card({ children, padding, style, hover, onClick }: Props) {
   const { t, d } = useOwnerTheme()
   const [hovered, setHovered] = useState(false)
 
   return (
     <div
+      onClick={onClick}
       onMouseEnter={() => hover && setHovered(true)}
       onMouseLeave={() => hover && setHovered(false)}
       style={{
