@@ -13,7 +13,7 @@ import {
 } from '@/lib/owner/permissions'
 
 interface Ctx {
-  ownerId: string | null
+  ownerId?: string | null
   isOwner: boolean        // true if auth.uid() === ownerId AND not previewing
   perms: Perms
   // "View as" preview — only available when isOwner is truly true
@@ -30,10 +30,10 @@ const ALL_FALSE = PERM_KEYS.reduce((a, k) => ({ ...a, [k]: false }), {} as Perms
 interface ProviderProps {
   children: ReactNode
   /** auth.uid() of the current user */
-  userId: string
+  userId?: string
   /** The owner account being viewed. For an owner: their own ID.
    *  For a team member: their parent_owner_id from profiles. */
-  ownerId: string
+  ownerId?: string
 }
 
 export function PermissionsProvider({ children, userId, ownerId }: ProviderProps) {
