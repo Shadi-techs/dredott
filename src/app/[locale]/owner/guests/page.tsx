@@ -1,3 +1,4 @@
+
 'use client'
 // src/app/[locale]/owner/guests/page.tsx
 // Guest CRM - Track all guests who booked with you
@@ -53,7 +54,6 @@ interface GuestBooking {
 
 function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => void }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings(locale as any)
 
   if (!guest) return null
 

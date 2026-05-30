@@ -55,7 +55,6 @@ function AddExpenseModal({
   onAdded: () => void
 }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings(locale as any)
 
   const supabase = createClient()
 
