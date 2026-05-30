@@ -26,7 +26,7 @@ export default function OwnerLayout({
 }) {
   const { locale } = use(params)
   const pathname = usePathname()
-  const tx = getStrings(locale)
+  const tx = getStrings(locale as any)
   const isAr = locale === 'ar'
 
   const navItems = [
