@@ -45,7 +45,7 @@ export default function TeamPage({ params }: { params: Promise<{ locale: string 
   const { t, d } = useOwnerTheme()
   const tx = getStrings(locale as any)
   const router = useRouter()
-  const perms = usePerms()
+  const { perms } = usePerms()
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
