@@ -444,9 +444,9 @@ function AddSyncModal({
 // ============================================
 // MAIN PAGE
 // ============================================
-
 export default function ICalSyncPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
+  const tx = getStrings(locale as any)
   const { t, d } = useOwnerTheme()
   const router = useRouter()
 
