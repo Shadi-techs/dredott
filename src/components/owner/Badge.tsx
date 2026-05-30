@@ -14,7 +14,6 @@ interface Props {
 
 export function Badge({ tone = 'neutral', dot = false, children }: Props) {
   const { t, d } = useOwnerTheme()  // ✅ Fixed
-  const t = palette
   
   const tones: Record<Tone, { bg: string; fg: string }> = {
     neutral: { bg: t.borderSoft || 'rgba(0,0,0,0.08)',  fg: t.textMuted },

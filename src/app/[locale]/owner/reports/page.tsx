@@ -49,7 +49,6 @@ function GenerateReportModal({
   onGenerate: (type: ReportType, startDate: string, endDate: string) => void
 }) {
   const { palette } = useOwnerTheme()
-  const t = palette
   const tx = getStrings(locale as any)
 
   const [reportType, setReportType] = useState<ReportType>('financial')
@@ -285,11 +284,7 @@ function GenerateReportModal({
 export default function ReportsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { palette } = useOwnerTheme()
-  const t = palette
-  const tx = getStrings(locale as any)
-  const d = DENSITY.regular
   const router = useRouter()
-  const tx = getStrings(locale as any)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

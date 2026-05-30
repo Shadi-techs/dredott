@@ -43,8 +43,6 @@ interface TeamInvitation {
 export default function TeamPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const t = palette
-  const d = DENSITY.regular
   const tx = getStrings(locale as any)
   const router = useRouter()
   const perms = usePerms()

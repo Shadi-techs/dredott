@@ -55,7 +55,6 @@ function AddExpenseModal({
   onAdded: () => void
 }) {
   const { palette } = useOwnerTheme()
-  const t = palette
   const tx = getStrings(locale as any)
 
   const supabase = createClient()
@@ -429,11 +428,7 @@ function AddExpenseModal({
 export default function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { palette } = useOwnerTheme()
-  const t = palette
-  const tx = getStrings(locale as any)
-  const d = DENSITY.regular
   const router = useRouter()
-  const tx = getStrings(locale as any)
 
   const supabase = createClient()
 

@@ -15,8 +15,6 @@ interface Props {
 
 export function RestrictedScreen({ title, requiredPerm }: Props) {
   const { t, d } = useOwnerTheme()
-  const t = palette
-  const d = DENSITY.regular
 
   return (
     <div style={{ padding: d.pad }}>

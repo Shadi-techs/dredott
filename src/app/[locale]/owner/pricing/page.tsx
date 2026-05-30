@@ -59,7 +59,6 @@ function SuggestionCard({
   onDismiss: (id: string) => void
 }) {
   const { t, d } = useOwnerTheme()
-  const t = palette
 
   const isIncrease = suggestion.price_change > 0
   const changeColor = isIncrease ? t.success : t.danger
@@ -227,8 +226,6 @@ function SuggestionCard({
 export default function SmartPricingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const t = palette
-  const d = DENSITY.regular
   const router = useRouter()
   const tx = getStrings(locale as any)
 

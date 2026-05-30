@@ -53,7 +53,6 @@ function AddSyncModal({
   onAdded: () => void
 }) {
   const { palette } = useOwnerTheme()
-  const t = palette
   const tx = getStrings(locale as any)
 
   const supabase = createBrowserClient(
@@ -449,11 +448,7 @@ function AddSyncModal({
 export default function ICalSyncPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { palette } = useOwnerTheme()
-  const t = palette
-  const tx = getStrings(locale as any)
-  const d = DENSITY.regular
   const router = useRouter()
-  const tx = getStrings(locale as any)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
