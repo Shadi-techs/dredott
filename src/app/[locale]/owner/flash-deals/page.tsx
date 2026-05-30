@@ -104,6 +104,7 @@ function CreateDealModal({
   onCreated: () => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   const supabase = createClient()
 
@@ -518,6 +519,7 @@ function DealCard({
   onRefresh: () => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   const expiresAt = new Date(deal.expires_at)
   const now = new Date()
@@ -703,8 +705,8 @@ function DealCard({
 export default function FlashDealsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const router = useRouter()
   const tx = getStrings(locale as any)
+  const router = useRouter()
 
   const supabase = createClient()
 

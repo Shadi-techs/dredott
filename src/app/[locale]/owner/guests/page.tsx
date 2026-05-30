@@ -53,6 +53,7 @@ interface GuestBooking {
 
 function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => void }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   if (!guest) return null
 
@@ -355,8 +356,8 @@ function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => v
 export default function GuestsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const router = useRouter()
   const tx = getStrings(locale as any)
+  const router = useRouter()
 
   const supabase = createClient()
 

@@ -105,6 +105,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function BookingDrawer({ booking, onClose }: { booking: Booking | null; onClose: () => void }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   if (!booking) return null
 
@@ -380,6 +381,7 @@ function BookingDrawer({ booking, onClose }: { booking: Booking | null; onClose:
 
 function TimelineView({ bookings, onSelect }: { bookings: Booking[]; onSelect: (b: Booking) => void }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   const today = new Date()
   const days = Array.from({ length: 14 }).map((_, i) => {
@@ -536,8 +538,8 @@ function TimelineView({ bookings, onSelect }: { bookings: Booking[]; onSelect: (
 export default function BookingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const router = useRouter()
   const tx = getStrings(locale as any)
+  const router = useRouter()
 
   const supabase = createClient()
 

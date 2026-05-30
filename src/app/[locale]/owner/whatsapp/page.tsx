@@ -50,6 +50,7 @@ function TemplateModal({
   onSave: () => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings(locale as any)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -454,8 +455,8 @@ function TemplateModal({
 export default function WhatsAppPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const { t, d } = useOwnerTheme()
-  const router = useRouter()
   const tx = getStrings(locale as any)
+  const router = useRouter()
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
