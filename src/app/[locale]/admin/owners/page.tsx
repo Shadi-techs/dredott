@@ -48,8 +48,8 @@ interface Owner {
   // من user_subscriptions
   subscription: {
     status: string
-    total_slots: integer
-    used_slots: integer
+    total_slots: number
+    used_slots: number
     expires_at: string
     is_premium: boolean
     admin_notes: string
