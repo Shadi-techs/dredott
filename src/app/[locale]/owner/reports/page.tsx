@@ -48,7 +48,7 @@ function GenerateReportModal({
   onClose: () => void
   onGenerate: (type: ReportType, startDate: string, endDate: string) => void
 }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const tx = getStrings(locale as any)
 
   const [reportType, setReportType] = useState<ReportType>('financial')
@@ -283,7 +283,7 @@ function GenerateReportModal({
 
 export default function ReportsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const router = useRouter()
 
   const supabase = createBrowserClient(

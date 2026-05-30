@@ -52,7 +52,7 @@ function AddSyncModal({
   onClose: () => void
   onAdded: () => void
 }) {
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const tx = getStrings(locale as any)
 
   const supabase = createBrowserClient(
@@ -447,7 +447,7 @@ function AddSyncModal({
 
 export default function ICalSyncPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const { palette } = useOwnerTheme()
+  const { t, d } = useOwnerTheme()
   const router = useRouter()
 
   const supabase = createBrowserClient(
