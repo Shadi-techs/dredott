@@ -21,7 +21,7 @@ export function KpiCard({ label, value, delta = 0, sparkData = [], color }: Prop
   const positive = delta >= 0
   
   return (
-    <Card hover style={{ padding: d.cardPad, display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <Card hover style={{ padding: d.pad, display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{
           fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '0.18em',
