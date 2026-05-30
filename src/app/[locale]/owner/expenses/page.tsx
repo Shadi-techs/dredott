@@ -55,7 +55,6 @@ function AddExpenseModal({
   onAdded: () => void
 }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings(locale as any)
 
   const supabase = createClient()
 
@@ -427,6 +426,7 @@ function AddExpenseModal({
 
 export default function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
+  const tx = getStrings(locale as any)
   const { t, d } = useOwnerTheme()
   const router = useRouter()
 
