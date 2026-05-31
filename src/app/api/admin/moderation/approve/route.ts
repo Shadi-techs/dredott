@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const table = entity_type === 'property' ? 'properties' : 'cars'
 
     // ── 4. جيب البيانات الحالية ──
-    const { data: current } = await supabaseAdmin
+    const { data: current } = await getSupabaseAdmin()
       .from(table)
       .select('id, review_status, owner_id, name')
       .eq('id', entity_id)
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 5. حدّث الحالة لـ approved ──
-    const { error: updateError } = await supabaseAdmin
+    const { error: updateError } = await getSupabaseAdmin()
       .from(table)
       .update({
         review_status: 'approved',

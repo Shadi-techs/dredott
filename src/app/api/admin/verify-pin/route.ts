@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ جيب الـ admin من admin_users
-    const { data: admin } = await supabaseAdmin
+    const { data: admin } = await getSupabaseAdmin()
       .from('admin_users')
       .select('id, pin_hash, role')
       .eq('id', payload.sub)
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       // حول لـ bcrypt
       if (pinValid) {
         const hashed = await bcrypt.hash(pin, 12)
-        await supabaseAdmin
+        await getSupabaseAdmin()
           .from('admin_users')
           .update({ pin_hash: hashed })
           .eq('id', admin.id)
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     // لو فشل — تحقق من عدد المحاولات
     if (!pinValid) {
       const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
-      const { count } = await supabaseAdmin
+      const { count } = await getSupabaseAdmin()
         .from('super_admin_pin_log')
         .select('*', { count: 'exact', head: true })
         .eq('admin_id', admin.id)

@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const offset   = (page - 1) * limit
 
     // ── 3. جيب الإشعارات ──
-    let query = supabaseAdmin
+    let query = getSupabaseAdmin()
       .from('admin_notifications')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 4. جيب الحالة الحالية ──
-    const { data: feature } = await supabaseAdmin
+    const { data: feature } = await getSupabaseAdmin()
       .from('platform_features')
       .select('id, enabled')
       .eq('feature_key', feature_key)
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     // ── 5. Toggle ──
     const newEnabled = !feature.enabled
 
-    const { error: updateError } = await supabaseAdmin
+    const { error: updateError } = await getSupabaseAdmin()
       .from('platform_features')
       .update({
         enabled:    newEnabled,

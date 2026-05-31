@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const table = entity_type === 'property' ? 'properties' : 'cars'
 
     // ── 4. جيب الحالة الحالية ──
-    const { data: current } = await supabaseAdmin
+    const { data: current } = await getSupabaseAdmin()
       .from(table)
       .select('id, review_status, owner_id, name, resubmission_count')
       .eq('id', entity_id)
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     let reasonText = reason_custom
 
     if (reason_preset_id) {
-      const { data: preset } = await supabaseAdmin
+      const { data: preset } = await getSupabaseAdmin()
         .from('moderation_reason_presets')
         .select('reason_en')
         .eq('id', reason_preset_id)
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     const newResubmissionCount = (current.resubmission_count || 0) + 1
 
     // ── 7. حدّث الحالة ──
-    const { error: updateError } = await supabaseAdmin
+    const { error: updateError } = await getSupabaseAdmin()
       .from(table)
       .update({
         review_status: 'changes_requested',

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     // ── 1. جيب الـ admin من الـ table ──
     console.log('Searching for username:', username.trim().toLowerCase())
-    const { data: admin, error } = await supabaseAdmin
+    const { data: admin, error } = await getSupabaseAdmin()
       .from('admin_users')
       .select('*')
       .eq('username', username.trim().toLowerCase())
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       // لو صح — حول لـ bcrypt hash
       if (passwordValid) {
         const hashed = await bcrypt.hash(password, 12)
-        await supabaseAdmin
+        await getSupabaseAdmin()
           .from('admin_users')
           .update({ password_hash: hashed })
           .eq('id', admin.id)
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       .sign(JWT_SECRET)
 
     // ── 4. حدّث last_login ──
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from('admin_users')
       .update({ last_login: new Date().toISOString() })
       .eq('id', admin.id)

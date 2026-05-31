@@ -38,13 +38,13 @@ export async function POST(req: NextRequest) {
 
     if (mark_all) {
       // علّم كل الإشعارات كمقروءة
-      await supabaseAdmin
+      await getSupabaseAdmin()
         .from('admin_notifications')
         .update({ read: true, read_at: now })
         .eq('read', false)
     } else {
       // علّم إشعار واحد
-      await supabaseAdmin
+      await getSupabaseAdmin()
         .from('admin_notifications')
         .update({ read: true, read_at: now })
         .eq('id', notification_id)

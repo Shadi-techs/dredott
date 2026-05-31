@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const table = entity_type === 'property' ? 'properties' : entity_type === 'car' ? 'cars' : 'reviews'
 
     // ── 4. جيب الحالة الحالية ──
-    const { data: current } = await supabaseAdmin
+    const { data: current } = await getSupabaseAdmin()
       .from(table)
       .select('id, review_status, owner_id, name')
       .eq('id', entity_id)
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     let rejectionReasonText = reason_custom
 
     if (reason_preset_id) {
-      const { data: preset } = await supabaseAdmin
+      const { data: preset } = await getSupabaseAdmin()
         .from('moderation_reason_presets')
         .select('reason_en')
         .eq('id', reason_preset_id)
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 6. حدّث الحالة لـ rejected ──
-    const { error: updateError } = await supabaseAdmin
+    const { error: updateError } = await getSupabaseAdmin()
       .from(table)
       .update({
         review_status: 'rejected',

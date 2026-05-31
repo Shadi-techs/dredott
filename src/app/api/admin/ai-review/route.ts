@@ -31,7 +31,7 @@ async function getAdminUser(req: NextRequest) {
 // ── Fetch listing data ──
 async function fetchListingData(listing_type: 'property' | 'car', listing_id: string) {
   if (listing_type === 'property') {
-    const { data } = await supabaseAdmin
+    const { data } = await getSupabaseAdmin()
       .from('properties')
       .select(`
         title, description, area, price_per_night, bedrooms,
@@ -43,7 +43,7 @@ async function fetchListingData(listing_type: 'property' | 'car', listing_id: st
       .single()
     return data
   } else {
-    const { data } = await supabaseAdmin
+    const { data } = await getSupabaseAdmin()
       .from('cars')
       .select(`
         description, price_per_day, seats, transmission,

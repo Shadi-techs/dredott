@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ count: 0 })
     }
 
-    const { count } = await supabaseAdmin
+    const { count } = await getSupabaseAdmin()
       .from('admin_notifications')
       .select('*', { count: 'exact', head: true })
       .eq('read', false)
