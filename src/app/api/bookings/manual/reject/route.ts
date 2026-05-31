@@ -1,3 +1,4 @@
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 // ============================================
 // API: Reject Manual Booking
 // Path: src/app/api/bookings/manual/reject/route.ts
@@ -7,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const supabase = createAdminClient()
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const { booking_id, owner_id, reason } = await request.json()
 
     // 1. Get booking
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking, error: bookingError } = await getSupabaseAdmin()
       .from('bookings')
       .select('*, property:properties(name, owner_user_id)')
       .eq('id', booking_id)
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Update booking
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabaseAdmin()
       .from('bookings')
       .update({
         status: 'cancelled',
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Notify guest
-    const { data: guest } = await supabase
+    const { data: guest } = await getSupabaseAdmin()
       .from('profiles')
       .select('email:id, first_name')
       .eq('id', booking.guest_id)
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    await supabase.from('notifications').insert({
+    await getSupabaseAdmin().from('notifications').insert({
       user_id: booking.guest_id,
       type: 'booking_rejected',
       title: 'Booking Request Declined',

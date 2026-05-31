@@ -1,3 +1,4 @@
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 // ============================================
 // API Route: Confirm Payment
 // Path: src/app/api/payments/confirm/route.ts
@@ -13,7 +14,6 @@ function getStripe() {
 import { Resend } from 'resend'
 
 
-const supabase = createAdminClient()
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Find booking by payment intent
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking, error: bookingError } = await getSupabaseAdmin()
       .from('bookings')
       .select('*, property:properties(name, owner_user_id)')
       .eq('stripe_payment_intent_id', payment_intent_id)
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Update booking status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabaseAdmin()
       .from('bookings')
       .update({
         payment_status: 'paid',
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Block dates in property calendar
-    const { data: property } = await supabase
+    const { data: property } = await getSupabaseAdmin()
       .from('properties')
       .select('calendar_blocked_dates')
       .eq('id', booking.property_id)
@@ -66,13 +66,13 @@ export async function POST(request: NextRequest) {
       booking_id: booking.id,
     })
 
-    await supabase
+    await getSupabaseAdmin()
       .from('properties')
       .update({ calendar_blocked_dates: blockedDates })
       .eq('id', booking.property_id)
 
     // 5. Get guest info
-    const { data: guest } = await supabase
+    const { data: guest } = await getSupabaseAdmin()
       .from('profiles')
       .select('first_name, last_name, email:id')
       .eq('id', booking.guest_id)
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       })
 
       // Email to owner
-      const { data: owner } = await supabase
+      const { data: owner } = await getSupabaseAdmin()
         .from('profiles')
         .select('email:id')
         .eq('id', booking.property.owner_user_id)

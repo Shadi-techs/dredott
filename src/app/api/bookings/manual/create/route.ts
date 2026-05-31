@@ -1,3 +1,4 @@
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 // ============================================
 // API: Create Manual Booking Request
 // Path: src/app/api/bookings/manual/create/route.ts
@@ -7,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const supabase = createAdminClient()
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(request: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     // 1. Verify property
-    const { data: property, error: propError } = await supabase
+    const { data: property, error: propError } = await getSupabaseAdmin()
       .from('properties')
       .select('id, name, owner_user_id, calendar_blocked_dates')
       .eq('id', property_id)
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Create manual booking
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking, error: bookingError } = await getSupabaseAdmin()
       .from('bookings')
       .insert({
         property_id,
@@ -82,13 +82,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Get guest & owner info
-    const { data: guest } = await supabase
+    const { data: guest } = await getSupabaseAdmin()
       .from('profiles')
       .select('first_name, last_name')
       .eq('id', guest_id)
       .single()
 
-    const { data: ownerProfile } = await supabase
+    const { data: ownerProfile } = await getSupabaseAdmin()
       .from('profiles')
       .select('email:id, first_name, phone')
       .eq('id', property.owner_user_id)
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
       }
 
       // In-app notification
-      await supabase.from('notifications').insert({
+      await getSupabaseAdmin().from('notifications').insert({
         user_id: property.owner_user_id,
         type: 'booking_request',
         title: 'New Booking Request',
