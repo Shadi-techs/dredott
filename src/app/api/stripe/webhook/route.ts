@@ -7,11 +7,13 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+}
 import { createAdminClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
 
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+    event = getStripe().webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }

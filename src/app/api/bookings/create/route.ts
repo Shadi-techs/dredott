@@ -7,11 +7,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-04-22.dahlia',
-})
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+}
 
-const supabase = createAdminClient()
 
 export async function POST(request: NextRequest) {
   try {
@@ -100,7 +99,7 @@ export async function POST(request: NextRequest) {
     const totalAmount = basePrice
 
     // 6. Create Stripe Payment Intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount: Math.round(totalAmount * 100), // Convert to cents
       currency: 'usd',
       metadata: {
@@ -140,7 +139,7 @@ export async function POST(request: NextRequest) {
 
     if (bookingError) {
       // Cancel payment intent if booking creation fails
-      await stripe.paymentIntents.cancel(paymentIntent.id)
+      await getStripe().paymentIntents.cancel(paymentIntent.id)
       return NextResponse.json({ error: bookingError.message }, { status: 500 })
     }
 

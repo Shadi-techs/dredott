@@ -7,11 +7,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-04-22.dahlia',
-})
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+}
 
-const supabase = createAdminClient()
 
 export async function POST(
   request: NextRequest,
@@ -53,7 +52,7 @@ export async function POST(
     // 4. Refund payment if paid
     if (booking.payment_status === 'paid' && booking.stripe_payment_intent_id) {
       try {
-        await stripe.refunds.create({
+        await getStripe().refunds.create({
           payment_intent: booking.stripe_payment_intent_id,
         })
       } catch (stripeError: any) {

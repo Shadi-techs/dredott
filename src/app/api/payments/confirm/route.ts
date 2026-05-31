@@ -6,13 +6,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
+
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+}
 import { Resend } from 'resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-04-22.dahlia',
-})
-
-const resend = new Resend(process.env.RESEND_API_KEY!)
 
 const supabase = createAdminClient()
 
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
     const { payment_intent_id } = await request.json()
 
     // 1. Verify payment with Stripe
-    const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id)
+    const paymentIntent = await getStripe().paymentIntents.retrieve(payment_intent_id)
 
     if (paymentIntent.status !== 'succeeded') {
       return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })

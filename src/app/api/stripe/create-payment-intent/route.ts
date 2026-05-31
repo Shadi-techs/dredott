@@ -5,9 +5,11 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { createAdminClient, createClient } from '@/lib/supabase/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+}
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +35,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create Stripe payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount, // in cents
       currency,
       metadata: {
