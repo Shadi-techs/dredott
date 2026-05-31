@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,7 +72,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (guest?.email) {
-      await resend.emails.send({
+      await new Resend(process.env.RESEND_API_KEY || '').emails.send({
         from: 'bookings@dredott.com',
         to: guest.email,
         subject: 'Booking Confirmed - DREDOTT',

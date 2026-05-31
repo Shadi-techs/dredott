@@ -1,13 +1,13 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 export async function POST(request: Request) {
   const { email, name, confirmationUrl } = await request.json();
 
   try {
-    await resend.emails.send({
+    await new Resend(process.env.RESEND_API_KEY || '').emails.send({
       from: 'DREDOTT <noreply@dredott.com>',
       to: email,
       subject: 'أكِّد حسابك في DREDOTT',

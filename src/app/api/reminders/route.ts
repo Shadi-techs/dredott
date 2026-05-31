@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server'; // uses service role key automatically
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 const FROM_EMAIL = 'DREDOTT <noreply@dredott.com>';
 
 // Helper to format date in Arabic/English (simple version)
@@ -81,7 +81,7 @@ export async function GET() {
         }[reminderType];
 
         if (userEmail) {
-          await resend.emails.send({
+          await new Resend(process.env.RESEND_API_KEY || '').emails.send({
             from: FROM_EMAIL,
             to: userEmail,
             subject: emailSubject,
