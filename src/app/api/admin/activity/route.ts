@@ -24,11 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    )
+    const supabase = getSupabaseAdmin()
 
     const { action_type, target_type, target_id, description, before_state, after_state, metadata } =
       await req.json()
