@@ -5,18 +5,14 @@
 // ============================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import * as jose from 'jose'
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
+const supabaseAdmin = getSupabaseAdmin()
 
 // ── Auth guard — بيتحقق من JWT cookie ──
 async function getAdminUser(req: NextRequest) {

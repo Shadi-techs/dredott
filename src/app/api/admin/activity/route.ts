@@ -3,7 +3,7 @@
 // Path: src/app/api/admin/activity/route.ts
 // ============================================
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import * as jose from 'jose'
 
 const JWT_SECRET = new TextEncoder().encode(
