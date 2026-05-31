@@ -761,6 +761,7 @@ export default function WhatsAppPage({ params }: { params: Promise<{ locale: str
       {/* Modal */}
       {showModal && (
         <TemplateModal
+          locale={locale}
           template={editingTemplate}
           onClose={() => setShowModal(false)}
           onSave={fetchTemplates}
