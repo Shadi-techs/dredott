@@ -15,7 +15,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = getSupabaseAdmin()
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,7 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      await supabaseAdmin.from('super_admin_pin_log').insert({
+      await getSupabaseAdmin().from('super_admin_pin_log').insert({
        admin_id:   admin.id,
        success:    pinValid,
        ip_address: req.headers.get('x-forwarded-for') || 'unknown',

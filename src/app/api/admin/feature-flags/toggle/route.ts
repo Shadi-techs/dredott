@@ -11,7 +11,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = getSupabaseAdmin()
 
 export async function POST(req: NextRequest) {
   try {
@@ -70,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 6. سجّل في activity_feed ──
-    await supabaseAdmin.from('admin_activity_feed').insert({
+    await getSupabaseAdmin().from('admin_activity_feed').insert({
       admin_id:     payload.sub,
       action:       'toggle_feature',
       entity_type:  'feature_flag',

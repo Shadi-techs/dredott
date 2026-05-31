@@ -12,7 +12,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = getSupabaseAdmin()
 
 // ── Auth guard — بيتحقق من JWT cookie ──
 async function getAdminUser(req: NextRequest) {
@@ -148,7 +147,7 @@ async function callClaudeReview(prompt: string) {
 
 // ── Save log ──
 async function saveReviewLog(listing_type: string, listing_id: string, result: any, triggered_by: string) {
-  await supabaseAdmin.from('ai_review_log').insert({
+  await getSupabaseAdmin().from('ai_review_log').insert({
     listing_type,
     listing_id,
     triggered_by,

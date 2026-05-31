@@ -14,7 +14,6 @@ import * as bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 
 // Service role client — مش بيتأثر بـ RLS
-const supabaseAdmin = getSupabaseAdmin()
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'

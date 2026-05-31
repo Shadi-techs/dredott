@@ -11,7 +11,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = getSupabaseAdmin()
 
 export async function POST(req: NextRequest) {
   try {

@@ -12,7 +12,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-const supabaseAdmin = getSupabaseAdmin()
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false }, { status: 401 })
     }
 
-    await supabaseAdmin.from('admin_sessions').insert({
+    await getSupabaseAdmin().from('admin_sessions').insert({
       admin_id:   payload.sub,
       admin_name: `${payload.first_name || ''} ${payload.last_name || ''}`.trim(),
       admin_role: payload.role,
