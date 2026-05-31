@@ -104,6 +104,7 @@ function CreateDealModal({
   onCreated: () => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings("en" as any)
 
   const supabase = createClient()
 
@@ -518,6 +519,7 @@ function DealCard({
   onRefresh: () => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings("en" as any)
 
   const expiresAt = new Date(deal.expires_at)
   const now = new Date()

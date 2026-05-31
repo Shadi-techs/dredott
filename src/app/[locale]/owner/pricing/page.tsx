@@ -59,6 +59,7 @@ function SuggestionCard({
   onDismiss: (id: string) => void
 }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings("en" as any)
 
   const isIncrease = suggestion.price_change > 0
   const changeColor = isIncrease ? t.success : t.danger

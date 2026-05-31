@@ -54,6 +54,7 @@ interface GuestBooking {
 
 function GuestDrawer({ guest, onClose }: { guest: Guest | null; onClose: () => void }) {
   const { t, d } = useOwnerTheme()
+  const tx = getStrings("en" as any)
 
   if (!guest) return null
 
