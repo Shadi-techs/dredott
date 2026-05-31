@@ -1,3 +1,4 @@
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 // ============================================
 // API Route: Create Booking
 // Path: src/app/api/bookings/create/route.ts
@@ -8,7 +9,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2026-04-22.dahlia' })
 }
 
 
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     // 1. Verify property exists and is platform_managed
-    const { data: property, error: propError } = await supabase
+    const { data: property, error: propError } = await getSupabaseAdmin()
       .from('properties')
       .select('id, name, platform_managed, price_per_night, price_per_week, price_per_month, calendar_blocked_dates, status')
       .eq('id', property_id)
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Check for overlapping bookings
-    const { data: existingBookings } = await supabase
+    const { data: existingBookings } = await getSupabaseAdmin()
       .from('bookings')
       .select('id')
       .eq('property_id', property_id)
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
     })
 
     // 7. Create booking
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking, error: bookingError } = await getSupabaseAdmin()
       .from('bookings')
       .insert({
         property_id,

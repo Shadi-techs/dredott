@@ -8,7 +8,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2026-04-22.dahlia' })
 }
 import { Resend } from 'resend'
 
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     // 6. Send confirmation emails
     try {
       // Email to guest
-      await resend.emails.send({
+      await new Resend(process.env.RESEND_API_KEY || '').emails.send({
         from: 'bookings@dredott.com',
         to: guest?.email || '',
         subject: 'Booking Confirmed - DREDOTT',
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (owner?.email) {
-        await resend.emails.send({
+        await new Resend(process.env.RESEND_API_KEY || '').emails.send({
           from: 'bookings@dredott.com',
           to: owner.email,
           subject: 'New Booking - DREDOTT',

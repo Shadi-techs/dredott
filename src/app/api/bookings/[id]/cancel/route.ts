@@ -1,3 +1,4 @@
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 // ============================================
 // API Route: Cancel Booking
 // Path: src/app/api/bookings/[id]/cancel/route.ts
@@ -8,7 +9,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2025-04-30' })
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2026-04-22.dahlia' })
 }
 
 
@@ -21,7 +22,7 @@ export async function POST(
     const { reason, user_id } = await request.json()
 
     // 1. Get booking
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking, error: bookingError } = await getSupabaseAdmin()
       .from('bookings')
       .select('*')
       .eq('id', id)
@@ -33,7 +34,7 @@ export async function POST(
 
     // 2. Check permissions (only guest or owner can cancel)
     if (booking.guest_id !== user_id) {
-      const { data: property } = await supabase
+      const { data: property } = await getSupabaseAdmin()
         .from('properties')
         .select('owner_user_id')
         .eq('id', booking.property_id)
@@ -62,7 +63,7 @@ export async function POST(
     }
 
     // 5. Update booking
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabaseAdmin()
       .from('bookings')
       .update({
         status: 'cancelled',
@@ -78,7 +79,7 @@ export async function POST(
     }
 
     // 6. Unblock dates in property calendar
-    const { data: property } = await supabase
+    const { data: property } = await getSupabaseAdmin()
       .from('properties')
       .select('calendar_blocked_dates')
       .eq('id', booking.property_id)
@@ -87,7 +88,7 @@ export async function POST(
     const blockedDates = property?.calendar_blocked_dates || []
     const updatedDates = blockedDates.filter((range: any) => range.booking_id !== booking.id)
 
-    await supabase
+    await getSupabaseAdmin()
       .from('properties')
       .update({ calendar_blocked_dates: updatedDates })
       .eq('id', booking.property_id)
