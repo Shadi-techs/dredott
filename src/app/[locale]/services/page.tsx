@@ -1,241 +1,236 @@
-// ============================================
-// Services Directory Page
-// Path: src/app/[locale]/services/page.tsx
-// Public directory of service providers
-// Controlled by feature flag + super admin visibility
-// ============================================
-
 'use client'
-
-import { useEffect, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { Star, MapPin, Phone, Crown, Search } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import { Search, MapPin, Phone, Star, ExternalLink } from 'lucide-react'
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const AREAS = [
+  { value: '', label_en: 'All Areas', label_ar: 'كل المناطق' },
+  { value: 'naama_bay', label_en: 'Naama Bay', label_ar: 'نعمة باي' },
+  { value: 'sharks_bay', label_en: 'Sharks Bay', label_ar: 'خليج الشارك' },
+  { value: 'hadaba', label_en: 'Hadaba', label_ar: 'الحدبة' },
+  { value: 'om_el_seed', label_en: 'Om El Seed', label_ar: 'أم السيد' },
+]
 
-export default function ServicesPage() {
-  const router = useRouter()
+export default function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params)
+  const isAr = locale === 'ar'
   const [categories, setCategories] = useState<any[]>([])
+  const [featured, setFeatured]     = useState<any[]>([])
   const [providers, setProviders]   = useState<any[]>([])
-  const [selected, setSelected]     = useState<string | null>(null)
-  const [search, setSearch]         = useState('')
   const [loading, setLoading]       = useState(true)
-  const [userRole, setUserRole]     = useState<string | null>(null)
+  const [selectedCat, setSelectedCat] = useState('')
+  const [selectedArea, setSelectedArea] = useState('')
+  const [search, setSearch]         = useState('')
 
   useEffect(() => {
-    // Get user role for visibility filtering
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (data.user) {
-        const { data: prof } = await supabase
-          .from('profiles').select('role').eq('id', data.user.id).single()
-        setUserRole(prof?.role || 'guest')
-      }
-    })
-    fetchData()
+    fetchCategories()
   }, [])
 
-  const fetchData = async () => {
-    const [{ data: cats }, { data: provs }] = await Promise.all([
-      supabase.from('service_categories').select('*').eq('is_active', true).order('sort_order'),
-      supabase.from('service_providers')
-        .select('*, service_categories(name_en, icon, slug)')
-        .eq('review_status', 'approved')
-        .eq('is_active', true)
-        .neq('visible_to', 'none')
-        .order('featured', { ascending: false })
-        .order('rating_avg', { ascending: false }),
-    ])
-    setCategories(cats || [])
-    setProviders(provs || [])
+  useEffect(() => {
+    fetchProviders()
+  }, [selectedCat, selectedArea])
+
+  async function fetchCategories() {
+    const res = await fetch('/api/services/categories')
+    const data = await res.json()
+    setCategories(data.categories || [])
+  }
+
+  async function fetchProviders() {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (selectedCat)  params.set('category_id', selectedCat)
+    if (selectedArea) params.set('area', selectedArea)
+    const res = await fetch(`/api/services?${params}`)
+    const data = await res.json()
+    setFeatured(data.featured || [])
+    setProviders(data.providers || [])
     setLoading(false)
   }
 
-  const filtered = providers.filter(p => {
-    // Visibility: owner-only providers
-    if (p.visible_to === 'owner' && userRole !== 'property_owner') return false
-
-    // Category filter
-    if (selected && p.category_id !== selected) return false
-
-    // Search
-    if (search && !p.business_name?.toLowerCase().includes(search.toLowerCase())) return false
-
-    return true
+  const filtered = [...featured, ...providers].filter(p => {
+    if (!search) return true
+    const name = (isAr ? p.business_name_ar : p.business_name) || p.business_name
+    return name.toLowerCase().includes(search.toLowerCase())
   })
 
-  const featuredProviders = filtered.filter(p => p.featured)
-  const regularProviders  = filtered.filter(p => !p.featured)
-
-  const renderStars = (avg: number) => {
-    return [1,2,3,4,5].map(i => (
-      <Star key={i} size={12}
-        color="#D4A843"
-        fill={i <= Math.round(avg) ? '#D4A843' : 'none'}
-      />
-    ))
-  }
-
-  const ProviderCard = ({ p }: { p: any }) => (
-    <div
-      onClick={() => router.push(`/en/services/${p.id}`)}
-      style={{
-        background: '#fff', borderRadius: 16,
-        border: `1px solid ${p.featured ? 'rgba(212,168,67,0.3)' : 'rgba(0,0,0,0.06)'}`,
-        overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none' }}
-    >
-      {/* Cover / Logo */}
-      <div style={{ height: 100, background: 'linear-gradient(135deg, #0e1428, #1a2240)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-        {p.logo_url
-          ? <img src={p.logo_url} alt={p.business_name} style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(212,168,67,0.3)' }} />
-          : <span style={{ fontSize: 40 }}>{p.service_categories?.icon || '🏢'}</span>
-        }
-        {p.featured && (
-          <div style={{ position: 'absolute', top: 8, right: 8, display: 'flex', alignItems: 'center', gap: 4, background: '#D4A843', color: '#0e1428', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 700 }}>
-            <Crown size={10} /> Featured
-          </div>
-        )}
-        {p.is_verified && (
-          <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(42,157,143,0.9)', color: '#fff', padding: '3px 8px', borderRadius: 20, fontSize: 10, fontWeight: 600 }}>
-            ✓ Verified
-          </div>
-        )}
-      </div>
-
-      {/* Info */}
-      <div style={{ padding: 16 }}>
-        <p style={{ fontSize: 11, color: '#D4A843', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
-          {p.service_categories?.name_en}
-        </p>
-        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, color: '#2C3A6B', fontWeight: 400, marginBottom: 6 }}>
-          {p.business_name}
-        </h3>
-
-        {/* Rating */}
-        {p.rating_count > 0 ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-            <div style={{ display: 'flex', gap: 2 }}>{renderStars(p.rating_avg)}</div>
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#2C3A6B' }}>{p.rating_avg?.toFixed(1)}</span>
-            <span style={{ fontSize: 11, color: '#9ca3af' }}>({p.rating_count} reviews)</span>
-          </div>
-        ) : (
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>No reviews yet</p>
-        )}
-
-        {p.area && (
-          <p style={{ fontSize: 12, color: '#6b7280', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <MapPin size={12} color="#D4A843" />
-            {p.area.replace(/_/g, ' ')}
-          </p>
-        )}
-      </div>
-    </div>
-  )
+  const featuredFiltered  = filtered.filter(p => p.featured)
+  const regularFiltered   = filtered.filter(p => !p.featured)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
+    <div style={{ background: '#FAF9F6', minHeight: '100vh' }} dir={isAr ? 'rtl' : 'ltr'}>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px 80px' }}>
-
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.3em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 10 }}>
-            — Local Services Directory
+      {/* Hero */}
+      <div style={{ background: '#2C3A6B', padding: '48px 32px 40px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 11, color: '#D4A843', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>
+            {isAr ? 'مزودو الخدمة' : 'Service Providers'}
           </p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 44, fontWeight: 400, color: '#2C3A6B' }}>
-            Services in Sharm El-Sheikh
+          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 40, fontWeight: 700, color: '#FAF9F6', marginBottom: 8 }}>
+            {isAr ? 'أفضل الخدمات في شرم الشيخ' : 'Trusted Services in Sharm El Sheikh'}
           </h1>
-          <p style={{ fontSize: 14, color: '#6b7280', marginTop: 8 }}>
-            Trusted local providers — rated by property owners and guests like you.
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 28 }}>
+            {isAr ? 'اكتشف مزودي الخدمة المعتمدين في منطقتك' : 'Discover verified service providers in your area'}
           </p>
-        </div>
 
-        {/* Search */}
-        <div style={{ position: 'relative', maxWidth: 400, margin: '0 auto 28px' }}>
-          <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Search services..."
-            style={{ width: '100%', padding: '11px 16px 11px 40px', background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, fontSize: 14, outline: 'none', color: '#2C3A6B', boxSizing: 'border-box' as const }} />
+          {/* Search */}
+          <div style={{ position: 'relative', maxWidth: 480 }}>
+            <Search style={{ position: 'absolute', left: isAr ? 'auto' : 14, right: isAr ? 14 : 'auto', top: '50%', transform: 'translateY(-50%)', color: '#888', width: 16, height: 16 }} />
+            <input
+              type="text"
+              placeholder={isAr ? 'ابحث عن خدمة...' : 'Search services...'}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ width: '100%', padding: '12px 16px 12px 44px', borderRadius: 10, border: 'none', fontSize: 14, background: '#fff', outline: 'none' }}
+            />
+          </div>
         </div>
+      </div>
 
-        {/* Category filters */}
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 36 }}>
-          <button onClick={() => setSelected(null)} style={{
-            padding: '7px 16px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
-            background: !selected ? '#2C3A6B' : '#fff',
-            color: !selected ? '#D4A843' : '#6b7280',
-            border: !selected ? '1px solid #2C3A6B' : '1px solid rgba(0,0,0,0.1)',
-          }}>All</button>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+
+        {/* Filters */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setSelectedCat('')}
+            style={{ padding: '7px 16px', borderRadius: 100, fontSize: 12, border: '1px solid', cursor: 'pointer', background: selectedCat === '' ? '#2C3A6B' : '#fff', color: selectedCat === '' ? '#fff' : '#555', borderColor: selectedCat === '' ? '#2C3A6B' : '#ddd', fontWeight: 500 }}>
+            {isAr ? 'الكل' : 'All'}
+          </button>
           {categories.map(cat => (
-            <button key={cat.id} onClick={() => setSelected(selected === cat.id ? null : cat.id)} style={{
-              padding: '7px 16px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
-              background: selected === cat.id ? '#2C3A6B' : '#fff',
-              color: selected === cat.id ? '#D4A843' : '#6b7280',
-              border: selected === cat.id ? '1px solid #2C3A6B' : '1px solid rgba(0,0,0,0.1)',
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}>
-              {cat.icon} {cat.name_en}
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCat(cat.id === selectedCat ? '' : cat.id)}
+              style={{ padding: '7px 16px', borderRadius: 100, fontSize: 12, border: '1px solid', cursor: 'pointer', background: selectedCat === cat.id ? '#2C3A6B' : '#fff', color: selectedCat === cat.id ? '#fff' : '#555', borderColor: selectedCat === cat.id ? '#2C3A6B' : '#ddd' }}>
+              {cat.icon} {isAr ? cat.name_ar : cat.name_en}
+            </button>
+          ))}
+        </div>
+
+        {/* Area Filter */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+          {AREAS.map(area => (
+            <button
+              key={area.value}
+              onClick={() => setSelectedArea(area.value === selectedArea ? '' : area.value)}
+              style={{ padding: '5px 14px', borderRadius: 100, fontSize: 11, border: '1px solid', cursor: 'pointer', background: selectedArea === area.value ? '#D4A843' : '#fff', color: selectedArea === area.value ? '#2C3A6B' : '#777', borderColor: selectedArea === area.value ? '#D4A843' : '#ddd', fontWeight: selectedArea === area.value ? 600 : 400 }}>
+              📍 {isAr ? area.label_ar : area.label_en}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>Loading...</div>
-        ) : filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <p style={{ fontSize: 40, marginBottom: 12 }}>🔍</p>
-            <p style={{ fontSize: 16, color: '#6b7280' }}>No services found</p>
+          <div style={{ textAlign: 'center', padding: 60, color: '#aaa' }}>
+            <div style={{ width: 32, height: 32, border: '3px solid #e0dbd4', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 12px' }} />
+            {isAr ? 'جاري التحميل...' : 'Loading...'}
           </div>
         ) : (
           <>
             {/* Featured */}
-            {featuredProviders.length > 0 && (
-              <div style={{ marginBottom: 32 }}>
-                <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#D4A843', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 14 }}>Featured</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
-                  {featuredProviders.map(p => <ProviderCard key={p.id} p={p} />)}
+            {featuredFiltered.length > 0 && (
+              <>
+                <p style={{ fontSize: 11, color: '#aaa', letterSpacing: 1.5, textTransform: 'uppercase', fontWeight: 500, marginBottom: 16 }}>
+                  {isAr ? 'مميزون' : 'Featured'}
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: 32 }}>
+                  {featuredFiltered.map(p => <ProviderCard key={p.id} provider={p} isAr={isAr} featured />)}
                 </div>
-              </div>
+                <hr style={{ border: 'none', borderTop: '1px solid #e8e4de', marginBottom: 28 }} />
+              </>
             )}
 
             {/* All */}
-            {regularProviders.length > 0 && (
-              <div>
-                {featuredProviders.length > 0 && (
-                  <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#9ca3af', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 14 }}>All Services</p>
-                )}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
-                  {regularProviders.map(p => <ProviderCard key={p.id} p={p} />)}
+            {regularFiltered.length > 0 && (
+              <>
+                <p style={{ fontSize: 11, color: '#aaa', letterSpacing: 1.5, textTransform: 'uppercase', fontWeight: 500, marginBottom: 16 }}>
+                  {isAr ? 'كل مزودي الخدمة' : 'All Providers'}
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+                  {regularFiltered.map(p => <ProviderCard key={p.id} provider={p} isAr={isAr} />)}
                 </div>
+              </>
+            )}
+
+            {filtered.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 60, color: '#aaa' }}>
+                <p style={{ fontSize: 16, marginBottom: 8 }}>
+                  {isAr ? 'لا يوجد مزودو خدمة حالياً' : 'No service providers found'}
+                </p>
+                <p style={{ fontSize: 13 }}>
+                  {isAr ? 'جرب فلتر مختلف' : 'Try a different filter'}
+                </p>
               </div>
             )}
           </>
         )}
+      </div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  )
+}
 
-        {/* CTA for providers */}
-        <div style={{ marginTop: 60, background: '#2C3A6B', borderRadius: 20, padding: '32px 28px', textAlign: 'center' }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#FBF0D0', marginBottom: 8 }}>
-            Are you a service provider?
-          </p>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 20 }}>
-            List your business and get real ratings from property owners and guests in Sharm.
-          </p>
-          <button onClick={() => router.push('/en/services/register')} style={{ padding: '12px 28px', background: '#D4A843', color: '#0e1428', border: 'none', borderRadius: 12, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>
-            Register Your Service →
-          </button>
-        </div>
+function ProviderCard({ provider: p, isAr, featured = false }: { provider: any; isAr: boolean; featured?: boolean }) {
+  const name    = (isAr ? p.business_name_ar : p.business_name) || p.business_name
+  const catName = isAr ? p.service_provider_categories?.name_ar : p.service_provider_categories?.name_en
+  const icon    = p.service_provider_categories?.icon || '🏢'
+  const reviews = p.google_reviews_cache
+
+  return (
+    <div style={{ background: '#fff', border: `1.5px solid ${featured ? '#D4A843' : '#e8e4de'}`, borderRadius: 14, overflow: 'hidden', transition: 'all 0.2s', cursor: 'pointer' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(44,58,107,0.08)' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
+
+      {/* Cover */}
+      <div style={{ height: 72, background: 'linear-gradient(135deg, #2C3A6B 0%, #3d4f8a 100%)', position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '0 16px 12px' }}>
+        {featured && (
+          <span style={{ position: 'absolute', top: 10, right: isAr ? 'auto' : 10, left: isAr ? 10 : 'auto', background: '#D4A843', color: '#2C3A6B', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 100, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+            {isAr ? 'مميز' : 'Featured'}
+          </span>
+        )}
+        {p.logo_url ? (
+          <img src={p.logo_url} alt={name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover', border: '2px solid rgba(255,255,255,0.3)' }} />
+        ) : (
+          <div style={{ width: 44, height: 44, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, border: '2px solid rgba(255,255,255,0.3)' }}>
+            {icon}
+          </div>
+        )}
       </div>
 
-      <Footer />
+      {/* Body */}
+      <div style={{ padding: '14px 16px' }}>
+        <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 17, fontWeight: 600, color: '#2C3A6B', marginBottom: 2 }}>{name}</p>
+        <p style={{ fontSize: 11, color: '#D4A843', fontWeight: 500, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.3 }}>{icon} {catName}</p>
+
+        {p.area && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#888', marginBottom: 10 }}>
+            <MapPin size={12} /> {p.area.replace('_', ' ')}
+          </div>
+        )}
+
+        {/* Google Reviews */}
+        {reviews?.rating && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 12 }}>
+            {[1,2,3,4,5].map(i => (
+              <Star key={i} size={12} fill={i <= Math.round(reviews.rating) ? '#D4A843' : 'none'} color={i <= Math.round(reviews.rating) ? '#D4A843' : '#ddd'} />
+            ))}
+            <span style={{ fontSize: 11, color: '#888', marginLeft: 4 }}>{reviews.rating} ({reviews.total})</span>
+            <span style={{ fontSize: 10, color: '#bbb', marginLeft: 4 }}>G</span>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {p.whatsapp && (
+            <a href={`https://wa.me/${p.whatsapp}`} target="_blank" rel="noopener noreferrer"
+              style={{ flex: 1, background: '#25D366', color: '#fff', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 8, cursor: 'pointer', textAlign: 'center', textDecoration: 'none', display: 'block' }}>
+              WhatsApp
+            </a>
+          )}
+          <a href={`/${isAr ? 'ar' : 'en'}/services/${p.id}`}
+            style={{ flex: 1, background: '#f5f3ef', color: '#2C3A6B', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 8, cursor: 'pointer', textAlign: 'center', border: '1px solid #e0dbd4', textDecoration: 'none', display: 'block' }}>
+            {isAr ? 'عرض' : 'View'}
+          </a>
+        </div>
+      </div>
     </div>
   )
 }
