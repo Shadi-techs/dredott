@@ -29,16 +29,21 @@ export async function GET(
         id, title, title_ar, description, description_ar,
         category, location, salary_range, job_type,
         experience_required, poster_type,
+        contact_whatsapp, contact_email, contact_name,
         views_count, applications_count,
-        published_at, expires_at,
-        ${isSubscriber ? 'contact_whatsapp, contact_email, contact_name,' : ''}
-        status
+        published_at, expires_at, status
       `)
       .eq('id', id)
       .eq('status', 'live')
       .single()
 
     if (error) throw error
+    // إخفاء بيانات التواصل للغير مشتركين
+    if (!isSubscriber) {
+      job.contact_whatsapp = null
+      job.contact_email    = null
+      job.contact_name     = null
+    }
 
     // Increment view count
     await supabase
