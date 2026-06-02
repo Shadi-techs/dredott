@@ -53,8 +53,7 @@ function AddSyncModal({
   onAdded: () => void
 }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings("en" as any)
-
+  
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

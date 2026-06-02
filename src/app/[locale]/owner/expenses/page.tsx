@@ -55,8 +55,7 @@ function AddExpenseModal({
   onAdded: () => void
 }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings("en" as any)
-
+  
   const supabase = createClient()
 
   const [form, setForm] = useState({

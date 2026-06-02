@@ -49,8 +49,7 @@ function GenerateReportModal({
   onGenerate: (type: ReportType, startDate: string, endDate: string) => void
 }) {
   const { t, d } = useOwnerTheme()
-  const tx = getStrings(locale as any)
-
+  
   const [reportType, setReportType] = useState<ReportType>('financial')
   const [startDate, setStartDate] = useState(
     new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
