@@ -282,8 +282,7 @@ function GenerateReportModal({
 
 export default function ReportsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const tx = getStrings(locale as any)
-  const { t, d } = useOwnerTheme()
+    const { t, d } = useOwnerTheme()
   const router = useRouter()
 
   const supabase = createBrowserClient(

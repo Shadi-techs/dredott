@@ -97,6 +97,7 @@ function AddExpenseModal({
     setSubmitting(false)
   }
 
+  const tx = getStrings('en' as any)
   const categories: { value: Category; label: string; icon: string }[] = [
     { value: 'maintenance', label: tx.maintenance, icon: '🔧' },
     { value: 'utilities', label: tx.utilities, icon: '💡' },
@@ -426,8 +427,7 @@ function AddExpenseModal({
 
 export default function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const tx = getStrings(locale as any)
-  const { t, d } = useOwnerTheme()
+    const { t, d } = useOwnerTheme()
   const router = useRouter()
 
   const supabase = createClient()
@@ -473,6 +473,7 @@ export default function ExpensesPage({ params }: { params: Promise<{ locale: str
     setLoading(false)
   }
 
+  const tx = getStrings(locale as any)
   const filteredExpenses = filterCategory === 'all'
     ? expenses
     : expenses.filter(e => e.category === filterCategory)

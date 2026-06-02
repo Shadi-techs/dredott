@@ -69,6 +69,7 @@ function AddSyncModal({
   })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const tx = getStrings('en' as any)
 
   async function handleSubmit() {
     if (!form.property_id || !form.ical_url) {
@@ -445,8 +446,7 @@ function AddSyncModal({
 // ============================================
 export default function ICalSyncPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const tx = getStrings(locale as any)
-  const { t, d } = useOwnerTheme()
+    const { t, d } = useOwnerTheme()
   const router = useRouter()
 
   const supabase = createBrowserClient(
