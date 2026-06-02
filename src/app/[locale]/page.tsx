@@ -10,8 +10,8 @@ import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { MapPin, Star, Search, ChevronRight, Shield, Award, Clock, Heart, Plus, Minus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+
+
 
 interface Property {
   id: string
@@ -88,7 +88,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
-      <Header />
+      
 
       {/* Hero Section - Editorial with Video */}
       <section className="relative h-screen flex items-center overflow-hidden">
@@ -679,7 +679,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Footer />
+      
 
       {/* Marquee Animation */}
       <style jsx>{`

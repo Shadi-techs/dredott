@@ -148,13 +148,19 @@ export default function Header() {
 
   return (
     <>
+      <style>{`
+        @media (max-width: 1024px) {
+        }
+        @media (min-width: 1025px) {
+        }
+      `}</style>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, transition: 'all 0.3s ease', background: navBg, backdropFilter: scrolled ? 'blur(16px)' : 'none', borderBottom: scrolled ? '1px solid rgba(212,168,67,0.15)' : 'none', padding: scrolled ? '10px 0' : '14px 0' }} dir={isAr ? 'rtl' : 'ltr'}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
 
             <Link href={`/${currentLocale}`} style={{ textDecoration: 'none', flexShrink: 0 }}><DredottLogo /></Link>
 
-            <div style={{ display: 'flex', gap: 24, flex: 1, justifyContent: 'center' }}>
+            <div className='dnav' style={{ display: 'flex', gap: 24, flex: 1, justifyContent: 'center' }}>
               {visibleTabs.map(tab => (
                 <Link key={tab.key} href={`/${currentLocale}${tab.path}`} style={{ fontSize: 13, color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.85)', textDecoration: 'none', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: isActive(tab.path) ? 500 : 400 }}>
                   {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
@@ -244,7 +250,7 @@ export default function Header() {
                 </div>
               )}
 
-              <button onClick={() => setMobileOpen(o => !o)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 8, padding: '8px 10px', color: '#D4A843', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <button onClick={() => setMobileOpen(o => !o)} className='mham' style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 8, padding: '8px 10px', color: '#D4A843', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span style={{ display: 'block', width: 18, height: 2, background: 'currentColor' }} />
                 <span style={{ display: 'block', width: 18, height: 2, background: 'currentColor' }} />
                 <span style={{ display: 'block', width: 18, height: 2, background: 'currentColor' }} />
