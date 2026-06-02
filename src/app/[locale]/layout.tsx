@@ -1,8 +1,8 @@
 // ============================================
-// Root Locale Layout — FIXED
+// Root Locale Layout
 // Path: src/app/[locale]/layout.tsx
-// Only ONE html + body in the whole app
-// Fonts moved here from root layout
+// ✅ Header — مش بيظهر في /admin و /owner
+// ✅ Footer — في كل الصفحات العامة
 // ============================================
 
 import { NextIntlClientProvider } from 'next-intl'
@@ -10,6 +10,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing, isRTL, type Locale } from '@/i18n'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import '../globals.css'
 
 export default async function LocaleLayout({
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <Header />
           {children}
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -11,8 +11,8 @@ import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, Eye, EyeOff, User, Phone, Upload, Camera, Loader2, Check } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+
+
 
 // ✅ Singleton خارج الـ component
 const supabase = createBrowserClient(
@@ -107,7 +107,7 @@ export default function RegisterPage() {
         last_name: lastName,
         phone,
         nationality,
-        photo_url: photoUrl,
+        avatar_url: photoUrl,
         registration_source: propertyId ? 'price_gate' : 'direct',
         marketing_consent: marketingConsent,
         registered_at: new Date().toISOString(),
@@ -149,7 +149,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] flex flex-col">
-      <Header />
+      
 
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-md">
@@ -378,7 +378,7 @@ export default function RegisterPage() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   )
 }

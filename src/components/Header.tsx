@@ -73,6 +73,7 @@ export default function Header() {
   const isAr          = currentLocale === 'ar'
 
   if (pathname.includes('/admin')) return null
+  if (pathname.includes('/owner')) return null
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)

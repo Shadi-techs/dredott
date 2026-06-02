@@ -13,8 +13,8 @@ import {
   Check, ChevronRight, ChevronLeft,
   Upload, AlertCircle, Loader2, Star
 } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+
+
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -114,7 +114,7 @@ export default function ServiceProviderRegisterPage() {
   // ── Success ──────────────────────────────────────────────
   if (submitted) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
+      
       <div style={{ maxWidth: 480, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
         <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(42,157,143,0.1)', border: '2px solid #2A9D8F', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
           <Check size={32} color="#2A9D8F" />
@@ -132,13 +132,13 @@ export default function ServiceProviderRegisterPage() {
           Back to Home
         </button>
       </div>
-      <Footer />
+      
     </div>
   )
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
+      
 
       <div style={{ maxWidth: 580, margin: '0 auto', padding: '60px 24px 80px' }}>
 
@@ -409,7 +409,7 @@ export default function ServiceProviderRegisterPage() {
         </div>
       </div>
 
-      <Footer />
+      
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
