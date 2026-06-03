@@ -151,12 +151,13 @@ export default function Header() {
   const visibleTabs = ALL_TABS.filter(tab => flags[tab.flag] === true)
   const initials    = `${profile?.first_name?.[0] || ''}${profile?.last_name?.[0] || ''}`
   const isActive    = (path: string) => pathname.includes(path)
-  const navBg       = scrolled ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
+  const isHome      = pathname === '/' + currentLocale || pathname === '/' + currentLocale + '/'
+  const navBg       = (!isHome || scrolled || mobileOpen) ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
 
   return (
     <>
 
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, transition: 'all 0.3s ease', background: navBg, backdropFilter: scrolled ? 'blur(16px)' : 'none', borderBottom: scrolled ? '1px solid rgba(212,168,67,0.15)' : 'none', padding: scrolled ? '10px 0' : '14px 0' }} dir={isAr ? 'rtl' : 'ltr'}>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, transition: 'all 0.3s ease', background: navBg, backdropFilter: (scrolled || !isHome) ? 'blur(16px)' : 'none', borderBottom: (scrolled || !isHome) ? '1px solid rgba(212,168,67,0.15)' : 'none', padding: (scrolled || !isHome) ? '10px 0' : '14px 0' }} dir={isAr ? 'rtl' : 'ltr'}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
 
