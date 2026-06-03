@@ -277,7 +277,7 @@ export default function HomePage() {
             background: 'rgba(14,20,40,0.6)',
             border: '1px solid rgba(212,168,67,0.4)',
             borderRadius: 100,
-            padding: '8px 16px',
+            padding: '8px 10px',
             color: '#D4A843',
             fontSize: 11,
             fontFamily: "'JetBrains Mono', monospace",
@@ -287,8 +287,7 @@ export default function HomePage() {
             transition: 'all 0.2s',
           }}
         >
-          <span style={{ fontSize: 16 }}>{soundOn ? '🔊' : '🔇'}</span>
-          <span>{soundOn ? 'SOUND ON' : 'SOUND OFF'}</span>
+          <span style={{ fontSize: 18 }}>{soundOn ? '🔊' : '🔇'}</span>
         </button>
 
         {/* Scroll Indicator */}
