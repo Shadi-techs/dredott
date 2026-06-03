@@ -43,6 +43,20 @@ export default function HomePage() {
   const [selectedArea, setSelectedArea] = useState('all')
   const [maxPrice, setMaxPrice] = useState(250)
   const [guests, setGuests] = useState(2)
+  const [soundOn, setSoundOn] = useState(false)
+
+  const toggleSound = () => {
+    const audio = document.getElementById('sea-audio') as HTMLAudioElement
+    if (!audio) return
+    if (soundOn) {
+      audio.pause()
+      setSoundOn(false)
+    } else {
+      audio.volume = 0.3
+      audio.play()
+      setSoundOn(true)
+    }
+  }
 
   useEffect(() => {
     fetchFeaturedProperties()
@@ -243,6 +257,39 @@ export default function HomePage() {
             <ChevronRight size={14} />
           </a>
         </div>
+
+        {/* Audio Element */}
+        <audio id="sea-audio" loop preload="none">
+          <source src="https://www.soundjay.com/nature/sounds/ocean-wave-1.mp3" type="audio/mpeg" />
+        </audio>
+
+        {/* Sound Toggle Button */}
+        <button
+          onClick={toggleSound}
+          style={{
+            position: 'absolute',
+            bottom: 80,
+            right: 32,
+            zIndex: 20,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            background: 'rgba(14,20,40,0.6)',
+            border: '1px solid rgba(212,168,67,0.4)',
+            borderRadius: 100,
+            padding: '8px 16px',
+            color: '#D4A843',
+            fontSize: 11,
+            fontFamily: "'JetBrains Mono', monospace",
+            letterSpacing: '0.1em',
+            cursor: 'pointer',
+            backdropFilter: 'blur(8px)',
+            transition: 'all 0.2s',
+          }}
+        >
+          <span style={{ fontSize: 16 }}>{soundOn ? '🔊' : '🔇'}</span>
+          <span>{soundOn ? 'SOUND ON' : 'SOUND OFF'}</span>
+        </button>
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">

@@ -261,7 +261,7 @@ export default function Header() {
           </div>
 
           {mobileOpen && (
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(212,168,67,0.15)', display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(212,168,67,0.15)', display: 'flex', flexDirection: 'column', gap: 4, background: '#0e1428', borderRadius: 12, padding: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
               {visibleTabs.map(tab => (
                 <Link key={tab.key} href={`/${currentLocale}${tab.path}`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.8)', background: isActive(tab.path) ? 'rgba(212,168,67,0.08)' : 'transparent' }}>
                   {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
