@@ -126,7 +126,7 @@ export default function Header() {
     await supabase.auth.signOut()
     setUser(null); setProfile(null); setUserRole('')
     setUserOpen(false)
-    router.push(\`/\${currentLocale}\`)
+    router.push(`/\${currentLocale}`)
   }
 
   const handleRoleSwitch = async () => {
@@ -137,7 +137,7 @@ export default function Header() {
     await loadUser()
     setSwitching(false)
     setUserOpen(false)
-    if (!newActiveRole) router.push(\`/\${currentLocale}/provider\`)
+    if (!newActiveRole) router.push(`/\${currentLocale}/provider`)
   }
 
   const closeAll = () => { setLangOpen(false); setMobileOpen(false); setUserOpen(false) }
@@ -148,9 +148,9 @@ export default function Header() {
   const isGuestMode    = isProvider && profile?.active_role === 'guest'
   const isSeeker       = profile?.is_job_seeker === true
   const visibleTabs    = ALL_TABS.filter(tab => flags[tab.flag] === true)
-  const initials       = \`\${profile?.first_name?.[0] || ''}\${profile?.last_name?.[0] || ''}\`
+  const initials       = `\${profile?.first_name?.[0] || ''}\${profile?.last_name?.[0] || ''}`
   const isActive       = (path: string) => pathname.includes(path)
-  const isHome         = pathname === \`/\${currentLocale}\` || pathname === \`/\${currentLocale}/\`
+  const isHome         = pathname === `/\${currentLocale}` || pathname === `/\${currentLocale}/`
   const navBg          = (!isHome || scrolled || mobileOpen) ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
 
   return (
@@ -162,13 +162,13 @@ export default function Header() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
 
             {/* Logo */}
-            <Link href={\`/\${currentLocale}\`} style={{ textDecoration: 'none', flexShrink: 0 }}><DredottLogo /></Link>
+            <Link href={`/\${currentLocale}`} style={{ textDecoration: 'none', flexShrink: 0 }}><DredottLogo /></Link>
 
             {/* Desktop Tabs */}
             {!isMobile && (
               <div style={{ display: 'flex', gap: 24, flex: 1, justifyContent: 'center' }}>
                 {visibleTabs.map(tab => (
-                  <Link key={tab.key} href={\`/\${currentLocale}\${tab.path}\`} style={{ fontSize: 13, color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.85)', textDecoration: 'none', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: isActive(tab.path) ? 500 : 400 }}>
+                  <Link key={tab.key} href={`/\${currentLocale}\${tab.path}`} style={{ fontSize: 13, color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.85)', textDecoration: 'none', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: isActive(tab.path) ? 500 : 400 }}>
                     {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
                   </Link>
                 ))}
@@ -204,11 +204,11 @@ export default function Header() {
                     </span>
                   )}
                   {isOwner && (
-                    <Link href={\`/\${currentLocale}/owner\`} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843', fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                    <Link href={`/\${currentLocale}/owner`} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843', fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
                       <LayoutDashboard size={13} /> {tx.dashboard}
                     </Link>
                   )}
-                  <button onClick={() => router.push(\`/\${currentLocale}/notifications\`)} style={{ position: 'relative', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '6px 9px', cursor: 'pointer', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center' }}>
+                  <button onClick={() => router.push(`/\${currentLocale}/notifications`)} style={{ position: 'relative', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '6px 9px', cursor: 'pointer', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center' }}>
                     <Bell size={15} />
                     {unread > 0 && <span style={{ position: 'absolute', top: -4, right: -4, minWidth: 15, height: 15, background: '#ef4444', color: '#fff', fontSize: 8, fontWeight: 700, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{unread > 9 ? '9+' : unread}</span>}
                   </button>
@@ -220,11 +220,11 @@ export default function Header() {
                     </button>
                     {userOpen && (
                       <div style={{ position: 'absolute', top: 'calc(100% + 8px)', [isAr ? 'left' : 'right']: 0, background: '#1a2240', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden', minWidth: 200, boxShadow: '0 20px 40px rgba(0,0,0,0.4)', zIndex: 100 }}>
-                        <Link href={\`/\${currentLocale}/account\`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: 'rgba(255,255,255,0.7)', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><User size={14} /> {tx.myAccount}</Link>
-                        {isOwner && <Link href={\`/\${currentLocale}/owner\`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><LayoutDashboard size={14} /> {tx.dashboard}</Link>}
-                        {isProviderMode && <Link href={\`/\${currentLocale}/provider\`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><User size={14} /> {tx.myProfile}</Link>}
+                        <Link href={`/\${currentLocale}/account`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: 'rgba(255,255,255,0.7)', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><User size={14} /> {tx.myAccount}</Link>
+                        {isOwner && <Link href={`/\${currentLocale}/owner`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><LayoutDashboard size={14} /> {tx.dashboard}</Link>}
+                        {isProviderMode && <Link href={`/\${currentLocale}/provider`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><User size={14} /> {tx.myProfile}</Link>}
                         {isProvider && <button onClick={handleRoleSwitch} disabled={switching} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', width: '100%', border: 'none', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: isAr ? 'right' : 'left' as const, background: isGuestMode ? 'rgba(212,168,67,0.08)' : 'transparent', color: isGuestMode ? '#D4A843' : 'rgba(255,255,255,0.6)', fontSize: 13 }}><RefreshCw size={14} /> {isGuestMode ? tx.switchToProvider : tx.switchToGuest}</button>}
-                        {isSeeker && <Link href={\`/\${currentLocale}/profile\`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><Briefcase size={14} /> {tx.myCv}</Link>}
+                        {isSeeker && <Link href={`/\${currentLocale}/profile`} onClick={() => setUserOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: '#D4A843', fontSize: 13, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.05)' }}><Briefcase size={14} /> {tx.myCv}</Link>}
                         <button onClick={handleSignOut} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', color: 'rgba(248,113,113,0.8)', fontSize: 13, background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: isAr ? 'right' : 'left' as const }}><LogOut size={14} /> {tx.signOut}</button>
                       </div>
                     )}
@@ -235,8 +235,8 @@ export default function Header() {
               {/* Desktop Only: Sign in / Join buttons */}
               {!isMobile && !user && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Link href={\`/\${currentLocale}/login\`} style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', padding: '6px 14px', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, textDecoration: 'none', whiteSpace: 'nowrap' }}>{tx.signIn}</Link>
-                  <Link href={\`/\${currentLocale}/pricing\`} style={{ fontSize: 13, color: '#0e1428', background: '#D4A843', padding: '7px 16px', borderRadius: 8, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{tx.listProperty}</Link>
+                  <Link href={`/\${currentLocale}/login`} style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', padding: '6px 14px', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, textDecoration: 'none', whiteSpace: 'nowrap' }}>{tx.signIn}</Link>
+                  <Link href={`/\${currentLocale}/pricing`} style={{ fontSize: 13, color: '#0e1428', background: '#D4A843', padding: '7px 16px', borderRadius: 8, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{tx.listProperty}</Link>
                 </div>
               )}
 
@@ -256,25 +256,25 @@ export default function Header() {
           {mobileOpen && (
             <div style={{ marginTop: 8, background: '#0e1428', borderRadius: 12, padding: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(212,168,67,0.15)', display: 'flex', flexDirection: 'column', gap: 4 }}>
               {visibleTabs.map(tab => (
-                <Link key={tab.key} href={\`/\${currentLocale}\${tab.path}\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.8)', background: isActive(tab.path) ? 'rgba(212,168,67,0.08)' : 'transparent' }}>
+                <Link key={tab.key} href={`/\${currentLocale}\${tab.path}`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.8)', background: isActive(tab.path) ? 'rgba(212,168,67,0.08)' : 'transparent' }}>
                   {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
                 </Link>
               ))}
               <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '4px 0' }} />
               {user ? (
                 <>
-                  <Link href={\`/\${currentLocale}/account\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: 8 }}><User size={15} /> {tx.myAccount}</Link>
-                  {isOwner && <Link href={\`/\${currentLocale}/owner\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><LayoutDashboard size={15} /> {tx.dashboard}</Link>}
-                  {isProviderMode && <Link href={\`/\${currentLocale}/provider\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><User size={15} /> {tx.myProfile}</Link>}
+                  <Link href={`/\${currentLocale}/account`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: 8 }}><User size={15} /> {tx.myAccount}</Link>
+                  {isOwner && <Link href={`/\${currentLocale}/owner`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><LayoutDashboard size={15} /> {tx.dashboard}</Link>}
+                  {isProviderMode && <Link href={`/\${currentLocale}/provider`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><User size={15} /> {tx.myProfile}</Link>}
                   {isProvider && <button onClick={() => { setMobileOpen(false); handleRoleSwitch() }} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, color: isGuestMode ? '#D4A843' : 'rgba(255,255,255,0.6)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, textAlign: isAr ? 'right' : 'left' as const }}><RefreshCw size={15} /> {isGuestMode ? tx.switchToProvider : tx.switchToGuest}</button>}
-                  {isSeeker && <Link href={\`/\${currentLocale}/profile\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><Briefcase size={15} /> {tx.myCv}</Link>}
+                  {isSeeker && <Link href={`/\${currentLocale}/profile`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', display: 'flex', alignItems: 'center', gap: 8 }}><Briefcase size={15} /> {tx.myCv}</Link>}
                   <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '4px 0' }} />
                   <button onClick={() => { setMobileOpen(false); handleSignOut() }} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, color: 'rgba(248,113,113,0.8)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, textAlign: isAr ? 'right' : 'left' as const }}><LogOut size={15} /> {tx.signOut}</button>
                 </>
               ) : (
                 <>
-                  <Link href={\`/\${currentLocale}/login\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: 'rgba(255,255,255,0.8)' }}>{tx.signIn}</Link>
-                  <Link href={\`/\${currentLocale}/pricing\`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', fontWeight: 600 }}>{tx.listProperty}</Link>
+                  <Link href={`/\${currentLocale}/login`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: 'rgba(255,255,255,0.8)' }}>{tx.signIn}</Link>
+                  <Link href={`/\${currentLocale}/pricing`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: '#D4A843', fontWeight: 600 }}>{tx.listProperty}</Link>
                 </>
               )}
             </div>
