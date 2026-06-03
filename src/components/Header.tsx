@@ -65,7 +65,6 @@ export default function Header() {
   const [unread,     setUnread]     = useState(0)
   const [switching,  setSwitching]  = useState(false)
   const [isMobile,   setIsMobile]   = useState(false)
-  const [isMobile,   setIsMobile]   = useState(false)
 
   const pathname      = usePathname()
   const router        = useRouter()
@@ -79,8 +78,6 @@ export default function Header() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
-    const onResize = () => setIsMobile(window.innerWidth < 1024)
-    onResize()
     const onResize = () => setIsMobile(window.innerWidth < 1024)
     onResize()
     window.addEventListener('scroll', onScroll, { passive: true })
