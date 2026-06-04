@@ -229,7 +229,7 @@ function SubscriptionDrawer({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
-      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#1a2240] border-l border-white/10 z-50 flex flex-col overflow-hidden">
+      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#0e1428] border-l border-white/10 z-50 flex flex-col overflow-hidden">
 
         {/* Head */}
         <div className="p-6 border-b border-white/10">
@@ -288,7 +288,7 @@ function SubscriptionDrawer({
             <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
               Slots Management
             </h3>
-            <div className="bg-[#0e1428] rounded-lg p-4 border border-white/10">
+            <div className="bg-[#ffffff] rounded-lg p-4 border border-white/10">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="text-xs text-[#7a8aaa] mb-1">Used / Total</div>
@@ -300,7 +300,7 @@ function SubscriptionDrawer({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCustomSlots(s => Math.max(sub.used_slots, s - 1))}
-                    className="w-8 h-8 rounded-lg bg-[#1a2240] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-[#0e1428] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="w-10 text-center text-lg font-bold text-[#D4A843] font-mono">
@@ -308,7 +308,7 @@ function SubscriptionDrawer({
                   </span>
                   <button
                     onClick={() => setCustomSlots(s => s + 1)}
-                    className="w-8 h-8 rounded-lg bg-[#1a2240] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-[#0e1428] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -331,7 +331,7 @@ function SubscriptionDrawer({
                     value={slotsReason}
                     onChange={e => setSlotsReason(e.target.value)}
                     placeholder="e.g. Promotional offer, error correction..."
-                    className="w-full bg-[#1a2240] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+                    className="w-full bg-[#0e1428] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
                   />
                 </div>
               )}
@@ -349,7 +349,7 @@ function SubscriptionDrawer({
                   { label: 'Featured',        value: sub.package.max_featured_listings },
                   { label: 'Team members',    value: sub.package.max_team_members },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-[#0e1428] rounded-lg p-3 border border-white/5">
+                  <div key={label} className="bg-[#ffffff] rounded-lg p-3 border border-white/5">
                     <div className="text-lg font-bold text-[#D4A843] font-mono">{value || '∞'}</div>
                     <div className="text-xs text-[#7a8aaa] mt-0.5">{label}</div>
                   </div>
@@ -368,7 +368,7 @@ function SubscriptionDrawer({
               onChange={e => setAdminNotes(e.target.value)}
               placeholder="Internal notes about this subscription..."
               rows={3}
-              className="w-full bg-[#0e1428] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+              className="w-full bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
             />
           </div>
 
@@ -417,7 +417,7 @@ function SubscriptionDrawer({
             <button
               onClick={handleSaveSlots}
               disabled={saving || (customSlots !== (sub.custom_total_slots || sub.total_slots) && !slotsReason.trim())}
-              className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#D4A843] hover:bg-[#c49835] text-[#0e1428] font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#D4A843] hover:bg-[#c49835] text-[#ffffff] font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
               <Save className="w-4 h-4" />
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
@@ -534,10 +534,10 @@ export default function AdminSubscriptionsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0e1428]">
+    <div className="min-h-screen bg-[#ffffff]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1a2240] px-6 py-5">
+      <div className="border-b border-white/10 bg-[#0e1428] px-6 py-5">
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#D4A843] uppercase mb-1">
@@ -555,7 +555,7 @@ export default function AdminSubscriptionsPage() {
           </div>
           <button
             onClick={() => setShowPackages(p => !p)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#0e1428] border border-white/10 rounded-lg text-sm text-[#7a8aaa] hover:text-[#FBF0D0] transition-colors">
+            className="flex items-center gap-2 px-4 py-2 bg-[#ffffff] border border-white/10 rounded-lg text-sm text-[#7a8aaa] hover:text-[#FBF0D0] transition-colors">
             <Package className="w-4 h-4" />
             {showPackages ? 'Hide Packages' : 'View Packages'}
           </button>
@@ -583,7 +583,7 @@ export default function AdminSubscriptionsPage() {
         {showPackages && (
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             {packages.map(pkg => (
-              <div key={pkg.id} className="bg-[#1a2240] rounded-lg border border-white/10 p-5">
+              <div key={pkg.id} className="bg-[#0e1428] rounded-lg border border-white/10 p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
                     {pkg.name_en}
@@ -620,7 +620,7 @@ export default function AdminSubscriptionsPage() {
               placeholder="Search by name or phone..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#1a2240] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#0e1428] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
           <div className="flex gap-2">
@@ -629,8 +629,8 @@ export default function AdminSubscriptionsPage() {
                 onClick={() => setFilter(f.id as FilterType)}
                 className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
                   filter === f.id
-                    ? 'bg-[#D4A843] text-[#0e1428] font-semibold'
-                    : 'bg-[#1a2240] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    ? 'bg-[#D4A843] text-[#ffffff] font-semibold'
+                    : 'bg-[#0e1428] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
                 }`}>
                 {f.label}
               </button>
@@ -644,7 +644,7 @@ export default function AdminSubscriptionsPage() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#D4A843]" />
           </div>
         ) : (
-          <div className="bg-[#1a2240] rounded-lg border border-white/10 overflow-hidden">
+          <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>

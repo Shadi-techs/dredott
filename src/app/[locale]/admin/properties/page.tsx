@@ -213,9 +213,9 @@ export default function AdminPropertiesPage() {
   // ============================================
 
   return (
-    <div className="min-h-screen bg-[#0e1428]">
+    <div className="min-h-screen bg-[#ffffff]">
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1a2240]">
+      <div className="border-b border-white/10 bg-[#0e1428]">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -228,7 +228,7 @@ export default function AdminPropertiesPage() {
             </div>
             <Link
               href="/admin/properties/new"
-              className="px-4 py-2 bg-[#D4A843] text-[#0e1428] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
+              className="px-4 py-2 bg-[#D4A843] text-[#ffffff] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
             >
               Add Property
             </Link>
@@ -256,19 +256,19 @@ export default function AdminPropertiesPage() {
               placeholder="Search by name, area, or owner..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1a2240] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full bg-[#0e1428] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
 
           {/* Status filter */}
-          <div className="flex items-center gap-2 bg-[#1a2240] border border-white/10 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-[#0e1428] border border-white/10 rounded-lg p-1">
             {(['all', 'approved', 'pending_review', 'rejected'] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
                 className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
                   filterStatus === status
-                    ? 'bg-[#D4A843] text-[#0e1428]'
+                    ? 'bg-[#D4A843] text-[#ffffff]'
                     : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
                 }`}
               >
@@ -278,14 +278,14 @@ export default function AdminPropertiesPage() {
           </div>
 
           {/* Type filter */}
-          <div className="flex items-center gap-2 bg-[#1a2240] border border-white/10 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-[#0e1428] border border-white/10 rounded-lg p-1">
             {(['all', 'platform_managed', 'owner'] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => setFilterType(type)}
                 className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
                   filterType === type
-                    ? 'bg-[#D4A843] text-[#0e1428]'
+                    ? 'bg-[#D4A843] text-[#ffffff]'
                     : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
                 }`}
               >
@@ -308,9 +308,9 @@ export default function AdminPropertiesPage() {
             <p className="text-[#7a8aaa] text-lg">No properties found</p>
           </div>
         ) : (
-          <div className="bg-[#1a2240] rounded-lg border border-white/10 overflow-hidden">
+          <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[#0e1428] border-b border-white/10">
+              <thead className="bg-[#ffffff] border-b border-white/10">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Property</th>
                   <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Owner</th>
@@ -394,13 +394,13 @@ function PropertyRow({
   return (
     <tr
       className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-        index % 2 === 0 ? 'bg-[#0e1428]/30' : ''
+        index % 2 === 0 ? 'bg-[#ffffff]/30' : ''
       }`}
     >
       {/* Property */}
       <td className="px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#0e1428] flex-shrink-0">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#ffffff] flex-shrink-0">
             <Image
               src={mainPhoto}
               alt={property.name}
@@ -550,7 +550,7 @@ function ActionMenu({
       <div className="fixed inset-0 z-40" onClick={onClose} />
 
       {/* Menu */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a2240] rounded-lg border border-white/10 shadow-xl z-50 py-1">
+      <div className="absolute right-0 top-full mt-2 w-48 bg-[#0e1428] rounded-lg border border-white/10 shadow-xl z-50 py-1">
         <Link
           href={`/properties/${property.slug}`}
           className="w-full px-4 py-2 text-left text-sm text-[#FBF0D0] hover:bg-white/5 transition-colors flex items-center gap-2"

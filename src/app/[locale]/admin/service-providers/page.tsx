@@ -97,7 +97,7 @@ export default function AdminServiceProvidersPage() {
   const pendingCount  = providers.filter(p => p.review_status === 'pending').length
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0e1428', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
@@ -142,7 +142,7 @@ export default function AdminServiceProvidersPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {providers.map(p => (
             <div key={p.id} style={{
-              background: '#1a2240',
+              background: '#0e1428',
               border: `1px solid ${p.review_status === 'pending' ? 'rgba(245,158,11,0.2)' : p.review_status === 'approved' ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
               borderRadius: 14, padding: '18px 20px',
             }}>

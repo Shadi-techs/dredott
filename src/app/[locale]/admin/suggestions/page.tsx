@@ -110,7 +110,7 @@ export default function SuggestionsPage() {
   const totalPending = compounds.length + carSuggestions.length
 
   return (
-    <div className="min-h-screen bg-[#0e1428] p-6">
+    <div className="min-h-screen bg-[#ffffff] p-6">
       <div className="mb-6">
         <h1 className="text-2xl italic text-white mb-1"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
@@ -156,7 +156,7 @@ export default function SuggestionsPage() {
                 No pending compound suggestions
               </div>
             ) : compounds.map(s => (
-              <div key={s.id} className="bg-[#1a2240] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
+              <div key={s.id} className="bg-[#0e1428] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <p className="text-white font-medium text-sm">{s.name}</p>
@@ -199,7 +199,7 @@ export default function SuggestionsPage() {
                 No pending car suggestions
               </div>
             ) : carSuggestions.map(s => (
-              <div key={s.id} className="bg-[#1a2240] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
+              <div key={s.id} className="bg-[#0e1428] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">

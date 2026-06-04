@@ -26,21 +26,21 @@ export default function MasterPlanPage() {
     })
   }, [])
 
-  if (loading) return <div style={{ minHeight: '100vh', background: '#0e1428', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 32, height: 32, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
+  if (loading) return <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 32, height: 32, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
 
-  if (!authorized) return <div style={{ minHeight: '100vh', background: '#0e1428', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}><Lock size={40} color="#D4A843" /><p style={{ color: '#FBF0D0', fontFamily: "'Cormorant Garamond', serif", fontSize: 24 }}>Super Admin Only</p></div>
+  if (!authorized) return <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}><Lock size={40} color="#D4A843" /><p style={{ color: '#FBF0D0', fontFamily: "'Cormorant Garamond', serif", fontSize: 24 }}>Super Admin Only</p></div>
 
   return (
     <>
       <style>{`@media print{.no-print{display:none!important}body{background:#fff!important;color:#000!important}.print-page{background:#fff!important;padding:20px!important}}@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <div className="print-page" style={{ minHeight: '100vh', background: '#0e1428', padding: 32, fontFamily: "'DM Sans', sans-serif" }}>
+      <div className="print-page" style={{ minHeight: '100vh', background: '#ffffff', padding: 32, fontFamily: "'DM Sans', sans-serif" }}>
 
         <div className="no-print" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
           <div>
             <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.3em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 6 }}>— SUPER ADMIN · CONFIDENTIAL</p>
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, color: '#FBF0D0', fontWeight: 400 }}>DREDOTT Master Plan</h1>
           </div>
-          <button onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#D4A843', color: '#0e1428', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13 }}><Download size={15} />PDF</button>
+          <button onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#D4A843', color: '#ffffff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13 }}><Download size={15} />PDF</button>
         </div>
 
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
@@ -49,7 +49,7 @@ export default function MasterPlanPage() {
             <R label="Name" value="DREDOTT" h />
             <R label="Domain" value="dredott.com" h />
             <R label="Tagline" value="Your dot on the Red Sea." />
-            <R label="Colors" value="#0e1428 Navy · #D4A843 Gold · #FAF9F6 Cream · #2A9D8F Teal" />
+            <R label="Colors" value="#ffffff Navy · #D4A843 Gold · #FAF9F6 Cream · #2A9D8F Teal" />
             <R label="Fonts" value="Cormorant Garamond · JetBrains Mono · DM Sans" />
             <R label="Target" value="Russian · Ukrainian · German · Italian · Egyptian" />
           </S>

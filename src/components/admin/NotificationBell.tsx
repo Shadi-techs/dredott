@@ -86,7 +86,7 @@ export default function NotificationBell({ locale = 'en' }: Props) {
       {open && (
         <div style={{
           position: 'absolute', top: '110%', right: 0, zIndex: 100,
-          width: 320, background: '#1a2240',
+          width: 320, background: '#0e1428',
           border: '1px solid rgba(212,168,67,0.15)',
           borderRadius: 14, boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
           overflow: 'hidden',

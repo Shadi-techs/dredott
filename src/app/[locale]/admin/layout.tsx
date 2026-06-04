@@ -85,7 +85,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   // ── Loading ──
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0e1428]">
+      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]" />
       </div>
     )
@@ -94,7 +94,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   if (!user) return null
 
   return (
-    <div className="flex h-screen bg-[#0e1428] overflow-hidden">
+    <div className="flex h-screen bg-[#ffffff] overflow-hidden">
 
       {/* ── Sidebar ── */}
       <AdminSidebar
@@ -110,7 +110,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
-        <div className="border-b border-white/10 bg-[#1a2240] px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="border-b border-white/10 bg-[#0e1428] px-4 py-3 flex items-center justify-between flex-shrink-0">
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(o => !o)}

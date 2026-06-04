@@ -38,14 +38,14 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
   }
 
   return (
-    <div className="min-h-screen bg-[#0e1428] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#ffffff] flex items-center justify-center px-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4A843]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2A9D8F]/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-[#1a2240] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
+        <div className="bg-[#0e1428] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
 
           {/* Logo & Title */}
           <div className="text-center mb-8">
@@ -80,7 +80,7 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   autoComplete="username"
-                  className="w-full pl-10 pr-4 py-3 bg-[#0e1428] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#ffffff] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
                   placeholder="Enter your username"
                 />
               </div>
@@ -99,7 +99,7 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-12 py-3 bg-[#0e1428] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-[#ffffff] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
                   placeholder="Enter your password"
                 />
                 <button
@@ -116,11 +116,11 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#D4A843] hover:bg-[#c49835] text-[#0e1428] font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-[#D4A843] hover:bg-[#c49835] text-[#ffffff] font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-[#0e1428]/30 border-t-[#0e1428] rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-[#ffffff]/30 border-t-[#ffffff] rounded-full animate-spin" />
                   <span>Verifying...</span>
                 </>
               ) : (

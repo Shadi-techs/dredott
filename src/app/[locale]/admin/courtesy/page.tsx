@@ -114,12 +114,12 @@ export default function CourtesyPage() {
   if (!isSuperAdmin) return null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0e1428', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
 
       {/* Form Modal */}
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: '#1a2240', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
+          <div style={{ background: '#0e1428', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#FBF0D0', fontWeight: 400 }}>Add Courtesy Listing</h2>
               <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', color: '#7a8aaa', cursor: 'pointer' }}><X size={18} /></button>
@@ -135,7 +135,7 @@ export default function CourtesyPage() {
                     <button key={t} onClick={() => setForm(f => ({ ...f, type: t, target_id: '' }))} style={{
                       flex: 1, padding: '8px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
                       background: form.type === t ? '#D4A843' : 'rgba(255,255,255,0.06)',
-                      color: form.type === t ? '#0e1428' : '#7a8aaa',
+                      color: form.type === t ? '#ffffff' : '#7a8aaa',
                     }}>
                       {t === 'property' ? '🏠 Property' : '🚗 Car'}
                     </button>
@@ -175,12 +175,12 @@ export default function CourtesyPage() {
                   <button onClick={() => setForm(f => ({ ...f, is_lifetime: false }))} style={{
                     flex: 1, padding: '8px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13,
                     background: !form.is_lifetime ? '#D4A843' : 'rgba(255,255,255,0.06)',
-                    color: !form.is_lifetime ? '#0e1428' : '#7a8aaa',
+                    color: !form.is_lifetime ? '#ffffff' : '#7a8aaa',
                   }}>📅 Set expiry date</button>
                   <button onClick={() => setForm(f => ({ ...f, is_lifetime: true, ends_at: '' }))} style={{
                     flex: 1, padding: '8px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13,
                     background: form.is_lifetime ? '#D4A843' : 'rgba(255,255,255,0.06)',
-                    color: form.is_lifetime ? '#0e1428' : '#7a8aaa',
+                    color: form.is_lifetime ? '#ffffff' : '#7a8aaa',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                   }}><Infinity size={15} /> Lifetime</button>
                 </div>
@@ -197,7 +197,7 @@ export default function CourtesyPage() {
               </div>
 
               <button onClick={handleCreate} disabled={saving || !form.target_id} style={{
-                padding: 12, background: '#D4A843', color: '#0e1428',
+                padding: 12, background: '#D4A843', color: '#ffffff',
                 border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 opacity: !form.target_id ? 0.5 : 1,
@@ -226,7 +226,7 @@ export default function CourtesyPage() {
         </div>
         <button onClick={() => setShowForm(true)} style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          padding: '10px 18px', background: '#D4A843', color: '#0e1428',
+          padding: '10px 18px', background: '#D4A843', color: '#ffffff',
           border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13,
         }}>
           <Plus size={15} /> Add Courtesy
@@ -240,7 +240,7 @@ export default function CourtesyPage() {
           { label: 'Lifetime',       value: listings.filter(l => l.is_lifetime).length },
           { label: 'Expiring Soon',  value: listings.filter(l => !l.is_lifetime && l.ends_at && new Date(l.ends_at) < new Date(Date.now() + 30 * 86400000)).length },
         ].map((s, i) => (
-          <div key={i} style={{ background: '#1a2240', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px' }}>
+          <div key={i} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px' }}>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, color: '#D4A843', lineHeight: 1 }}>{s.value}</p>
             <p style={{ fontSize: 11, color: '#7a8aaa', marginTop: 4 }}>{s.label}</p>
           </div>
@@ -265,7 +265,7 @@ export default function CourtesyPage() {
 
             return (
               <div key={l.id} style={{
-                background: '#1a2240',
+                background: '#0e1428',
                 border: `1px solid ${isExpiringSoon ? 'rgba(251,191,36,0.2)' : 'rgba(212,168,67,0.1)'}`,
                 borderRadius: 12, padding: '16px 20px',
                 display: 'flex', alignItems: 'center', gap: 16,
@@ -295,7 +295,7 @@ export default function CourtesyPage() {
                 {/* Badge preview */}
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: 4,
-                  background: l.badge_color, color: '#0e1428',
+                  background: l.badge_color, color: '#ffffff',
                   padding: '4px 10px', borderRadius: 20,
                   fontSize: 11, fontWeight: 700, flexShrink: 0,
                 }}>

@@ -67,7 +67,7 @@ export default function CitiesManagerPage() {
   const inactiveCities = cities.filter(c => !c.is_active)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0e1428', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
 
       <div style={{ marginBottom: 28 }}>
         <p style={eyebrow}>— Cities Manager</p>
@@ -81,11 +81,11 @@ export default function CitiesManagerPage() {
 
       {/* Stats */}
       <div style={{ display: 'flex', gap: 14, marginBottom: 28 }}>
-        <div style={{ background: '#1a2240', border: '1px solid rgba(74,222,128,0.2)', borderRadius: 12, padding: '14px 20px' }}>
+        <div style={{ background: '#0e1428', border: '1px solid rgba(74,222,128,0.2)', borderRadius: 12, padding: '14px 20px' }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#4ade80', lineHeight: 1 }}>{activeCities.length}</p>
           <p style={{ fontSize: 11, color: '#7a8aaa', marginTop: 4 }}>Active cities</p>
         </div>
-        <div style={{ background: '#1a2240', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '14px 20px' }}>
+        <div style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '14px 20px' }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#7a8aaa', lineHeight: 1 }}>{inactiveCities.length}</p>
           <p style={{ fontSize: 11, color: '#7a8aaa', marginTop: 4 }}>Hidden cities</p>
         </div>
@@ -97,7 +97,7 @@ export default function CitiesManagerPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {cities.map(city => (
             <div key={city.id} style={{
-              background: '#1a2240',
+              background: '#0e1428',
               border: `1px solid ${city.is_active ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.04)'}`,
               borderRadius: 12, padding: '14px 18px',
               display: 'flex', alignItems: 'center', gap: 16,

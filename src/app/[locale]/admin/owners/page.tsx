@@ -132,7 +132,7 @@ function OwnerDrawer({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
-      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-[#1a2240] border-l border-white/10 z-50 flex flex-col overflow-hidden">
+      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-[#0e1428] border-l border-white/10 z-50 flex flex-col overflow-hidden">
 
         {/* Head */}
         <div className="p-6 border-b border-white/10">
@@ -235,7 +235,7 @@ function OwnerDrawer({
                         href={doc.file_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 bg-[#0e1428] rounded-lg border border-white/10 hover:border-[#D4A843]/30 transition-colors group"
+                        className="flex items-center gap-3 p-3 bg-[#ffffff] rounded-lg border border-white/10 hover:border-[#D4A843]/30 transition-colors group"
                       >
                         <FileText className="w-4 h-4 text-[#D4A843] flex-shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -251,7 +251,7 @@ function OwnerDrawer({
 
               {/* Previous admin notes */}
               {verif.admin_notes && (
-                <div className="p-3 bg-[#0e1428] rounded-lg border border-white/10 mt-2">
+                <div className="p-3 bg-[#ffffff] rounded-lg border border-white/10 mt-2">
                   <p className="text-xs text-[#7a8aaa] mb-1">Previous admin notes</p>
                   <p className="text-sm text-[#FBF0D0]">{verif.admin_notes}</p>
                 </div>
@@ -269,7 +269,7 @@ function OwnerDrawer({
 
           {/* Action form */}
           {needsAction && action && (
-            <div className="bg-[#0e1428] rounded-lg border border-white/10 p-4">
+            <div className="bg-[#ffffff] rounded-lg border border-white/10 p-4">
               <p className="text-sm font-medium text-[#FBF0D0] mb-3">
                 {action === 'approve'
                   ? '✅ Approve this owner'
@@ -290,7 +290,7 @@ function OwnerDrawer({
                       ? 'Explain why the verification is rejected...'
                       : 'What changes are needed?'}
                     rows={3}
-                    className="w-full bg-[#1a2240] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+                    className="w-full bg-[#0e1428] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
                   />
                 </div>
               )}
@@ -370,7 +370,7 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="bg-[#1a2240] rounded-lg border transition-colors cursor-pointer hover:border-[#D4A843]/30 p-5"
+      className="bg-[#0e1428] rounded-lg border transition-colors cursor-pointer hover:border-[#D4A843]/30 p-5"
       style={{ borderColor: needsAction ? 'rgba(251,191,36,0.3)' : 'rgba(255,255,255,0.1)' }}>
 
       <div className="flex items-start justify-between mb-4">
@@ -655,10 +655,10 @@ export default function AdminOwnersPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0e1428]">
+    <div className="min-h-screen bg-[#ffffff]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1a2240] px-6 py-5">
+      <div className="border-b border-white/10 bg-[#0e1428] px-6 py-5">
         <div className="flex items-start justify-between mb-1">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#D4A843] uppercase mb-1">
@@ -688,7 +688,7 @@ export default function AdminOwnersPage() {
               placeholder="Search by name or phone..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#1a2240] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#0e1428] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -697,8 +697,8 @@ export default function AdminOwnersPage() {
                 onClick={() => setFilter(f.id as FilterType)}
                 className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
                   filter === f.id
-                    ? 'bg-[#D4A843] text-[#0e1428] font-semibold'
-                    : 'bg-[#1a2240] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    ? 'bg-[#D4A843] text-[#ffffff] font-semibold'
+                    : 'bg-[#0e1428] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
                 }`}>
                 {f.label}
               </button>

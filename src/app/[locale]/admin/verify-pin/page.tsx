@@ -102,14 +102,14 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
   }
 
   return (
-    <div className="min-h-screen bg-[#0e1428] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#ffffff] flex items-center justify-center px-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4A843]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2A9D8F]/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-[#1a2240] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
+        <div className="bg-[#0e1428] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
 
           {/* Title */}
           <div className="text-center mb-8">
@@ -144,7 +144,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
                   onPaste={index === 0 ? handlePaste : undefined}
                   disabled={loading}
                   autoFocus={index === 0}
-                  className="w-14 h-14 text-center text-2xl font-bold bg-[#0e1428] border-2 border-[#D4A843]/20 rounded-lg text-[#FBF0D0] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all disabled:opacity-50"
+                  className="w-14 h-14 text-center text-2xl font-bold bg-[#ffffff] border-2 border-[#D4A843]/20 rounded-lg text-[#FBF0D0] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all disabled:opacity-50"
                 />
               ))}
             </div>
@@ -152,7 +152,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
             {!loading && pin.every(d => d !== '') && (
               <button
                 type="submit"
-                className="w-full py-3 bg-[#D4A843] hover:bg-[#c49835] text-[#0e1428] font-semibold rounded-lg transition-all"
+                className="w-full py-3 bg-[#D4A843] hover:bg-[#c49835] text-[#ffffff] font-semibold rounded-lg transition-all"
               >
                 Verify PIN
               </button>
@@ -177,7 +177,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-[#1a2240]/50 border border-[#D4A843]/10 rounded-lg">
+        <div className="mt-6 p-4 bg-[#0e1428]/50 border border-[#D4A843]/10 rounded-lg">
           <p className="text-xs text-center text-[#7a8aaa]">
             🔒 Secure area — session expires in 8 hours
           </p>

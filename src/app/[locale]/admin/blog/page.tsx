@@ -124,12 +124,12 @@ export default function AdminBlogPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0e1428', padding: 24 }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', padding: 24 }}>
 
       {/* Editor Modal */}
       {showEditor && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '40px 24px', overflowY: 'auto' }}>
-          <div style={{ background: '#1a2240', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, width: '100%', maxWidth: 720, padding: 28 }}>
+          <div style={{ background: '#0e1428', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, width: '100%', maxWidth: 720, padding: 28 }}>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: '#FBF0D0', fontWeight: 400 }}>
@@ -219,7 +219,7 @@ export default function AdminBlogPage() {
                   Save Draft
                 </button>
                 <button onClick={() => handleSave(true)} disabled={saving} style={{
-                  padding: '10px 20px', background: '#D4A843', color: '#0e1428',
+                  padding: '10px 20px', background: '#D4A843', color: '#ffffff',
                   border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 700,
                   display: 'flex', alignItems: 'center', gap: 6,
                 }}>
@@ -240,7 +240,7 @@ export default function AdminBlogPage() {
         </div>
         <button onClick={openNew} style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          padding: '10px 18px', background: '#D4A843', color: '#0e1428',
+          padding: '10px 18px', background: '#D4A843', color: '#ffffff',
           border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13,
         }}>
           <Plus size={16} /> New Post
@@ -260,7 +260,7 @@ export default function AdminBlogPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {posts.map(post => (
             <div key={post.id} style={{
-              background: '#1a2240', border: '1px solid rgba(212,168,67,0.08)',
+              background: '#0e1428', border: '1px solid rgba(212,168,67,0.08)',
               borderRadius: 12, padding: '16px 20px',
               display: 'flex', alignItems: 'center', gap: 16,
             }}>

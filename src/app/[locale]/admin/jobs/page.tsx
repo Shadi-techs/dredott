@@ -35,14 +35,14 @@ export default function AdminJobsPage({ params }: { params: Promise<{ locale: st
   }
 
   return (
-    <div style={{ padding: 24, background: '#0e1428', minHeight: '100vh', color: '#FBF0D0' }}>
+    <div style={{ padding: 24, background: '#ffffff', minHeight: '100vh', color: '#FBF0D0' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 28, marginBottom: 8 }}>Job Listings Review</h1>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
           {['pending_review', 'live', 'rejected', 'all'].map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              style={{ padding: '6px 16px', borderRadius: 100, fontSize: 12, cursor: 'pointer', border: '1px solid', background: filter === f ? '#D4A843' : 'transparent', color: filter === f ? '#0e1428' : '#D4A843', borderColor: '#D4A843', fontWeight: filter === f ? 600 : 400 }}>
+              style={{ padding: '6px 16px', borderRadius: 100, fontSize: 12, cursor: 'pointer', border: '1px solid', background: filter === f ? '#D4A843' : 'transparent', color: filter === f ? '#ffffff' : '#D4A843', borderColor: '#D4A843', fontWeight: filter === f ? 600 : 400 }}>
               {f.replace('_', ' ')}
             </button>
           ))}
@@ -50,14 +50,14 @@ export default function AdminJobsPage({ params }: { params: Promise<{ locale: st
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40 }}>
-            <div style={{ width: 28, height: 28, border: '3px solid #1a2240', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
+            <div style={{ width: 28, height: 28, border: '3px solid #0e1428', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
           </div>
         ) : jobs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60, color: '#7a8aaa' }}>No jobs found</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {jobs.map(job => (
-              <div key={job.id} style={{ background: '#1a2240', borderRadius: 12, padding: 20, border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div key={job.id} style={{ background: '#0e1428', borderRadius: 12, padding: 20, border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>

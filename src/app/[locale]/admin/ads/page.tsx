@@ -42,7 +42,7 @@ interface Ad {
 const EMPTY_FORM = {
   title: '', body: '', image_url: '', cta_label: 'Learn More', cta_url: '',
   target: 'all', placement: 'banner',
-  bg_color: '#0e1428', text_color: '#FBF0D0', cta_color: '#D4A843',
+  bg_color: '#ffffff', text_color: '#FBF0D0', cta_color: '#D4A843',
   starts_at: '', ends_at: '',
 }
 
@@ -147,12 +147,12 @@ export default function AdsManagerPage() {
     setForm(f => ({ ...f, [field]: val }))
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0e1428', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
 
       {/* Editor Modal */}
       {showEditor && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '40px 24px', overflowY: 'auto' }}>
-          <div style={{ background: '#1a2240', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, width: '100%', maxWidth: 600, padding: 28 }}>
+          <div style={{ background: '#0e1428', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, width: '100%', maxWidth: 600, padding: 28 }}>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#FBF0D0', fontWeight: 400 }}>
@@ -255,7 +255,7 @@ export default function AdsManagerPage() {
               </div>
 
               <button onClick={handleSave} disabled={saving} style={{
-                marginTop: 8, padding: 12, background: '#D4A843', color: '#0e1428',
+                marginTop: 8, padding: 12, background: '#D4A843', color: '#ffffff',
                 border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}>
@@ -275,7 +275,7 @@ export default function AdsManagerPage() {
         </div>
         <button onClick={openNew} style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          padding: '10px 18px', background: '#D4A843', color: '#0e1428',
+          padding: '10px 18px', background: '#D4A843', color: '#ffffff',
           border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13,
         }}>
           <Plus size={15} /> New Ad
@@ -290,7 +290,7 @@ export default function AdsManagerPage() {
           { label: 'Total Views',  value: totalViews.toLocaleString(),            color: '#60a5fa' },
           { label: 'CTR',          value: `${ctr}%`,                              color: '#f59e0b' },
         ].map((s, i) => (
-          <div key={i} style={{ background: '#1a2240', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px' }}>
+          <div key={i} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px' }}>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: s.color, lineHeight: 1 }}>{s.value}</p>
             <p style={{ fontSize: 11, color: '#7a8aaa', marginTop: 4 }}>{s.label}</p>
           </div>
@@ -326,7 +326,7 @@ export default function AdsManagerPage() {
 
             return (
               <div key={ad.id} style={{
-                background: '#1a2240',
+                background: '#0e1428',
                 border: `1px solid ${ad.is_active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
                 borderRadius: 12, padding: '14px 18px',
                 display: 'flex', alignItems: 'center', gap: 14,
