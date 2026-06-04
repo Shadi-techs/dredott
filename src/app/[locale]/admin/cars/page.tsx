@@ -203,9 +203,9 @@ export default function AdminCarsPage() {
   // ============================================
 
   return (
-    <div className="min-h-screen bg-[#ffffff]">
+    <div className="min-h-screen bg-[#F0F2F7]">
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#0e1428]">
+      <div className="border-b border-white/10 bg-[#1e2d4f]">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -218,7 +218,7 @@ export default function AdminCarsPage() {
             </div>
             <Link
               href="/admin/cars/new"
-              className="px-4 py-2 bg-[#D4A843] text-[#ffffff] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
+              className="px-4 py-2 bg-[#D4A843] text-[#F0F2F7] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
             >
               Add Car
             </Link>
@@ -245,19 +245,19 @@ export default function AdminCarsPage() {
               placeholder="Search by name, brand, model, area, or owner..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0e1428] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full bg-[#1e2d4f] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
 
           {/* Status filter */}
-          <div className="flex items-center gap-2 bg-[#0e1428] border border-white/10 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-[#1e2d4f] border border-white/10 rounded-lg p-1">
             {(['all', 'approved', 'pending_review', 'rejected'] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
                 className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
                   filterStatus === status
-                    ? 'bg-[#D4A843] text-[#ffffff]'
+                    ? 'bg-[#D4A843] text-[#F0F2F7]'
                     : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
                 }`}
               >
@@ -280,9 +280,9 @@ export default function AdminCarsPage() {
             <p className="text-[#7a8aaa] text-lg">No cars found</p>
           </div>
         ) : (
-          <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
+          <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[#ffffff] border-b border-white/10">
+              <thead className="bg-[#F0F2F7] border-b border-white/10">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Car</th>
                   <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Owner</th>
@@ -365,13 +365,13 @@ function CarRow({
   return (
     <tr
       className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-        index % 2 === 0 ? 'bg-[#ffffff]/30' : ''
+        index % 2 === 0 ? 'bg-[#F0F2F7]/30' : ''
       }`}
     >
       {/* Car */}
       <td className="px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#ffffff] flex-shrink-0">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#F0F2F7] flex-shrink-0">
             <Image
               src={mainPhoto}
               alt={`${car.brand} ${car.model}`}
@@ -521,7 +521,7 @@ function ActionMenu({
       <div className="fixed inset-0 z-40" onClick={onClose} />
 
       {/* Menu */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-[#0e1428] rounded-lg border border-white/10 shadow-xl z-50 py-1">
+      <div className="absolute right-0 top-full mt-2 w-48 bg-[#1e2d4f] rounded-lg border border-white/10 shadow-xl z-50 py-1">
         <Link
           href={`/cars/${car.slug}`}
           className="w-full px-4 py-2 text-left text-sm text-[#FBF0D0] hover:bg-white/5 transition-colors flex items-center gap-2"

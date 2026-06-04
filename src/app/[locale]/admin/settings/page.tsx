@@ -43,14 +43,14 @@ export default function SettingsIndexPage({
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-[#ffffff] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F0F2F7] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#ffffff] p-6">
+    <div className="min-h-screen bg-[#F0F2F7] p-6">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
@@ -79,7 +79,7 @@ export default function SettingsIndexPage({
               <Link
                 key={section.href}
                 href={`/${locale}${section.href}`}
-                className="group bg-[#0e1428] border border-white/8 rounded-xl p-5 hover:border-[#D4A843]/30 transition-all flex items-center gap-5"
+                className="group bg-[#1e2d4f] border border-white/8 rounded-xl p-5 hover:border-[#D4A843]/30 transition-all flex items-center gap-5"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${section.color}15`, border: `1px solid ${section.color}25` }}>

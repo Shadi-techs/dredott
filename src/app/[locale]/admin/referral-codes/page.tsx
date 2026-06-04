@@ -96,11 +96,11 @@ export default function ReferralCodesPage() {
   const totalSignups = codes.reduce((s, c) => s + c.uses_count, 0)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#F0F2F7', padding: '28px 32px' }}>
 
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: '#0e1428', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 440 }}>
+          <div style={{ background: '#1e2d4f', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 440 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#FBF0D0', fontWeight: 400 }}>New Ambassador Code</h2>
               <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', color: '#7a8aaa', cursor: 'pointer' }}><X size={18} /></button>
@@ -113,7 +113,7 @@ export default function ReferralCodesPage() {
                     <button key={t.id} onClick={() => setForm(f => ({ ...f, ambassador_type: t.id }))} style={{
                       flex: 1, padding: '7px 4px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 11,
                       background: form.ambassador_type === t.id ? '#D4A843' : 'rgba(255,255,255,0.06)',
-                      color: form.ambassador_type === t.id ? '#ffffff' : '#7a8aaa',
+                      color: form.ambassador_type === t.id ? '#F0F2F7' : '#7a8aaa',
                     }}>{t.emoji} {t.label}</button>
                   ))}
                 </div>
@@ -160,7 +160,7 @@ export default function ReferralCodesPage() {
                   style={inp} />
               </div>
               <button onClick={handleCreate} disabled={saving || !form.ambassador_name || !form.code} style={{
-                padding: 12, background: '#D4A843', color: '#ffffff', border: 'none', borderRadius: 10,
+                padding: 12, background: '#D4A843', color: '#F0F2F7', border: 'none', borderRadius: 10,
                 cursor: 'pointer', fontWeight: 700, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 opacity: !form.ambassador_name || !form.code ? 0.5 : 1,
@@ -179,7 +179,7 @@ export default function ReferralCodesPage() {
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#FBF0D0', fontWeight: 400 }}>Referral Codes</h1>
           <p style={{ fontSize: 12, color: '#7a8aaa', marginTop: 4 }}>Each ambassador gets a personal code. Users who sign up with it get a discount — and you know who brought them.</p>
         </div>
-        <button onClick={() => setShowForm(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: '#D4A843', color: '#ffffff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>
+        <button onClick={() => setShowForm(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: '#D4A843', color: '#F0F2F7', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>
           <Plus size={15} /> New Ambassador
         </button>
       </div>
@@ -193,7 +193,7 @@ export default function ReferralCodesPage() {
         ].map((s, i) => {
           const Icon = s.icon
           return (
-            <div key={i} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div key={i} style={{ background: '#1e2d4f', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
               <Icon size={20} color={s.color} />
               <div>
                 <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#FBF0D0', lineHeight: 1 }}>{s.value}</p>
@@ -220,7 +220,7 @@ export default function ReferralCodesPage() {
             const typeConf = AMBASSADOR_TYPES.find(t => t.id === code.ambassador_type)
             return (
               <div key={code.id} style={{
-                background: '#0e1428', border: `1px solid ${code.is_active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
+                background: '#1e2d4f', border: `1px solid ${code.is_active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
                 borderRadius: 12, padding: '14px 18px',
                 display: 'flex', alignItems: 'center', gap: 14,
                 opacity: code.is_active ? 1 : 0.55,

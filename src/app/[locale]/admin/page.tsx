@@ -59,7 +59,7 @@ function StatCard({ label, value, sub, delta, deltaDir, spark, color, href }: {
   spark?: number[]; color: string; href?: string
 }) {
   const content = (
-    <div className="bg-[#0e1428] rounded-lg border border-white/10 p-5 h-full
+    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 p-5 h-full
       hover:border-[#D4A843]/30 transition-colors">
       <div className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
         {label}
@@ -112,7 +112,7 @@ function OccupancyHeatmap({ properties }: { properties: any[] }) {
   }, [properties.length])
 
   return (
-    <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
+    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
       <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
         <span className="text-sm font-medium text-[#FBF0D0]">Occupancy · next 30 days</span>
         <span className="text-xs font-mono text-[#7a8aaa] tracking-wider">
@@ -180,7 +180,7 @@ function OwnerVerificationCard({ verifications }: { verifications: any[] }) {
   }
 
   return (
-    <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
+    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
       <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-[#FBF0D0]">Owner Verifications</span>
@@ -267,7 +267,7 @@ function ActivityFeed({ activities }: { activities: any[] }) {
   }
 
   return (
-    <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
+    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
       <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
         <span className="text-sm font-medium text-[#FBF0D0]">Live Activity</span>
         <span className="flex items-center gap-1.5 text-xs text-[#4ade80]">
@@ -476,17 +476,17 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#ffffff] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F0F2F7] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#ffffff]">
+    <div className="min-h-screen bg-[#F0F2F7]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#0e1428] px-6 py-5">
+      <div className="border-b border-white/10 bg-[#1e2d4f] px-6 py-5">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#7a8aaa] mb-1">{day}</p>
@@ -641,7 +641,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Platform snapshot */}
-          <div className="bg-[#0e1428] rounded-lg border border-white/10 p-5">
+          <div className="bg-[#1e2d4f] rounded-lg border border-white/10 p-5">
             <p className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-4">
               Platform
             </p>

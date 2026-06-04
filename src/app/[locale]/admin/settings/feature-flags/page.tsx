@@ -131,14 +131,14 @@ export default function AdminFeatureFlagsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#ffffff] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F0F2F7] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#ffffff] p-6">
+    <div className="min-h-screen bg-[#F0F2F7] p-6">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
@@ -168,7 +168,7 @@ export default function AdminFeatureFlagsPage() {
             const color = MODULE_COLORS[module] || '#D4A843'
 
             return (
-              <div key={module} className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden">
+              <div key={module} className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
 
                 {/* Module header */}
                 <div className="px-5 py-3 border-b border-white/10 flex items-center gap-2">
@@ -220,7 +220,7 @@ export default function AdminFeatureFlagsPage() {
                           className={`relative w-16 h-8 rounded-full transition-all duration-300 flex-shrink-0 disabled:cursor-not-allowed ${
                             feature.enabled
                               ? 'bg-[#4ade80]/30 border border-[#4ade80]/50'
-                              : 'bg-[#ffffff] border border-white/20'
+                              : 'bg-[#F0F2F7] border border-white/20'
                           }`}
                         >
                           {isToggling ? (
@@ -234,8 +234,8 @@ export default function AdminFeatureFlagsPage() {
                                 : 'left-1 bg-[#7a8aaa]'
                             }`}>
                               {feature.enabled
-                                ? <ToggleRight className="w-4 h-4 text-[#ffffff]" />
-                                : <ToggleLeft className="w-4 h-4 text-[#ffffff]" />
+                                ? <ToggleRight className="w-4 h-4 text-[#F0F2F7]" />
+                                : <ToggleLeft className="w-4 h-4 text-[#F0F2F7]" />
                               }
                             </div>
                           )}
@@ -257,7 +257,7 @@ export default function AdminFeatureFlagsPage() {
         </div>
 
         {/* Help */}
-        <div className="mt-8 p-5 bg-[#0e1428] border border-[#D4A843]/20 rounded-lg">
+        <div className="mt-8 p-5 bg-[#1e2d4f] border border-[#D4A843]/20 rounded-lg">
           <h4 className="text-sm font-semibold text-[#D4A843] mb-3 flex items-center gap-2">
             <Info className="w-4 h-4" /> How Feature Flags Work
           </h4>

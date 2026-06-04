@@ -104,12 +104,12 @@ export default function PromoCodesPage() {
   const activeCodes  = codes.filter(c => c.is_active).length
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#F0F2F7', padding: '28px 32px' }}>
 
       {/* Create Form Modal */}
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: '#0e1428', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 460 }}>
+          <div style={{ background: '#1e2d4f', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 460 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#FBF0D0', fontWeight: 400 }}>New Promo Code</h2>
               <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', color: '#7a8aaa', cursor: 'pointer' }}><X size={18} /></button>
@@ -164,7 +164,7 @@ export default function PromoCodesPage() {
               </div>
 
               <button onClick={handleCreate} disabled={saving} style={{
-                marginTop: 8, padding: '11px', background: '#D4A843', color: '#ffffff',
+                marginTop: 8, padding: '11px', background: '#D4A843', color: '#F0F2F7',
                 border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}>
@@ -184,7 +184,7 @@ export default function PromoCodesPage() {
         </div>
         <button onClick={() => setShowForm(true)} style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          padding: '10px 18px', background: '#D4A843', color: '#ffffff',
+          padding: '10px 18px', background: '#D4A843', color: '#F0F2F7',
           border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 13,
         }}>
           <Plus size={15} /> New Code
@@ -200,7 +200,7 @@ export default function PromoCodesPage() {
         ].map((s, i) => {
           const Icon = s.icon
           return (
-            <div key={i} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div key={i} style={{ background: '#1e2d4f', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
               <Icon size={20} color={s.color} />
               <div>
                 <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#FBF0D0', lineHeight: 1 }}>{s.value}</p>
@@ -225,7 +225,7 @@ export default function PromoCodesPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {codes.map(code => (
             <div key={code.id} style={{
-              background: '#0e1428', border: `1px solid ${code.is_active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
+              background: '#1e2d4f', border: `1px solid ${code.is_active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)'}`,
               borderRadius: 12, padding: '16px 20px',
               display: 'flex', alignItems: 'center', gap: 16,
               opacity: code.is_active ? 1 : 0.5,

@@ -122,7 +122,7 @@ export default function ActivityPage() {
   const subAdmins = summaries.filter(s => s.role !== 'super_admin')
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff', padding: '28px 32px' }}>
+    <div style={{ minHeight: '100vh', background: '#F0F2F7', padding: '28px 32px' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
@@ -173,7 +173,7 @@ export default function ActivityPage() {
                 </div>
               )}
               {subAdmins.map(admin => (
-                <div key={admin.id} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14 }}>
+                <div key={admin.id} style={{ background: '#1e2d4f', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14 }}>
                   {/* Summary row */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', cursor: 'pointer' }}
                     onClick={() => setExpanded(expanded === admin.id ? null : admin.id)}>
@@ -269,7 +269,7 @@ export default function ActivityPage() {
                 const cfg  = EVENT_CONFIG[s.event] || EVENT_CONFIG.login
                 const Icon = cfg.icon
                 return (
-                  <div key={s.id} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.04)', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div key={s.id} style={{ background: '#1e2d4f', border: '1px solid rgba(255,255,255,0.04)', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <Icon size={16} color={cfg.color} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: 13, color: '#FBF0D0', fontWeight: 500 }}>{s.admin_name} <span style={{ color: cfg.color, fontWeight: 400 }}>{cfg.label}</span></p>
@@ -293,7 +293,7 @@ export default function ActivityPage() {
                 const cfg  = ACTION_CONFIG[a.action] || { color: '#7a8aaa', icon: Activity }
                 const Icon = cfg.icon
                 return (
-                  <div key={a.id} style={{ background: '#0e1428', border: '1px solid rgba(255,255,255,0.04)', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div key={a.id} style={{ background: '#1e2d4f', border: '1px solid rgba(255,255,255,0.04)', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <Icon size={16} color={cfg.color} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: 13, color: '#FBF0D0', fontWeight: 500 }}>

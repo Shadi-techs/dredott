@@ -214,9 +214,9 @@ export default function AdminReviewPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#ffffff]">
+    <div className="min-h-screen bg-[#F0F2F7]">
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#0e1428]">
+      <div className="border-b border-white/10 bg-[#1e2d4f]">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -227,7 +227,7 @@ export default function AdminReviewPage() {
                 Review and approve property and car listings
               </p>
             </div>
-            <div className="flex items-center gap-2 bg-[#ffffff] rounded-lg px-4 py-2 border border-white/10">
+            <div className="flex items-center gap-2 bg-[#F0F2F7] rounded-lg px-4 py-2 border border-white/10">
               <Clock className="w-4 h-4 text-[#D4A843]" />
               <span className="text-sm font-mono text-[#FBF0D0]">
                 {filteredListings.length} pending
@@ -243,17 +243,17 @@ export default function AdminReviewPage() {
                 placeholder="Search by name, owner, or area..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#ffffff] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+                className="w-full bg-[#F0F2F7] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
               />
             </div>
-            <div className="flex items-center gap-2 bg-[#ffffff] border border-white/10 rounded-lg p-1">
+            <div className="flex items-center gap-2 bg-[#F0F2F7] border border-white/10 rounded-lg p-1">
               {(['all', 'property', 'car'] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
                   className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors ${
                     filterType === type
-                      ? 'bg-[#D4A843] text-[#ffffff]'
+                      ? 'bg-[#D4A843] text-[#F0F2F7]'
                       : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
                   }`}
                 >
@@ -333,11 +333,11 @@ function ListingCard({
   const mainPhoto  = listing.photos?.[0] || '/placeholder-property.jpg'
 
   return (
-    <div className="bg-[#0e1428] rounded-lg border border-white/10 overflow-hidden hover:border-[#D4A843]/30 transition-colors">
-      <div className="relative h-48 bg-[#ffffff]">
+    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden hover:border-[#D4A843]/30 transition-colors">
+      <div className="relative h-48 bg-[#F0F2F7]">
         <Image src={mainPhoto} alt={listing.name} fill className="object-cover" />
         <div className="absolute top-3 left-3">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ffffff]/80 backdrop-blur-sm border border-white/10">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F0F2F7]/80 backdrop-blur-sm border border-white/10">
             <Icon className="w-3.5 h-3.5 text-[#D4A843]" />
             <span className="text-xs font-mono text-[#FBF0D0]">{isProperty ? 'Property' : 'Car'}</span>
           </span>
@@ -402,7 +402,7 @@ function ListingCard({
 
         {/* 4 actions */}
         <div className="grid grid-cols-2 gap-2">
-          <button onClick={onView} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#ffffff] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] hover:border-[#D4A843]/30 transition-colors text-sm">
+          <button onClick={onView} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#F0F2F7] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] hover:border-[#D4A843]/30 transition-colors text-sm">
             <Eye className="w-4 h-4" /> View
           </button>
           <button onClick={onApprove} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#4ade80]/10 border border-[#4ade80]/30 text-[#4ade80] hover:bg-[#4ade80]/20 transition-colors text-sm">
@@ -459,7 +459,7 @@ function ReviewModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-[#0e1428] rounded-lg border border-white/10 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#1e2d4f] rounded-lg border border-white/10 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
@@ -486,7 +486,7 @@ function ReviewModal({
                   className={`w-full text-left px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                     selectedPreset === preset.id
                       ? `${c.bg} ${c.border} ${c.text}`
-                      : 'bg-[#ffffff] border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] hover:border-white/20'
+                      : 'bg-[#F0F2F7] border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] hover:border-white/20'
                   }`}
                 >
                   {preset.reason_en}
@@ -510,7 +510,7 @@ function ReviewModal({
               onChange={(e) => setCustomReason(e.target.value)}
               placeholder="Add more details..."
               rows={3}
-              className="w-full bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+              className="w-full bg-[#F0F2F7] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
             />
           </div>
         )}
@@ -525,7 +525,7 @@ function ReviewModal({
             onChange={(e) => setInternalNote(e.target.value)}
             placeholder="Notes for the admin team..."
             rows={2}
-            className="w-full bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+            className="w-full bg-[#F0F2F7] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
           />
         </div>
 
