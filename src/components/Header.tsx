@@ -165,7 +165,7 @@ export default function Header() {
             {!isMobile && (
               <div style={{ display: 'flex', gap: 24, flex: 1, justifyContent: 'center' }}>
                 {visibleTabs.map(tab => (
-                  <Link key={tab.key} href={`/$${currentLocale}${tab.path}`} style={{ fontSize: 13, color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.85)', textDecoration: 'none', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: isActive(tab.path) ? 500 : 400 }}>
+                  <Link key={tab.key} href={`/${currentLocale}${tab.path}`} style={{ fontSize: 13, color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.85)', textDecoration: 'none', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: isActive(tab.path) ? 500 : 400 }}>
                     {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
                   </Link>
                 ))}
@@ -253,7 +253,7 @@ export default function Header() {
           {mobileOpen && (
             <div style={{ marginTop: 8, background: '#0e1428', borderRadius: 12, padding: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(212,168,67,0.15)', display: 'flex', flexDirection: 'column', gap: 4 }}>
               {visibleTabs.map(tab => (
-                <Link key={tab.key} href={`/$${currentLocale}${tab.path}`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.8)', background: isActive(tab.path) ? 'rgba(212,168,67,0.08)' : 'transparent' }}>
+                <Link key={tab.key} href={`/${currentLocale}${tab.path}`} onClick={() => setMobileOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, textDecoration: 'none', color: isActive(tab.path) ? '#D4A843' : 'rgba(255,255,255,0.8)', background: isActive(tab.path) ? 'rgba(212,168,67,0.08)' : 'transparent' }}>
                   {TAB_LABELS[tab.key]?.[currentLocale] || TAB_LABELS[tab.key]?.en}
                 </Link>
               ))}
