@@ -28,11 +28,11 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
     async function checkAuth() {
       try {
         const res = await fetch('/api/admin/verify', { method: 'GET' })
-        if (!res.ok) { router.push(\`/${locale}/admin/login\`); return }
+        if (!res.ok) { router.push(`/${locale}/admin/login`); return }
         const data = await res.json()
         setUser(data.admin)
         setLoading(false)
-      } catch { router.push(\`/${locale}/admin/login\`) }
+      } catch { router.push(`/${locale}/admin/login`) }
     }
     checkAuth()
   }, [pathname, locale])
@@ -87,7 +87,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
         {/* Sidebar */}
         <AdminSidebar
           user={{
-            name: \`${user.first_name || ''} ${user.last_name || ''}\`.trim() || user.username,
+            name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username,
             role: user.role,
             email: user.email,
           }}
