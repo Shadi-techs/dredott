@@ -285,7 +285,7 @@ export default function AdminSidebar({ user, locale }: { user: AdminUser; locale
       {/* ── Desktop Sidebar ── */}
       <div
         className={`
-          hidden lg:flex flex-col bg-[#1e2d4f] flex-shrink-0
+          hidden lg:flex flex-col bg-[#0e1428] flex-shrink-0
           transition-all duration-200 border-r border-[#D4A843]/10
           ${collapsed ? 'w-[56px]' : 'w-[210px]'}
         `}
@@ -296,7 +296,7 @@ export default function AdminSidebar({ user, locale }: { user: AdminUser; locale
       {/* ── Mobile: Hamburger Button ── */}
       <button
         onClick={() => setMobileOpen(o => !o)}
-        className="lg:hidden fixed top-3 left-3 z-50 bg-[#1e2d4f] border border-[#D4A843]/20 text-[#D4A843] p-2 rounded-lg shadow-lg"
+        className="lg:hidden fixed top-3 left-3 z-50 bg-[#0e1428] border border-[#D4A843]/20 text-[#D4A843] p-2 rounded-lg shadow-lg"
       >
         {mobileOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
@@ -308,7 +308,7 @@ export default function AdminSidebar({ user, locale }: { user: AdminUser; locale
             className="fixed inset-0 bg-black/60 z-40 lg:hidden"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="fixed left-0 top-0 bottom-0 w-[210px] bg-[#1e2d4f] z-50 lg:hidden border-r border-[#D4A843]/10">
+          <div className="fixed left-0 top-0 bottom-0 w-[210px] bg-[#0e1428] z-50 lg:hidden border-r border-[#D4A843]/10">
             <SidebarContent />
           </div>
         </>
