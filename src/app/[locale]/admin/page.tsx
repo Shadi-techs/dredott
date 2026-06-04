@@ -59,15 +59,15 @@ function StatCard({ label, value, sub, delta, deltaDir, spark, color, href }: {
   spark?: number[]; color: string; href?: string
 }) {
   const content = (
-    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 p-5 h-full
+    <div className="bg-white rounded-lg border border-[#1a2240]/10 p-5 h-full
       hover:border-[#D4A843]/30 transition-colors">
-      <div className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
+      <div className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-3">
         {label}
       </div>
-      <div className="text-3xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond'] mb-1">
+      <div className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond'] mb-1">
         {value}
       </div>
-      {sub && <div className="text-xs text-[#7a8aaa] mb-3">{sub}</div>}
+      {sub && <div className="text-xs text-[#6B7280] mb-3">{sub}</div>}
       {spark && (
         <div className="mb-3">
           <Sparkline data={spark} color={color} height={24} />
@@ -490,7 +490,7 @@ export default function AdminDashboard() {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#7a8aaa] mb-1">{day}</p>
-            <h1 className="text-3xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+            <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
               Good morning, <em className="text-[#D4A843]">{adminName}</em>.
             </h1>
             <p className="text-sm text-[#7a8aaa] mt-1">
@@ -532,7 +532,7 @@ export default function AdminDashboard() {
 
         {/* ROW 1 — Owners (الأهم) */}
         <div>
-          <p className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
+          <p className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-3">
             Owners
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -576,7 +576,7 @@ export default function AdminDashboard() {
         {/* ROW 2 — Revenue + Listings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
-            <p className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
+            <p className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-3">
               Revenue
             </p>
             <div className="grid grid-cols-2 gap-4">
@@ -601,7 +601,7 @@ export default function AdminDashboard() {
           </div>
 
           <div>
-            <p className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
+            <p className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-3">
               Listings
             </p>
             <div className="grid grid-cols-2 gap-4">
