@@ -215,14 +215,14 @@ export default function AdminPropertiesPage() {
   return (
     <div className="min-h-screen bg-[#F0F2F7]">
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1e2d4f]">
+      <div className="border-b border-[#1a2240]/10 bg-white">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+              <h1 className="text-2xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
                 Properties
               </h1>
-              <p className="text-sm text-[#7a8aaa] mt-1">
+              <p className="text-sm text-[#6B7280] mt-1">
                 Manage all property listings
               </p>
             </div>
@@ -246,22 +246,22 @@ export default function AdminPropertiesPage() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-[#1a2240]/10">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7a8aaa]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
             <input
               type="text"
               placeholder="Search by name, area, or owner..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1e2d4f] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full bg-white border border-[#1a2240]/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
 
           {/* Status filter */}
-          <div className="flex items-center gap-2 bg-[#1e2d4f] border border-white/10 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-white border border-[#1a2240]/10 rounded-lg p-1">
             {(['all', 'approved', 'pending_review', 'rejected'] as const).map((status) => (
               <button
                 key={status}
@@ -269,7 +269,7 @@ export default function AdminPropertiesPage() {
                 className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
                   filterStatus === status
                     ? 'bg-[#D4A843] text-[#F0F2F7]'
-                    : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    : 'text-[#6B7280] hover:text-[#1a2240]'
                 }`}
               >
                 {status === 'pending_review' ? 'Pending' : status}
@@ -278,7 +278,7 @@ export default function AdminPropertiesPage() {
           </div>
 
           {/* Type filter */}
-          <div className="flex items-center gap-2 bg-[#1e2d4f] border border-white/10 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-white border border-[#1a2240]/10 rounded-lg p-1">
             {(['all', 'platform_managed', 'owner'] as const).map((type) => (
               <button
                 key={type}
@@ -286,7 +286,7 @@ export default function AdminPropertiesPage() {
                 className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
                   filterType === type
                     ? 'bg-[#D4A843] text-[#F0F2F7]'
-                    : 'text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    : 'text-[#6B7280] hover:text-[#1a2240]'
                 }`}
               >
                 {type === 'platform_managed' ? 'Platform' : type}
@@ -304,21 +304,21 @@ export default function AdminPropertiesPage() {
           </div>
         ) : filteredProperties.length === 0 ? (
           <div className="text-center py-20">
-            <Building2 className="w-12 h-12 text-[#7a8aaa] mx-auto mb-4" />
-            <p className="text-[#7a8aaa] text-lg">No properties found</p>
+            <Building2 className="w-12 h-12 text-[#6B7280] mx-auto mb-4" />
+            <p className="text-[#6B7280] text-lg">No properties found</p>
           </div>
         ) : (
-          <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
+          <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[#F0F2F7] border-b border-white/10">
+              <thead className="bg-[#F0F2F7] border-b border-[#1a2240]/10">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Property</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Owner</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Details</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Price</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Score</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Status</th>
-                  <th className="text-right px-4 py-3 text-xs font-mono text-[#7a8aaa] uppercase">Actions</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Property</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Owner</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Details</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Price</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Score</th>
+                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Status</th>
+                  <th className="text-right px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -410,7 +410,7 @@ function PropertyRow({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <p className="text-sm font-medium text-[#FBF0D0] truncate">
+              <p className="text-sm font-medium text-[#1a2240] truncate">
                 {property.name}
               </p>
               {property.platform_managed && (
@@ -422,7 +422,7 @@ function PropertyRow({
                 <Crown className="w-4 h-4 text-[#D4A843]" />
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-[#7a8aaa]">
+            <div className="flex items-center gap-2 text-xs text-[#6B7280]">
               <MapPin className="w-3 h-3" />
               <span>{property.area}</span>
             </div>
@@ -432,15 +432,15 @@ function PropertyRow({
 
       {/* Owner */}
       <td className="px-4 py-4">
-        <p className="text-sm text-[#FBF0D0]">
+        <p className="text-sm text-[#1a2240]">
           {property.owner.first_name} {property.owner.last_name}
         </p>
-        <p className="text-xs text-[#7a8aaa]">{property.owner.email}</p>
+        <p className="text-xs text-[#6B7280]">{property.owner.email}</p>
       </td>
 
       {/* Details */}
       <td className="px-4 py-4">
-        <div className="flex items-center gap-3 text-sm text-[#7a8aaa]">
+        <div className="flex items-center gap-3 text-sm text-[#6B7280]">
           <span>{property.bedrooms} bed</span>
           <span>•</span>
           <span>{property.bathrooms} bath</span>
@@ -454,10 +454,10 @@ function PropertyRow({
 
       {/* Price */}
       <td className="px-4 py-4">
-        <p className="text-sm font-mono text-[#FBF0D0]">
+        <p className="text-sm font-mono text-[#1a2240]">
           EGP {property.price_per_night.toLocaleString()}
         </p>
-        <p className="text-xs text-[#7a8aaa]">/night</p>
+        <p className="text-xs text-[#6B7280]">/night</p>
       </td>
 
       {/* Score */}
@@ -465,10 +465,10 @@ function PropertyRow({
         {property.internal_score ? (
           <div className="flex items-center gap-1.5">
             <Star className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
-            <span className="text-sm font-mono text-[#FBF0D0]">{displayRating}</span>
+            <span className="text-sm font-mono text-[#1a2240]">{displayRating}</span>
           </div>
         ) : (
-          <span className="text-xs text-[#7a8aaa]">Not scored</span>
+          <span className="text-xs text-[#6B7280]">Not scored</span>
         )}
       </td>
 
@@ -484,7 +484,7 @@ function PropertyRow({
             onClick={() => setShowActionMenu(showActionMenu === property.id ? null : property.id)}
             className="p-2 hover:bg-white/5 rounded-lg transition-colors"
           >
-            <MoreVertical className="w-4 h-4 text-[#7a8aaa]" />
+            <MoreVertical className="w-4 h-4 text-[#6B7280]" />
           </button>
 
           {showActionMenu === property.id && (
@@ -550,24 +550,24 @@ function ActionMenu({
       <div className="fixed inset-0 z-40" onClick={onClose} />
 
       {/* Menu */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-[#1e2d4f] rounded-lg border border-white/10 shadow-xl z-50 py-1">
+      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg border border-[#1a2240]/10 shadow-xl z-50 py-1">
         <Link
           href={`/properties/${property.slug}`}
-          className="w-full px-4 py-2 text-left text-sm text-[#FBF0D0] hover:bg-white/5 transition-colors flex items-center gap-2"
+          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
         >
-          <Eye className="w-4 h-4 text-[#7a8aaa]" />
+          <Eye className="w-4 h-4 text-[#6B7280]" />
           View on Site
         </Link>
         
         <Link
           href={`/admin/properties/${property.id}/edit`}
-          className="w-full px-4 py-2 text-left text-sm text-[#FBF0D0] hover:bg-white/5 transition-colors flex items-center gap-2"
+          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
         >
-          <Edit className="w-4 h-4 text-[#7a8aaa]" />
+          <Edit className="w-4 h-4 text-[#6B7280]" />
           Edit Property
         </Link>
         
-        <div className="border-t border-white/10 my-1" />
+        <div className="border-t border-[#1a2240]/10 my-1" />
         
         <button
           onClick={() => {

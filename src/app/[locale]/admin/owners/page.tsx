@@ -132,17 +132,17 @@ function OwnerDrawer({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
-      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-[#1e2d4f] border-l border-white/10 z-50 flex flex-col overflow-hidden">
+      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white border-l border-[#1a2240]/10 z-50 flex flex-col overflow-hidden">
 
         {/* Head */}
-        <div className="p-6 border-b border-white/10">
+        <div className="p-6 border-b border-[#1a2240]/10">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-[#D4A843]/20 border border-[#D4A843]/40 flex items-center justify-center text-lg font-bold text-[#D4A843]">
                 {fullName[0] || '?'}
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+                <h2 className="text-xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
                   {fullName || 'Owner'}
                 </h2>
                 <div className="flex items-center gap-2 mt-1">
@@ -150,7 +150,7 @@ function OwnerDrawer({
                     ? <span className="flex items-center gap-1 text-xs text-[#D4A843] font-mono">
                         <Crown className="w-3 h-3" /> Premium
                       </span>
-                    : <span className="text-xs text-[#7a8aaa] font-mono">Basic</span>
+                    : <span className="text-xs text-[#6B7280] font-mono">Basic</span>
                   }
                   {owner.phone_verified && (
                     <span className="flex items-center gap-1 text-xs text-[#4ade80]">
@@ -160,7 +160,7 @@ function OwnerDrawer({
                 </div>
               </div>
             </div>
-            <button onClick={onClose} className="text-[#7a8aaa] hover:text-[#FBF0D0]">
+            <button onClick={onClose} className="text-[#6B7280] hover:text-[#1a2240]">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -174,7 +174,7 @@ function OwnerDrawer({
 
           {/* Contact */}
           <div className="space-y-2">
-            <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase">Contact</h3>
+            <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase">Contact</h3>
             {[
               { label: 'Phone',    value: owner.phone },
               { label: 'WhatsApp', value: owner.whatsapp },
@@ -182,8 +182,8 @@ function OwnerDrawer({
               { label: 'Joined',   value: new Date(owner.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) },
             ].filter(i => i.value).map(({ label, value }) => (
               <div key={label} className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-xs text-[#7a8aaa]">{label}</span>
-                <span className="text-sm text-[#FBF0D0]">{value}</span>
+                <span className="text-xs text-[#6B7280]">{label}</span>
+                <span className="text-sm text-[#1a2240]">{value}</span>
               </div>
             ))}
           </div>
@@ -191,7 +191,7 @@ function OwnerDrawer({
           {/* Subscription */}
           {owner.subscription && (
             <div className="space-y-2">
-              <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase">Subscription</h3>
+              <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase">Subscription</h3>
               {[
                 { label: 'Status',     value: owner.subscription.status },
                 { label: 'Slots',      value: `${owner.subscription.used_slots} / ${owner.subscription.total_slots} used` },
@@ -200,8 +200,8 @@ function OwnerDrawer({
                 { label: 'Cars',       value: owner.cars_count },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-xs text-[#7a8aaa]">{label}</span>
-                  <span className="text-sm text-[#FBF0D0] font-mono">{value}</span>
+                  <span className="text-xs text-[#6B7280]">{label}</span>
+                  <span className="text-sm text-[#1a2240] font-mono">{value}</span>
                 </div>
               ))}
             </div>
@@ -210,7 +210,7 @@ function OwnerDrawer({
           {/* Verification details — Premium only */}
           {isPremium && verif && (
             <div className="space-y-2">
-              <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase">
+              <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase">
                 Verification Details
               </h3>
               {[
@@ -219,15 +219,15 @@ function OwnerDrawer({
                 { label: 'Submitted', value: verif.submitted_at ? new Date(verif.submitted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—' },
               ].filter(i => i.value).map(({ label, value }) => (
                 <div key={label} className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-xs text-[#7a8aaa]">{label}</span>
-                  <span className="text-sm text-[#FBF0D0]">{value}</span>
+                  <span className="text-xs text-[#6B7280]">{label}</span>
+                  <span className="text-sm text-[#1a2240]">{value}</span>
                 </div>
               ))}
 
               {/* Documents */}
               {owner.documents.length > 0 && (
                 <div className="pt-2">
-                  <p className="text-xs text-[#7a8aaa] uppercase tracking-wider mb-2">Documents</p>
+                  <p className="text-xs text-[#6B7280] uppercase tracking-wider mb-2">Documents</p>
                   <div className="space-y-2">
                     {owner.documents.map(doc => (
                       <a
@@ -235,14 +235,14 @@ function OwnerDrawer({
                         href={doc.file_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 bg-[#F0F2F7] rounded-lg border border-white/10 hover:border-[#D4A843]/30 transition-colors group"
+                        className="flex items-center gap-3 p-3 bg-[#F0F2F7] rounded-lg border border-[#1a2240]/10 hover:border-[#D4A843]/30 transition-colors group"
                       >
                         <FileText className="w-4 h-4 text-[#D4A843] flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm text-[#FBF0D0] truncate">{doc.file_name}</div>
-                          <div className="text-xs text-[#7a8aaa] capitalize">{doc.document_type}</div>
+                          <div className="text-sm text-[#1a2240] truncate">{doc.file_name}</div>
+                          <div className="text-xs text-[#6B7280] capitalize">{doc.document_type}</div>
                         </div>
-                        <ExternalLink className="w-4 h-4 text-[#7a8aaa] group-hover:text-[#D4A843] transition-colors" />
+                        <ExternalLink className="w-4 h-4 text-[#6B7280] group-hover:text-[#D4A843] transition-colors" />
                       </a>
                     ))}
                   </div>
@@ -251,9 +251,9 @@ function OwnerDrawer({
 
               {/* Previous admin notes */}
               {verif.admin_notes && (
-                <div className="p-3 bg-[#F0F2F7] rounded-lg border border-white/10 mt-2">
-                  <p className="text-xs text-[#7a8aaa] mb-1">Previous admin notes</p>
-                  <p className="text-sm text-[#FBF0D0]">{verif.admin_notes}</p>
+                <div className="p-3 bg-[#F0F2F7] rounded-lg border border-[#1a2240]/10 mt-2">
+                  <p className="text-xs text-[#6B7280] mb-1">Previous admin notes</p>
+                  <p className="text-sm text-[#1a2240]">{verif.admin_notes}</p>
                 </div>
               )}
 
@@ -261,7 +261,7 @@ function OwnerDrawer({
               {verif.rejection_reason && (
                 <div className="p-3 bg-[#f87171]/10 rounded-lg border border-[#f87171]/30 mt-2">
                   <p className="text-xs text-[#f87171] mb-1">Rejection reason</p>
-                  <p className="text-sm text-[#FBF0D0]">{verif.rejection_reason}</p>
+                  <p className="text-sm text-[#1a2240]">{verif.rejection_reason}</p>
                 </div>
               )}
             </div>
@@ -269,8 +269,8 @@ function OwnerDrawer({
 
           {/* Action form */}
           {needsAction && action && (
-            <div className="bg-[#F0F2F7] rounded-lg border border-white/10 p-4">
-              <p className="text-sm font-medium text-[#FBF0D0] mb-3">
+            <div className="bg-[#F0F2F7] rounded-lg border border-[#1a2240]/10 p-4">
+              <p className="text-sm font-medium text-[#1a2240] mb-3">
                 {action === 'approve'
                   ? '✅ Approve this owner'
                   : action === 'reject'
@@ -280,7 +280,7 @@ function OwnerDrawer({
               </p>
               {(action === 'reject' || action === 'changes_requested') && (
                 <div className="mb-3">
-                  <label className="block text-xs text-[#7a8aaa] mb-1.5">
+                  <label className="block text-xs text-[#6B7280] mb-1.5">
                     Reason * (will be sent to owner)
                   </label>
                   <textarea
@@ -290,13 +290,13 @@ function OwnerDrawer({
                       ? 'Explain why the verification is rejected...'
                       : 'What changes are needed?'}
                     rows={3}
-                    className="w-full bg-[#1e2d4f] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+                    className="w-full bg-white border border-[#1a2240]/10 rounded-lg px-3 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50 resize-none"
                   />
                 </div>
               )}
               <div className="flex gap-2">
                 <button onClick={() => setAction(null)}
-                  className="flex-1 py-2 border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] rounded-lg text-sm transition-colors">
+                  className="flex-1 py-2 border border-[#1a2240]/10 text-[#6B7280] hover:text-[#1a2240] rounded-lg text-sm transition-colors">
                   Cancel
                 </button>
                 <button
@@ -319,8 +319,8 @@ function OwnerDrawer({
 
         {/* Footer — Actions */}
         {needsAction && !action && (
-          <div className="p-4 border-t border-white/10 space-y-2">
-            <p className="text-xs text-[#7a8aaa] mb-3 text-center">
+          <div className="p-4 border-t border-[#1a2240]/10 space-y-2">
+            <p className="text-xs text-[#6B7280] mb-3 text-center">
               {isPremium ? 'Review documents and take action' : 'Verify WhatsApp ownership'}
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -344,8 +344,8 @@ function OwnerDrawer({
         )}
 
         {!needsAction && (
-          <div className="p-4 border-t border-white/10">
-            <button className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0] rounded-lg text-sm transition-colors">
+          <div className="p-4 border-t border-[#1a2240]/10">
+            <button className="w-full flex items-center justify-center gap-2 py-2.5 border border-[#1a2240]/10 text-[#6B7280] hover:text-[#1a2240] rounded-lg text-sm transition-colors">
               <Settings className="w-4 h-4" />
               Edit Limits
             </button>
@@ -370,7 +370,7 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="bg-[#1e2d4f] rounded-lg border transition-colors cursor-pointer hover:border-[#D4A843]/30 p-5"
+      className="bg-white rounded-lg border transition-colors cursor-pointer hover:border-[#D4A843]/30 p-5"
       style={{ borderColor: needsAction ? 'rgba(251,191,36,0.3)' : 'rgba(255,255,255,0.1)' }}>
 
       <div className="flex items-start justify-between mb-4">
@@ -385,13 +385,13 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
             {fullName[0] || '?'}
           </div>
           <div>
-            <div className="text-sm font-medium text-[#FBF0D0]">{fullName || 'Owner'}</div>
+            <div className="text-sm font-medium text-[#1a2240]">{fullName || 'Owner'}</div>
             <div className="flex items-center gap-2 mt-0.5">
               {isPremium
                 ? <span className="flex items-center gap-1 text-xs text-[#D4A843]">
                     <Crown className="w-3 h-3" /> Premium
                   </span>
-                : <span className="text-xs text-[#7a8aaa]">Basic</span>
+                : <span className="text-xs text-[#6B7280]">Basic</span>
               }
               {owner.phone_verified && (
                 <span className="flex items-center gap-1 text-xs text-[#4ade80]">
@@ -406,16 +406,16 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
 
       {/* Stats */}
       <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center gap-1.5 text-sm text-[#7a8aaa]">
+        <div className="flex items-center gap-1.5 text-sm text-[#6B7280]">
           <Building2 className="w-3.5 h-3.5" />
           <span>{owner.properties_count} props</span>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-[#7a8aaa]">
+        <div className="flex items-center gap-1.5 text-sm text-[#6B7280]">
           <Car className="w-3.5 h-3.5" />
           <span>{owner.cars_count} cars</span>
         </div>
         {owner.subscription && (
-          <div className="flex items-center gap-1.5 text-sm text-[#7a8aaa]">
+          <div className="flex items-center gap-1.5 text-sm text-[#6B7280]">
             <span className="font-mono">
               {owner.subscription.used_slots}/{owner.subscription.total_slots} slots
             </span>
@@ -424,13 +424,13 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
       </div>
 
       {/* Contact */}
-      <div className="text-xs text-[#7a8aaa] truncate">
+      <div className="text-xs text-[#6B7280] truncate">
         {owner.phone || owner.whatsapp || owner.email || '—'}
       </div>
 
       {/* Joined */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-        <span className="text-xs text-[#7a8aaa]">
+        <span className="text-xs text-[#6B7280]">
           Joined {new Date(owner.created_at).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
         </span>
         {needsAction && (
@@ -438,7 +438,7 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
             <Clock className="w-3 h-3" /> Needs review
           </span>
         )}
-        <ChevronRight className="w-4 h-4 text-[#7a8aaa]" />
+        <ChevronRight className="w-4 h-4 text-[#6B7280]" />
       </div>
     </div>
   )
@@ -658,16 +658,16 @@ export default function AdminOwnersPage() {
     <div className="min-h-screen bg-[#F0F2F7]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1e2d4f] px-6 py-5">
+      <div className="border-b border-[#1a2240]/10 bg-white px-6 py-5">
         <div className="flex items-start justify-between mb-1">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#D4A843] uppercase mb-1">
               CRM · Owner Management
             </p>
-            <h1 className="text-3xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond'] italic">
+            <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond'] italic">
               Owners
             </h1>
-            <p className="text-sm text-[#7a8aaa] mt-1">
+            <p className="text-sm text-[#6B7280] mt-1">
               {counts.basic} Basic · {counts.premium} Premium
               {counts.pending > 0 && (
                 <span className="text-[#fbbf24]"> · {counts.pending} need verification</span>
@@ -682,13 +682,13 @@ export default function AdminOwnersPage() {
         {/* Search + Filters */}
         <div className="flex gap-3 mb-5 flex-wrap">
           <div className="flex-1 min-w-48 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7a8aaa]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
             <input
               type="text"
               placeholder="Search by name or phone..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#1e2d4f] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#1a2240]/10 rounded-lg text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -698,7 +698,7 @@ export default function AdminOwnersPage() {
                 className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
                   filter === f.id
                     ? 'bg-[#D4A843] text-[#F0F2F7] font-semibold'
-                    : 'bg-[#1e2d4f] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    : 'bg-white border border-[#1a2240]/10 text-[#6B7280] hover:text-[#1a2240]'
                 }`}>
                 {f.label}
               </button>
@@ -713,8 +713,8 @@ export default function AdminOwnersPage() {
           </div>
         ) : filteredOwners.length === 0 ? (
           <div className="text-center py-20">
-            <Users className="w-10 h-10 text-[#7a8aaa] mx-auto mb-3" />
-            <p className="text-[#7a8aaa]">
+            <Users className="w-10 h-10 text-[#6B7280] mx-auto mb-3" />
+            <p className="text-[#6B7280]">
               {searchQuery ? 'No owners match your search' : 'No owners yet'}
             </p>
           </div>

@@ -110,11 +110,11 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
-        <div className="border-b border-[#D4A843]/15 bg-[#0e1428] px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="border-b border-[#D4A843]/15 bg-[#F4F6FA] px-4 py-3 flex items-center justify-between flex-shrink-0">
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(o => !o)}
-            className="lg:hidden text-[#7a8aaa] hover:text-[#FBF0D0]"
+            className="lg:hidden text-[#1a2240] hover:text-[#0e1428]"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -124,9 +124,9 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
           {/* Notifications */}
           <Link
             href={`/${locale}/admin/notifications`}
-            className="relative p-2 hover:bg-white/5 rounded-lg transition-colors"
+            className="relative p-2 hover:bg-black/5 rounded-lg transition-colors"
           >
-            <Bell className="w-5 h-5 text-[#7a8aaa]" />
+            <Bell className="w-5 h-5 text-[#1a2240]" />
             {unread > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#f87171] text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {unread > 9 ? '9+' : unread}

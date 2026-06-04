@@ -80,7 +80,7 @@ function StatCard({ label, value, sub, delta, deltaDir, spark, color, href }: {
             : <ArrowDownRight className="w-3.5 h-3.5 text-[#f87171]" />
           }
           <span style={{ color: deltaDir === 'up' ? '#4ade80' : '#f87171' }}>{delta}</span>
-          <span className="text-[#7a8aaa]">vs last month</span>
+          <span className="text-[#6B7280]">vs last month</span>
         </div>
       )}
     </div>
@@ -112,22 +112,22 @@ function OccupancyHeatmap({ properties }: { properties: any[] }) {
   }, [properties.length])
 
   return (
-    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-        <span className="text-sm font-medium text-[#FBF0D0]">Occupancy · next 30 days</span>
-        <span className="text-xs font-mono text-[#7a8aaa] tracking-wider">
+    <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-[#1a2240]/10">
+        <span className="text-sm font-medium text-[#1a2240]">Occupancy · next 30 days</span>
+        <span className="text-xs font-mono text-[#6B7280] tracking-wider">
           Portfolio avg · <strong className="text-[#D4A843]">76%</strong>
         </span>
       </div>
       <div className="p-5">
-        <div className="flex justify-between text-xs font-mono text-[#7a8aaa] mb-3 tracking-wider">
+        <div className="flex justify-between text-xs font-mono text-[#6B7280] mb-3 tracking-wider">
           <span>{today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()}</span>
           <span>{days[29].toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()}</span>
         </div>
         <div className="space-y-1.5">
           {properties.slice(0, 8).map((p, pIdx) => (
             <div key={p.id} className="flex items-center gap-3">
-              <div className="text-xs text-[#7a8aaa] truncate w-28 flex-shrink-0">{p.name}</div>
+              <div className="text-xs text-[#6B7280] truncate w-28 flex-shrink-0">{p.name}</div>
               <div className="flex-1 grid gap-0.5" style={{ gridTemplateColumns: 'repeat(30, 1fr)' }}>
                 {Array.from({ length: 30 }).map((_, d) => {
                   const v       = cells[pIdx * 30 + d] || 0
@@ -146,7 +146,7 @@ function OccupancyHeatmap({ properties }: { properties: any[] }) {
             </div>
           ))}
         </div>
-        <div className="flex items-center gap-2 mt-4 text-xs font-mono text-[#7a8aaa]">
+        <div className="flex items-center gap-2 mt-4 text-xs font-mono text-[#6B7280]">
           <span>LOW</span>
           {[0.1, 0.3, 0.5, 0.7, 0.9].map(o => (
             <div key={o} className="w-4 h-2.5 rounded-sm"
@@ -180,10 +180,10 @@ function OwnerVerificationCard({ verifications }: { verifications: any[] }) {
   }
 
   return (
-    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
+    <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-[#1a2240]/10">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#FBF0D0]">Owner Verifications</span>
+          <span className="text-sm font-medium text-[#1a2240]">Owner Verifications</span>
           {verifications.filter(v =>
             ['pending', 'documents_uploaded', 'under_review'].includes(v.status)
           ).length > 0 && (
@@ -195,7 +195,7 @@ function OwnerVerificationCard({ verifications }: { verifications: any[] }) {
           )}
         </div>
         <Link href="/en/admin/owners"
-          className="text-xs font-mono text-[#7a8aaa] hover:text-[#D4A843] transition-colors">
+          className="text-xs font-mono text-[#6B7280] hover:text-[#D4A843] transition-colors">
           VIEW ALL →
         </Link>
       </div>
@@ -223,10 +223,10 @@ function OwnerVerificationCard({ verifications }: { verifications: any[] }) {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-[#FBF0D0] truncate">
+                <div className="text-sm font-medium text-[#1a2240] truncate">
                   {ownerName || 'Owner'}
                 </div>
-                <div className="text-xs text-[#7a8aaa] flex items-center gap-1.5 mt-0.5">
+                <div className="text-xs text-[#6B7280] flex items-center gap-1.5 mt-0.5">
                   <span>{type.label}</span>
                   {v.company_name && (
                     <><span>·</span><span>{v.company_name}</span></>
@@ -244,7 +244,7 @@ function OwnerVerificationCard({ verifications }: { verifications: any[] }) {
                 {status.label}
               </span>
 
-              <ChevronRight className="w-4 h-4 text-[#7a8aaa] flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
             </div>
           )
         })}
@@ -267,9 +267,9 @@ function ActivityFeed({ activities }: { activities: any[] }) {
   }
 
   return (
-    <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-        <span className="text-sm font-medium text-[#FBF0D0]">Live Activity</span>
+    <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-[#1a2240]/10">
+        <span className="text-sm font-medium text-[#1a2240]">Live Activity</span>
         <span className="flex items-center gap-1.5 text-xs text-[#4ade80]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] animate-pulse" />
           LIVE
@@ -277,16 +277,16 @@ function ActivityFeed({ activities }: { activities: any[] }) {
       </div>
       <div className="divide-y divide-white/5 max-h-64 overflow-y-auto">
         {activities.length === 0 ? (
-          <div className="py-8 text-center text-sm text-[#7a8aaa]">No recent activity</div>
+          <div className="py-8 text-center text-sm text-[#6B7280]">No recent activity</div>
         ) : activities.map((a, i) => (
           <div key={i} className="flex items-start gap-3 px-5 py-3">
             <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
               style={{ background: kindColor[a.action_type] || '#D4A843' }} />
             <div className="flex-1 min-w-0">
-              <div className="text-sm text-[#FBF0D0]">
+              <div className="text-sm text-[#1a2240]">
                 {a.description || a.action_type}
               </div>
-              <div className="text-xs text-[#7a8aaa] font-mono mt-0.5">
+              <div className="text-xs text-[#6B7280] font-mono mt-0.5">
                 {new Date(a.created_at).toLocaleTimeString('en-US', {
                   hour: '2-digit', minute: '2-digit'
                 })} · Today
@@ -486,14 +486,14 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#F0F2F7]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1e2d4f] px-6 py-5">
+      <div className="border-b border-[#1a2240]/10 bg-white px-6 py-5">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-mono tracking-widest text-[#7a8aaa] mb-1">{day}</p>
+            <p className="text-xs font-mono tracking-widest text-[#6B7280] mb-1">{day}</p>
             <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
               Good morning, <em className="text-[#D4A843]">{adminName}</em>.
             </h1>
-            <p className="text-sm text-[#7a8aaa] mt-1">
+            <p className="text-sm text-[#6B7280] mt-1">
               {owners.pendingVerification > 0 && (
                 <span className="text-[#fbbf24]">
                   {owners.pendingVerification} owner verifications pending ·{' '}
@@ -641,8 +641,8 @@ export default function AdminDashboard() {
           </div>
 
           {/* Platform snapshot */}
-          <div className="bg-[#1e2d4f] rounded-lg border border-white/10 p-5">
-            <p className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-4">
+          <div className="bg-white rounded-lg border border-[#1a2240]/10 p-5">
+            <p className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-4">
               Platform
             </p>
             <div className="space-y-4">
@@ -663,9 +663,9 @@ export default function AdminDashboard() {
                     <Icon className="w-4 h-4" style={{ color }} />
                   </div>
                   <div className="flex-1">
-                    <div className="text-xl font-bold text-[#FBF0D0] font-mono">{value}</div>
-                    <div className="text-xs text-[#7a8aaa]">{label}</div>
-                    <div className="text-xs text-[#7a8aaa]/60">{sub}</div>
+                    <div className="text-xl font-bold text-[#1a2240] font-mono">{value}</div>
+                    <div className="text-xs text-[#6B7280]">{label}</div>
+                    <div className="text-xs text-[#6B7280]/60">{sub}</div>
                   </div>
                 </div>
               ))}

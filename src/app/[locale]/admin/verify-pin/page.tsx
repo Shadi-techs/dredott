@@ -109,15 +109,15 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-[#1e2d4f] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
+        <div className="bg-white rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
 
           {/* Title */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#D4A843]/10 rounded-full mb-4">
               <Shield className="w-8 h-8 text-[#D4A843]" />
             </div>
-            <h1 className="text-2xl font-bold text-[#FBF0D0] mb-2">Enter Security PIN</h1>
-            <p className="text-sm text-[#7a8aaa]">Enter your 6-digit PIN to continue</p>
+            <h1 className="text-2xl font-bold text-[#1a2240] mb-2">Enter Security PIN</h1>
+            <p className="text-sm text-[#6B7280]">Enter your 6-digit PIN to continue</p>
           </div>
 
           {/* Error */}
@@ -144,7 +144,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
                   onPaste={index === 0 ? handlePaste : undefined}
                   disabled={loading}
                   autoFocus={index === 0}
-                  className="w-14 h-14 text-center text-2xl font-bold bg-[#F0F2F7] border-2 border-[#D4A843]/20 rounded-lg text-[#FBF0D0] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all disabled:opacity-50"
+                  className="w-14 h-14 text-center text-2xl font-bold bg-[#F0F2F7] border-2 border-[#D4A843]/20 rounded-lg text-[#1a2240] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all disabled:opacity-50"
                 />
               ))}
             </div>
@@ -161,7 +161,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
             {loading && (
               <div className="flex items-center justify-center py-3">
                 <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
-                <span className="ml-3 text-[#7a8aaa]">Verifying...</span>
+                <span className="ml-3 text-[#6B7280]">Verifying...</span>
               </div>
             )}
           </form>
@@ -169,7 +169,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
           <div className="mt-8 pt-6 border-t border-[#D4A843]/10">
             <button
               onClick={() => router.push(`/${locale}/admin/login`)}
-              className="w-full flex items-center justify-center gap-2 text-sm text-[#7a8aaa] hover:text-[#D4A843] transition-colors"
+              className="w-full flex items-center justify-center gap-2 text-sm text-[#6B7280] hover:text-[#D4A843] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Login
@@ -177,8 +177,8 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-[#1e2d4f]/50 border border-[#D4A843]/10 rounded-lg">
-          <p className="text-xs text-center text-[#7a8aaa]">
+        <div className="mt-6 p-4 bg-white/50 border border-[#D4A843]/10 rounded-lg">
+          <p className="text-xs text-center text-[#6B7280]">
             🔒 Secure area — session expires in 8 hours
           </p>
         </div>

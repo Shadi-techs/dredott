@@ -229,20 +229,20 @@ function SubscriptionDrawer({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
-      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#1e2d4f] border-l border-white/10 z-50 flex flex-col overflow-hidden">
+      <aside className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white border-l border-[#1a2240]/10 z-50 flex flex-col overflow-hidden">
 
         {/* Head */}
-        <div className="p-6 border-b border-white/10">
+        <div className="p-6 border-b border-[#1a2240]/10">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h2 className="text-xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+              <h2 className="text-xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
                 {ownerName || 'Owner'}
               </h2>
-              <p className="text-sm text-[#7a8aaa] mt-0.5">
+              <p className="text-sm text-[#6B7280] mt-0.5">
                 {sub.package?.name_en || 'Package'}
               </p>
             </div>
-            <button onClick={onClose} className="text-[#7a8aaa] hover:text-[#FBF0D0]">
+            <button onClick={onClose} className="text-[#6B7280] hover:text-[#1a2240]">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -266,7 +266,7 @@ function SubscriptionDrawer({
 
           {/* Details */}
           <div className="space-y-0">
-            <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-2">Details</h3>
+            <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-2">Details</h3>
             {[
               { label: 'Package',     value: sub.package?.name_en },
               { label: 'Price',       value: `${sub.package?.currency || 'EGP'} ${sub.package?.price?.toLocaleString()}` },
@@ -277,30 +277,30 @@ function SubscriptionDrawer({
               { label: 'Stripe ID',   value: sub.stripe_subscription_id ? sub.stripe_subscription_id.slice(0, 20) + '...' : '—' },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between py-2.5 border-b border-white/5">
-                <span className="text-xs text-[#7a8aaa]">{label}</span>
-                <span className="text-sm text-[#FBF0D0] font-mono">{value || '—'}</span>
+                <span className="text-xs text-[#6B7280]">{label}</span>
+                <span className="text-sm text-[#1a2240] font-mono">{value || '—'}</span>
               </div>
             ))}
           </div>
 
           {/* Slots editor */}
           <div>
-            <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-3">
+            <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-3">
               Slots Management
             </h3>
-            <div className="bg-[#F0F2F7] rounded-lg p-4 border border-white/10">
+            <div className="bg-[#F0F2F7] rounded-lg p-4 border border-[#1a2240]/10">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-xs text-[#7a8aaa] mb-1">Used / Total</div>
-                  <div className="text-2xl font-bold text-[#FBF0D0] font-mono">
+                  <div className="text-xs text-[#6B7280] mb-1">Used / Total</div>
+                  <div className="text-2xl font-bold text-[#1a2240] font-mono">
                     {sub.used_slots}
-                    <span className="text-[#7a8aaa]"> / {customSlots}</span>
+                    <span className="text-[#6B7280]"> / {customSlots}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCustomSlots(s => Math.max(sub.used_slots, s - 1))}
-                    className="w-8 h-8 rounded-lg bg-[#1e2d4f] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-white border border-[#1a2240]/10 text-[#1a2240] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="w-10 text-center text-lg font-bold text-[#D4A843] font-mono">
@@ -308,7 +308,7 @@ function SubscriptionDrawer({
                   </span>
                   <button
                     onClick={() => setCustomSlots(s => s + 1)}
-                    className="w-8 h-8 rounded-lg bg-[#1e2d4f] border border-white/10 text-[#FBF0D0] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-white border border-[#1a2240]/10 text-[#1a2240] hover:border-[#D4A843]/30 flex items-center justify-center transition-colors">
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -325,13 +325,13 @@ function SubscriptionDrawer({
 
               {customSlots !== (sub.custom_total_slots || sub.total_slots) && (
                 <div className="mb-3">
-                  <label className="block text-xs text-[#7a8aaa] mb-1.5">Reason for change *</label>
+                  <label className="block text-xs text-[#6B7280] mb-1.5">Reason for change *</label>
                   <input
                     type="text"
                     value={slotsReason}
                     onChange={e => setSlotsReason(e.target.value)}
                     placeholder="e.g. Promotional offer, error correction..."
-                    className="w-full bg-[#1e2d4f] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+                    className="w-full bg-white border border-[#1a2240]/10 rounded-lg px-3 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
                   />
                 </div>
               )}
@@ -341,7 +341,7 @@ function SubscriptionDrawer({
           {/* Package limits */}
           {sub.package && (
             <div>
-              <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-2">Package Limits</h3>
+              <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-2">Package Limits</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: 'Photos/listing',  value: sub.package.max_photos_per_listing },
@@ -351,7 +351,7 @@ function SubscriptionDrawer({
                 ].map(({ label, value }) => (
                   <div key={label} className="bg-[#F0F2F7] rounded-lg p-3 border border-white/5">
                     <div className="text-lg font-bold text-[#D4A843] font-mono">{value || '∞'}</div>
-                    <div className="text-xs text-[#7a8aaa] mt-0.5">{label}</div>
+                    <div className="text-xs text-[#6B7280] mt-0.5">{label}</div>
                   </div>
                 ))}
               </div>
@@ -360,7 +360,7 @@ function SubscriptionDrawer({
 
           {/* Admin notes */}
           <div>
-            <h3 className="text-xs font-mono tracking-widest text-[#7a8aaa] uppercase mb-2">
+            <h3 className="text-xs font-mono tracking-widest text-[#6B7280] uppercase mb-2">
               Admin Notes
             </h3>
             <textarea
@@ -368,7 +368,7 @@ function SubscriptionDrawer({
               onChange={e => setAdminNotes(e.target.value)}
               placeholder="Internal notes about this subscription..."
               rows={3}
-              className="w-full bg-[#F0F2F7] border border-white/10 rounded-lg px-3 py-2 text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50 resize-none"
+              className="w-full bg-[#F0F2F7] border border-[#1a2240]/10 rounded-lg px-3 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50 resize-none"
             />
           </div>
 
@@ -380,7 +380,7 @@ function SubscriptionDrawer({
               </p>
               <div className="flex gap-2">
                 <button onClick={() => setAction(null)}
-                  className="flex-1 py-2 border border-white/10 text-[#7a8aaa] rounded-lg text-sm">
+                  className="flex-1 py-2 border border-[#1a2240]/10 text-[#6B7280] rounded-lg text-sm">
                   Keep it
                 </button>
                 <button onClick={handleCancel} disabled={saving}
@@ -398,7 +398,7 @@ function SubscriptionDrawer({
               </p>
               <div className="flex gap-2">
                 <button onClick={() => setAction(null)}
-                  className="flex-1 py-2 border border-white/10 text-[#7a8aaa] rounded-lg text-sm">
+                  className="flex-1 py-2 border border-[#1a2240]/10 text-[#6B7280] rounded-lg text-sm">
                   Cancel
                 </button>
                 <button onClick={handleRenew} disabled={saving}
@@ -411,7 +411,7 @@ function SubscriptionDrawer({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10 space-y-2">
+        <div className="p-4 border-t border-[#1a2240]/10 space-y-2">
           {/* Save slots */}
           {(customSlots !== (sub.custom_total_slots || sub.total_slots) || adminNotes !== (sub.admin_notes || '')) && (
             <button
@@ -537,16 +537,16 @@ export default function AdminSubscriptionsPage() {
     <div className="min-h-screen bg-[#F0F2F7]">
 
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#1e2d4f] px-6 py-5">
+      <div className="border-b border-[#1a2240]/10 bg-white px-6 py-5">
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-xs font-mono tracking-widest text-[#D4A843] uppercase mb-1">
               Revenue · Subscriptions
             </p>
-            <h1 className="text-3xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond'] italic">
+            <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond'] italic">
               Subscriptions
             </h1>
-            <p className="text-sm text-[#7a8aaa] mt-1">
+            <p className="text-sm text-[#6B7280] mt-1">
               {counts.active} active
               {counts.expiringSoon > 0 && (
                 <span className="text-[#fbbf24]"> · {counts.expiringSoon} expiring soon</span>
@@ -555,14 +555,14 @@ export default function AdminSubscriptionsPage() {
           </div>
           <button
             onClick={() => setShowPackages(p => !p)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#F0F2F7] border border-white/10 rounded-lg text-sm text-[#7a8aaa] hover:text-[#FBF0D0] transition-colors">
+            className="flex items-center gap-2 px-4 py-2 bg-[#F0F2F7] border border-[#1a2240]/10 rounded-lg text-sm text-[#6B7280] hover:text-[#1a2240] transition-colors">
             <Package className="w-4 h-4" />
             {showPackages ? 'Hide Packages' : 'View Packages'}
           </button>
         </div>
 
         {/* Quick stats */}
-        <div className="flex gap-6 pt-4 border-t border-white/10">
+        <div className="flex gap-6 pt-4 border-t border-[#1a2240]/10">
           {[
             { label: 'Active Revenue',  value: `EGP ${totalRevenue.toLocaleString()}`, color: '#D4A843' },
             { label: 'Active Subs',     value: counts.active,    color: '#4ade80' },
@@ -571,7 +571,7 @@ export default function AdminSubscriptionsPage() {
           ].map(({ label, value, color }) => (
             <div key={label}>
               <div className="text-xl font-bold font-mono" style={{ color }}>{value}</div>
-              <div className="text-xs text-[#7a8aaa]">{label}</div>
+              <div className="text-xs text-[#6B7280]">{label}</div>
             </div>
           ))}
         </div>
@@ -583,23 +583,23 @@ export default function AdminSubscriptionsPage() {
         {showPackages && (
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             {packages.map(pkg => (
-              <div key={pkg.id} className="bg-[#1e2d4f] rounded-lg border border-white/10 p-5">
+              <div key={pkg.id} className="bg-white rounded-lg border border-[#1a2240]/10 p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+                  <h3 className="text-lg font-bold text-[#1a2240] font-['Cormorant_Garamond']">
                     {pkg.name_en}
                   </h3>
                   {pkg.is_active
                     ? <span className="text-xs text-[#4ade80]">Active</span>
-                    : <span className="text-xs text-[#7a8aaa]">Inactive</span>
+                    : <span className="text-xs text-[#6B7280]">Inactive</span>
                   }
                 </div>
                 <div className="text-3xl font-bold text-[#D4A843] font-mono mb-1">
                   {pkg.currency} {pkg.price?.toLocaleString()}
                 </div>
-                <div className="text-xs text-[#7a8aaa] mb-3">
+                <div className="text-xs text-[#6B7280] mb-3">
                   per {pkg.duration_days} days · {pkg.slots_count} slots
                 </div>
-                <div className="space-y-1 text-xs text-[#7a8aaa]">
+                <div className="space-y-1 text-xs text-[#6B7280]">
                   <div>{pkg.max_photos_per_listing} photos/listing</div>
                   <div>{pkg.max_flash_deals_per_month} flash deals/month</div>
                   <div>{pkg.max_featured_listings} featured listings</div>
@@ -614,13 +614,13 @@ export default function AdminSubscriptionsPage() {
         {/* Search + Filters */}
         <div className="flex gap-3 mb-5 flex-wrap">
           <div className="flex-1 min-w-48 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7a8aaa]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
             <input
               type="text"
               placeholder="Search by name or phone..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#1e2d4f] border border-white/10 rounded-lg text-sm text-[#FBF0D0] placeholder:text-[#7a8aaa] focus:outline-none focus:border-[#D4A843]/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#1a2240]/10 rounded-lg text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
             />
           </div>
           <div className="flex gap-2">
@@ -630,7 +630,7 @@ export default function AdminSubscriptionsPage() {
                 className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
                   filter === f.id
                     ? 'bg-[#D4A843] text-[#F0F2F7] font-semibold'
-                    : 'bg-[#1e2d4f] border border-white/10 text-[#7a8aaa] hover:text-[#FBF0D0]'
+                    : 'bg-white border border-[#1a2240]/10 text-[#6B7280] hover:text-[#1a2240]'
                 }`}>
                 {f.label}
               </button>
@@ -644,13 +644,13 @@ export default function AdminSubscriptionsPage() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#D4A843]" />
           </div>
         ) : (
-          <div className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
+          <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-[#1a2240]/10">
                     {['Owner', 'Package', 'Slots', 'Expires', 'Revenue', 'Status', ''].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-mono tracking-widest text-[#7a8aaa] uppercase">
+                      <th key={h} className="px-4 py-3 text-left text-xs font-mono tracking-widest text-[#6B7280] uppercase">
                         {h}
                       </th>
                     ))}
@@ -659,7 +659,7 @@ export default function AdminSubscriptionsPage() {
                 <tbody className="divide-y divide-white/5">
                   {filteredSubs.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-sm text-[#7a8aaa]">
+                      <td colSpan={7} className="py-12 text-center text-sm text-[#6B7280]">
                         No subscriptions found
                       </td>
                     </tr>
@@ -675,17 +675,17 @@ export default function AdminSubscriptionsPage() {
                         onClick={() => setSelectedSub(s)}
                         className="hover:bg-white/5 cursor-pointer transition-colors">
                         <td className="px-4 py-3">
-                          <div className="text-sm font-medium text-[#FBF0D0]">{ownerName || '—'}</div>
-                          <div className="text-xs text-[#7a8aaa]">{s.owner?.phone || ''}</div>
+                          <div className="text-sm font-medium text-[#1a2240]">{ownerName || '—'}</div>
+                          <div className="text-xs text-[#6B7280]">{s.owner?.phone || ''}</div>
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5">
                             {s.is_premium && <Crown className="w-3.5 h-3.5 text-[#D4A843]" />}
-                            <span className="text-sm text-[#FBF0D0]">{s.package?.name_en || '—'}</span>
+                            <span className="text-sm text-[#1a2240]">{s.package?.name_en || '—'}</span>
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="text-sm font-mono text-[#FBF0D0]">
+                          <div className="text-sm font-mono text-[#1a2240]">
                             {s.used_slots} / {s.total_slots}
                           </div>
                           <div className="w-16 h-1 bg-white/10 rounded-full mt-1">
@@ -697,7 +697,7 @@ export default function AdminSubscriptionsPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="text-sm font-mono text-[#FBF0D0]">
+                          <div className="text-sm font-mono text-[#1a2240]">
                             {s.expires_at ? new Date(s.expires_at).toLocaleDateString('en-GB') : '—'}
                           </div>
                           {isExpiring && (
@@ -711,7 +711,7 @@ export default function AdminSubscriptionsPage() {
                           <StatusBadge status={s.status} />
                         </td>
                         <td className="px-4 py-3">
-                          <ChevronRight className="w-4 h-4 text-[#7a8aaa]" />
+                          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                         </td>
                       </tr>
                     )

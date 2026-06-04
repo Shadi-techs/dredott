@@ -61,12 +61,12 @@ export default function SettingsIndexPage({
             </div>
             <div>
               <p className="text-[10px] text-[#D4A843] font-mono tracking-widest uppercase">Admin · Settings</p>
-              <h1 className="text-2xl font-light text-[#FBF0D0]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              <h1 className="text-2xl font-light text-[#1a2240]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                 Settings
               </h1>
             </div>
           </div>
-          <p className="text-sm text-[#7a8aaa] mt-1">
+          <p className="text-sm text-[#6B7280] mt-1">
             إعدادات النظام — Super Admin access only
           </p>
         </div>
@@ -79,7 +79,7 @@ export default function SettingsIndexPage({
               <Link
                 key={section.href}
                 href={`/${locale}${section.href}`}
-                className="group bg-[#1e2d4f] border border-white/8 rounded-xl p-5 hover:border-[#D4A843]/30 transition-all flex items-center gap-5"
+                className="group bg-white border border-white/8 rounded-xl p-5 hover:border-[#D4A843]/30 transition-all flex items-center gap-5"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${section.color}15`, border: `1px solid ${section.color}25` }}>
@@ -88,17 +88,17 @@ export default function SettingsIndexPage({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-base font-semibold text-[#FBF0D0] group-hover:text-[#D4A843] transition-colors">
+                    <h2 className="text-base font-semibold text-[#1a2240] group-hover:text-[#D4A843] transition-colors">
                       {section.title}
                     </h2>
-                    <span className="text-[9px] font-mono text-[#7a8aaa] bg-white/5 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-[9px] font-mono text-[#6B7280] bg-white/5 px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Shield className="w-2.5 h-2.5" /> {section.badge}
                     </span>
                   </div>
-                  <p className="text-sm text-[#7a8aaa]">{section.description}</p>
+                  <p className="text-sm text-[#6B7280]">{section.description}</p>
                 </div>
 
-                <ChevronRight className="w-4 h-4 text-[#7a8aaa] group-hover:text-[#D4A843] transition-colors flex-shrink-0" />
+                <ChevronRight className="w-4 h-4 text-[#6B7280] group-hover:text-[#D4A843] transition-colors flex-shrink-0" />
               </Link>
             )
           })}

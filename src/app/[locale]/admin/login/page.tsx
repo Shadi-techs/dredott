@@ -45,15 +45,15 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-[#1e2d4f] rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
+        <div className="bg-white rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
 
           {/* Logo & Title */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#D4A843]/10 rounded-full mb-4">
               <Lock className="w-8 h-8 text-[#D4A843]" />
             </div>
-            <h1 className="text-2xl font-bold text-[#FBF0D0] mb-2">DREDOTT Admin</h1>
-            <p className="text-sm text-[#7a8aaa]">Secure access for administrators only</p>
+            <h1 className="text-2xl font-bold text-[#1a2240] mb-2">DREDOTT Admin</h1>
+            <p className="text-sm text-[#6B7280]">Secure access for administrators only</p>
           </div>
 
           {/* Error */}
@@ -69,10 +69,10 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
 
             {/* Username */}
             <div>
-              <label className="block text-sm font-medium text-[#FBF0D0] mb-2">Username</label>
+              <label className="block text-sm font-medium text-[#1a2240] mb-2">Username</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="w-5 h-5 text-[#7a8aaa]" />
+                  <User className="w-5 h-5 text-[#6B7280]" />
                 </div>
                 <input
                   type="text"
@@ -80,7 +80,7 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   autoComplete="username"
-                  className="w-full pl-10 pr-4 py-3 bg-[#F0F2F7] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#F0F2F7] border border-[#D4A843]/20 rounded-lg text-[#1a2240] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
                   placeholder="Enter your username"
                 />
               </div>
@@ -88,10 +88,10 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-[#FBF0D0] mb-2">Password</label>
+              <label className="block text-sm font-medium text-[#1a2240] mb-2">Password</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-[#7a8aaa]" />
+                  <Lock className="w-5 h-5 text-[#6B7280]" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -99,13 +99,13 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-12 py-3 bg-[#F0F2F7] border border-[#D4A843]/20 rounded-lg text-[#FBF0D0] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-[#F0F2F7] border border-[#D4A843]/20 rounded-lg text-[#1a2240] placeholder-[#7a8aaa] focus:outline-none focus:ring-2 focus:ring-[#D4A843] focus:border-transparent transition-all"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#7a8aaa] hover:text-[#D4A843] transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#6B7280] hover:text-[#D4A843] transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -133,12 +133,12 @@ export default function AdminLoginPage({ params }: { params: Promise<{ locale: s
           </form>
 
           <div className="mt-8 pt-6 border-t border-[#D4A843]/10">
-            <p className="text-xs text-center text-[#7a8aaa]">Protected by two-factor authentication</p>
+            <p className="text-xs text-center text-[#6B7280]">Protected by two-factor authentication</p>
           </div>
         </div>
 
         <div className="mt-6 text-center">
-          <a href={`/${locale}`} className="text-sm text-[#7a8aaa] hover:text-[#D4A843] transition-colors">
+          <a href={`/${locale}`} className="text-sm text-[#6B7280] hover:text-[#D4A843] transition-colors">
             ← Back to DREDOTT
           </a>
         </div>

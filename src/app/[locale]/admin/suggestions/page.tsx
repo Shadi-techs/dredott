@@ -116,7 +116,7 @@ export default function SuggestionsPage() {
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           Suggestions Review
         </h1>
-        <p className="text-[#7a8aaa] text-sm font-mono">
+        <p className="text-[#6B7280] text-sm font-mono">
           {totalPending} pending suggestion{totalPending !== 1 ? 's' : ''}
         </p>
       </div>
@@ -133,7 +133,7 @@ export default function SuggestionsPage() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono uppercase tracking-widest transition-all ${
                 tab === t.id
                   ? 'bg-[rgba(212,168,67,0.1)] text-[#D4A843] border border-[rgba(212,168,67,0.3)]'
-                  : 'text-[#7a8aaa] border border-[rgba(255,255,255,0.06)] hover:text-white'
+                  : 'text-[#6B7280] border border-[rgba(255,255,255,0.06)] hover:text-white'
               }`}>
               <Icon className="w-3.5 h-3.5" />
               {t.label}
@@ -152,19 +152,19 @@ export default function SuggestionsPage() {
           {/* Compounds */}
           {tab === 'compounds' && (
             compounds.length === 0 ? (
-              <div className="text-center py-16 text-[#7a8aaa] font-mono text-sm">
+              <div className="text-center py-16 text-[#6B7280] font-mono text-sm">
                 No pending compound suggestions
               </div>
             ) : compounds.map(s => (
-              <div key={s.id} className="bg-[#1e2d4f] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
+              <div key={s.id} className="bg-white border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <p className="text-white font-medium text-sm">{s.name}</p>
-                    {s.area && <p className="text-[#7a8aaa] text-xs mt-0.5">Area: {s.area}</p>}
+                    {s.area && <p className="text-[#6B7280] text-xs mt-0.5">Area: {s.area}</p>}
                     {s.additional_info && (
-                      <p className="text-[#7a8aaa] text-xs mt-1 italic">"{s.additional_info}"</p>
+                      <p className="text-[#6B7280] text-xs mt-1 italic">"{s.additional_info}"</p>
                     )}
-                    <p className="text-[#7a8aaa] text-xs mt-2 flex items-center gap-1">
+                    <p className="text-[#6B7280] text-xs mt-2 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       by {s.profiles?.first_name} {s.profiles?.last_name} · {s.profiles?.email}
                     </p>
@@ -195,11 +195,11 @@ export default function SuggestionsPage() {
           {/* Car suggestions */}
           {tab === 'cars' && (
             carSuggestions.length === 0 ? (
-              <div className="text-center py-16 text-[#7a8aaa] font-mono text-sm">
+              <div className="text-center py-16 text-[#6B7280] font-mono text-sm">
                 No pending car suggestions
               </div>
             ) : carSuggestions.map(s => (
-              <div key={s.id} className="bg-[#1e2d4f] border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
+              <div key={s.id} className="bg-white border border-[rgba(212,168,67,0.08)] rounded-xl p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -215,11 +215,11 @@ export default function SuggestionsPage() {
                       {s.type === 'make' ? s.suggested_make : s.suggested_model}
                     </p>
                     {s.type === 'model' && s.car_makes && (
-                      <p className="text-[#7a8aaa] text-xs mt-0.5">
+                      <p className="text-[#6B7280] text-xs mt-0.5">
                         For: {s.car_makes.name}
                       </p>
                     )}
-                    <p className="text-[#7a8aaa] text-xs mt-2 flex items-center gap-1">
+                    <p className="text-[#6B7280] text-xs mt-2 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       by {s.profiles?.first_name} {s.profiles?.last_name}
                     </p>

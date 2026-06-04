@@ -148,7 +148,7 @@ export default function AdminFeatureFlagsPage() {
           </div>
           <div>
             <p className="text-xs text-[#D4A843] tracking-widest uppercase font-mono">Super Admin · Master Control</p>
-            <h1 className="text-3xl font-bold text-[#FBF0D0] font-['Cormorant_Garamond']">
+            <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
               Feature Flags
             </h1>
           </div>
@@ -168,16 +168,16 @@ export default function AdminFeatureFlagsPage() {
             const color = MODULE_COLORS[module] || '#D4A843'
 
             return (
-              <div key={module} className="bg-[#1e2d4f] rounded-lg border border-white/10 overflow-hidden">
+              <div key={module} className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
 
                 {/* Module header */}
-                <div className="px-5 py-3 border-b border-white/10 flex items-center gap-2">
+                <div className="px-5 py-3 border-b border-[#1a2240]/10 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
                   <span className="text-xs font-semibold tracking-widest uppercase font-mono"
                     style={{ color }}>
                     {MODULE_LABELS[module] || module}
                   </span>
-                  <span className="text-xs text-[#7a8aaa] ml-1">
+                  <span className="text-xs text-[#6B7280] ml-1">
                     ({moduleFeatures.filter(f => f.enabled).length}/{moduleFeatures.length} enabled)
                   </span>
                 </div>
@@ -195,7 +195,7 @@ export default function AdminFeatureFlagsPage() {
                         {/* Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-medium text-[#FBF0D0]">
+                            <span className="text-sm font-medium text-[#1a2240]">
                               {feature.description || feature.feature_key}
                             </span>
                             {isSuccess && (
@@ -203,11 +203,11 @@ export default function AdminFeatureFlagsPage() {
                             )}
                           </div>
                           {feature.description_ar && (
-                            <p className="text-xs text-[#7a8aaa] text-right">{feature.description_ar}</p>
+                            <p className="text-xs text-[#6B7280] text-right">{feature.description_ar}</p>
                           )}
-                          <p className="text-xs text-[#7a8aaa] font-mono mt-1">{feature.feature_key}</p>
+                          <p className="text-xs text-[#6B7280] font-mono mt-1">{feature.feature_key}</p>
                           {feature.updated_at && (
-                            <p className="text-xs text-[#7a8aaa]/50 mt-0.5">
+                            <p className="text-xs text-[#6B7280]/50 mt-0.5">
                               Last updated: {new Date(feature.updated_at).toLocaleString()}
                             </p>
                           )}
@@ -243,7 +243,7 @@ export default function AdminFeatureFlagsPage() {
 
                         {/* Status label */}
                         <span className={`text-xs font-mono w-16 text-right flex-shrink-0 ${
-                          feature.enabled ? 'text-[#4ade80]' : 'text-[#7a8aaa]'
+                          feature.enabled ? 'text-[#4ade80]' : 'text-[#6B7280]'
                         }`}>
                           {feature.enabled ? 'ENABLED' : 'DISABLED'}
                         </span>
@@ -257,11 +257,11 @@ export default function AdminFeatureFlagsPage() {
         </div>
 
         {/* Help */}
-        <div className="mt-8 p-5 bg-[#1e2d4f] border border-[#D4A843]/20 rounded-lg">
+        <div className="mt-8 p-5 bg-white border border-[#D4A843]/20 rounded-lg">
           <h4 className="text-sm font-semibold text-[#D4A843] mb-3 flex items-center gap-2">
             <Info className="w-4 h-4" /> How Feature Flags Work
           </h4>
-          <ul className="text-sm text-[#7a8aaa] space-y-1.5">
+          <ul className="text-sm text-[#6B7280] space-y-1.5">
             <li><span className="text-[#4ade80]">ENABLED</span> — الـ feature ظاهرة على الموقع وشغالة</li>
             <li><span className="text-[#f87171]">DISABLED</span> — الـ feature مخفية والـ routes بترجع 404</li>
             <li>البيانات في الـ DB مش بتتمسح — بس بتتخبى</li>
