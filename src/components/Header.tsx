@@ -145,7 +145,7 @@ export default function Header() {
   const isGuestMode    = isProvider && profile?.active_role === 'guest'
   const isSeeker       = profile?.is_job_seeker === true
   const visibleTabs    = ALL_TABS.filter(tab => flags[tab.flag] === true)
-  const initials       = `\${profile?.first_name?.[0] || ''}\${profile?.last_name?.[0] || ''}`
+  const initials       = `${profile?.first_name?.[0] || ''}${profile?.last_name?.[0] || ''}`
   const isActive       = (path: string) => pathname.includes(path)
   const isHome         = pathname === `/\${currentLocale}` || pathname === `/\${currentLocale}/`
   const navBg          = (!isHome || scrolled || mobileOpen) ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
