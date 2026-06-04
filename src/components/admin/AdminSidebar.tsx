@@ -147,17 +147,11 @@ export default function AdminSidebar({ user, locale }: { user: AdminUser; locale
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
 
-      {/* ── Logo ── */}
-      <div className="px-4 py-4 border-b border-[#D4A843]/20 flex items-center justify-between">
-        <div>
-          <div className="text-[#D4A843] font-bold tracking-widest text-sm">DREDOTT</div>
-          {!collapsed && (
-            <div className="text-[#A0A8B4] text-[9px] tracking-[0.3em] mt-0.5 uppercase">Admin Panel</div>
-          )}
-        </div>
+      {/* ── Collapse Button ── */}
+      <div className="px-3 py-3 border-b border-[#D4A843]/20 flex items-center justify-end">
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="hidden lg:flex text-[#A0A8B4] hover:text-[#D4A843] transition-colors p-1 rounded"
+          className="hidden lg:flex text-[#A0A8B4] hover:text-[#D4A843] transition-colors p-1.5 rounded-lg hover:bg-white/5"
         >
           <ChevronLeft size={14} className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
         </button>
