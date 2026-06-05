@@ -162,14 +162,14 @@ export default function CalendarPage({ params }: { params: Promise<{ locale: str
       {/* Month Navigation */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
         <button onClick={() => { if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y-1) } else setViewMonth(m => m-1) }}
-          style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: t.text }}>
+          style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: t.text }}>
           <ChevronLeft size={14} />
         </button>
         <span style={{ fontFamily: 'var(--mono)', fontSize: 13, color: t.text, minWidth: 140, textAlign: 'center' }}>
           {monthNames[viewMonth]} {viewYear}
         </span>
         <button onClick={() => { if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y+1) } else setViewMonth(m => m+1) }}
-          style={{ background: t.card, border: `1px solid ${t.border}`, borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: t.text }}>
+          style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: t.text }}>
           <ChevronRight size={14} />
         </button>
       </div>
@@ -230,7 +230,7 @@ export default function CalendarPage({ params }: { params: Promise<{ locale: str
       {/* Block Dates Modal */}
       {modalOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: t.card, borderRadius: 16, padding: 24, width: 400, border: `1px solid ${t.border}` }}>
+          <div style={{ background: t.surface, borderRadius: 16, padding: 24, width: 400, border: `1px solid ${t.border}` }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <span style={{ fontSize: 16, fontWeight: 600, color: t.text }}>Block Dates</span>
               <button onClick={() => setModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.textMuted }}><X size={18} /></button>
