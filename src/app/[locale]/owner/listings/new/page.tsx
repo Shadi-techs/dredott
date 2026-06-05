@@ -33,11 +33,12 @@ export default function NewListingPage() {
     }
 
     // Get subscription
-    const { data: sub } = await supabase
+    const { data: subs } = await supabase
       .rpc('get_user_active_subscription', { p_user_id: user.id })
-      .single()
+
     
-    if (!sub || (sub as any).remaining_slots === 0) {
+    const sub = Array.isArray(subs) ? subs[0] : subs
+    if (!sub || sub.remaining_slots === 0) {
       router.push('/en/owner/packages')
       return
     }
