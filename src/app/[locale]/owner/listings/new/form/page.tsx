@@ -127,17 +127,18 @@ export default function ListingFormPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      // Find available slot
-      const { data: slots } = await supabase
-        .from('listing_slots')
+      // Find active user subscription
+      const { data: userSubs } = await supabase
+        .from('user_subscriptions')
         .select('id')
-        .eq('subscription_id', subscription.id)
-        .eq('status', 'available')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
         .limit(1)
 
-      if (!slots || slots.length === 0) {
-        throw new Error('No available slots')
-      }
+      if (!userSubs || userSubs.length === 0) throw new Error('No active subscription')
+      const userSubId = userSubs[0].id
+      const { data: slots } = await supabase
+        .from('listing_slots').select('id').eq('subscription_id', userSubId).eq('status', 'available').limit(1)
 
       const slotId = slots[0].id
 
