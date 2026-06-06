@@ -185,6 +185,7 @@ export default function ListingFormPage() {
           .insert({
             owner_id: user.id,
             slot_id: slotId,
+            slug: formData.brand.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + formData.model.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now(),
             name: formData.name,
             description: formData.description,
             photos: formData.photos,
