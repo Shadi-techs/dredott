@@ -183,11 +183,11 @@ export default function Footer() {
             <div>
               <p style={colHead}>{tx.explore}</p>
               {[
-                { label: tx.stays,    href: `/\${locale}/properties` },
-                { label: tx.cars,     href: `/\${locale}/cars` },
-                { label: tx.services, href: `/\${locale}/services` },
-                { label: tx.blog,     href: `/\${locale}/blog` },
-                { label: tx.pricing,  href: `/\${locale}/pricing` },
+                { label: tx.stays,    href: `/${locale}/properties` },
+                { label: tx.cars,     href: `/${locale}/cars` },
+                { label: tx.services, href: `/${locale}/services` },
+                { label: tx.blog,     href: `/${locale}/blog` },
+                { label: tx.pricing,  href: `/${locale}/pricing` },
               ].map(l => (
                 <Link key={l.label} href={l.href} className="footer-link" style={linkStyle}>{l.label}</Link>
               ))}
@@ -197,11 +197,11 @@ export default function Footer() {
             <div>
               <p style={colHead}>{tx.forOwners}</p>
               {[
-                { label: tx.listProperty, href: `/\${locale}/pricing` },
-                { label: tx.listCar,      href: `/\${locale}/pricing` },
-                { label: tx.listService,  href: `/\${locale}/services/register` },
-                { label: tx.dashboard,    href: `/\${locale}/owner` },
-                { label: tx.about,        href: `/\${locale}/about` },
+                { label: tx.listProperty, href: `/${locale}/pricing` },
+                { label: tx.listCar,      href: `/${locale}/pricing` },
+                { label: tx.listService,  href: `/${locale}/services/register` },
+                { label: tx.dashboard,    href: `/${locale}/owner` },
+                { label: tx.about,        href: `/${locale}/about` },
               ].map(l => (
                 <Link key={l.label} href={l.href} className="footer-link" style={linkStyle}>{l.label}</Link>
               ))}
@@ -211,9 +211,9 @@ export default function Footer() {
             <div>
               <p style={colHead}>{tx.legal}</p>
               {[
-                { label: tx.privacy, href: `/\${locale}/privacy` },
-                { label: tx.terms,   href: `/\${locale}/terms` },
-                { label: tx.contact, href: `/\${locale}/contact` },
+                { label: tx.privacy, href: `/${locale}/privacy` },
+                { label: tx.terms,   href: `/${locale}/terms` },
+                { label: tx.contact, href: `/${locale}/contact` },
               ].map(l => (
                 <Link key={l.label} href={l.href} className="footer-link" style={linkStyle}>{l.label}</Link>
               ))}
@@ -221,7 +221,7 @@ export default function Footer() {
               <p style={{ ...colHead, marginTop: 20 }}>{tx.languages}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                 {LANGUAGES.map(lang => {
-                  const currentPath = pathname.replace(`/\${locale}`, '') || '/'
+                  const currentPath = pathname.replace(`/${locale}`, '') || '/'
                   return (
                     <Link key={lang.code} href={`/\${lang.code}\${currentPath}`} style={{
                       fontSize: 10, padding: '3px 8px', borderRadius: 6,

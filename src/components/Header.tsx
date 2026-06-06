@@ -123,7 +123,7 @@ export default function Header() {
     await supabase.auth.signOut()
     setUser(null); setProfile(null); setUserRole('')
     setUserOpen(false)
-    router.push(`${currentLocale}`)
+    router.push(`/${currentLocale}`)
   }
 
   const handleRoleSwitch = async () => {
