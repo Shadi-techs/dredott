@@ -150,6 +150,12 @@ export default function Header() {
   const isHome         = pathname === `/${currentLocale}` || pathname === `/${currentLocale}/`
   const navBg          = (!isHome || scrolled || mobileOpen) ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
 
+  if (pathname.includes('/admin')) return null
+  if (pathname.includes('/owner')) return null
+
+  if (pathname.includes('/admin')) return null
+  if (pathname.includes('/owner')) return null
+
   return (
     <>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, transition: 'all 0.3s ease', background: navBg, backdropFilter: (scrolled || !isHome) ? 'blur(16px)' : 'none', borderBottom: (scrolled || !isHome) ? '1px solid rgba(212,168,67,0.15)' : 'none', padding: '10px 0' }} dir={isAr ? 'rtl' : 'ltr'}>
