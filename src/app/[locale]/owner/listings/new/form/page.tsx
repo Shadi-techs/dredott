@@ -203,6 +203,7 @@ export default function ListingFormPage() {
           .select()
           .single()
 
+        await supabase.from('admin_notifications').insert({ type: 'new_listing', title: 'New Car Pending Review', body: formData.brand + ' ' + formData.model + ' submitted for review', link: '/admin/review', read: false })
         if (error) throw error
 
         // Reserve slot
