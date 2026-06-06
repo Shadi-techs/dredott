@@ -13,6 +13,7 @@ import {
   Upload, X, AlertCircle, CheckCircle, 
   MapPin, DollarSign, Home, Car, Calendar 
 } from 'lucide-react'
+import { CAR_BRANDS, BRAND_NAMES } from '@/lib/car-data'
 
 const supabase = createClient()
 
@@ -426,26 +427,40 @@ export default function ListingFormPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Brand *</label>
-                  <input
-                    type="text"
+                  <select
                     required
                     value={formData.brand}
-                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                    placeholder="e.g. Toyota"
+                    onChange={(e) => setFormData({ ...formData, brand: e.target.value, model: '' })}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                  >
+                    <option value="">Select brand...</option>
+                    {BRAND_NAMES.map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Model *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.model}
-                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                    placeholder="e.g. Corolla"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                  {formData.brand && formData.brand !== "Other" ? (
+                    <select
+                      required
+                      value={formData.model}
+                      onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
+                    >
+                      <option value="">Select model...</option>
+                      {(CAR_BRANDS[formData.brand] || []).map(m => <option key={m} value={m}>{m}</option>)}
+                      <option value="Other">Other (specify below)</option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      required
+                      value={formData.model}
+                      onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                      placeholder="Enter model name"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
+                    />
+                  )}
                 </div>
 
                 <div>
