@@ -549,7 +549,7 @@ export default function ListingFormPage() {
           <div className="flex items-center gap-4">
             <button
               type="submit"
-              disabled={loading || photos.length < 5}
+              disabled={loading || photos.length < 1}
               className="flex-1 bg-[#2C3A6B] hover:bg-[#243058] text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Submitting...' : 'Submit for Review'}
