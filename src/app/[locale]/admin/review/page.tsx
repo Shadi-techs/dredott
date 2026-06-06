@@ -97,7 +97,6 @@ export default function AdminReviewPage() {
           .select(`id, name, slug, area, price_per_night, bedrooms, bathrooms, max_guests, photos, review_status, created_at, owner:profiles!owner_user_id (id, first_name, last_name, email, phone)`)
           .eq('review_status', 'pending_review')
           .order('created_at', { ascending: false }),
-          .order('created_at', { ascending: false }),
         supabase
           .from('cars')
           .select(`id, name, slug, brand, model, year, seats, price_per_day, photos, review_status, created_at, owner:profiles!owner_id (id, first_name, last_name, phone)`)
