@@ -91,13 +91,13 @@ export default function ListingFormPage() {
         const filePath = `listings/${fileName}`
 
         const { error: uploadError, data } = await supabase.storage
-          .from('listings')
+          .from('car-photos')
           .upload(filePath, file)
 
         if (uploadError) throw uploadError
 
         const { data: { publicUrl } } = supabase.storage
-          .from('listings')
+          .from('car-photos')
           .getPublicUrl(filePath)
 
         uploadedUrls.push(publicUrl)
