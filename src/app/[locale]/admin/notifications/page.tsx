@@ -185,7 +185,7 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
                     </div>
                     <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                       {n.link && (
-                        <button onClick={() => router.push('/' + locale + n.link)} style={{ background: 'none', border: '1px solid #e5e7eb', borderRadius: 6, padding: '5px 8px', cursor: 'pointer', color: '#6B7280', fontSize: 12 }}>
+                        <button onClick={() => { const link = n.link?.startsWith('/' + locale) ? n.link : '/' + locale + n.link; router.push(link) }} style={{ background: 'none', border: '1px solid #e5e7eb', borderRadius: 6, padding: '5px 8px', cursor: 'pointer', color: '#6B7280', fontSize: 12 }}>
                           OPEN →
                         </button>
                       )}
