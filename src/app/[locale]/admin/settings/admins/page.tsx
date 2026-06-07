@@ -30,6 +30,7 @@ interface AdminUser {
   can_approve_listings: boolean
   can_manage_bookings: boolean
   can_view_financials: boolean
+  notification_permissions: string[]
   created_at: string
   user_id: string
 }
@@ -44,6 +45,7 @@ interface NewAdmin {
   can_approve_listings: boolean
   can_manage_bookings: boolean
   can_view_financials: boolean
+  notification_permissions: string[]
 }
 
 export default function AdminManagementPage({ params }: { params: { locale: string } }) {
@@ -571,6 +573,20 @@ export default function AdminManagementPage({ params }: { params: { locale: stri
                         />
                         <span className="text-sm text-gray-700">Can view financials</span>
                       </label>
+                    </div>
+                  </div>
+                )}
+                {/* Notification Permissions */}
+                {newAdmin.role === "admin" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">Notification Access</label>
+                    <div className="space-y-2">
+                      {[{key:"new_listing",label:"New listings"},{key:"new_user",label:"New users"},{key:"payment",label:"Payments"},{key:"moderation",label:"Moderation"},{key:"system",label:"System"}].map(perm => (
+                        <label key={perm.key} className="flex items-center gap-3">
+                          <input type="checkbox" checked={(newAdmin.notification_permissions||[]).includes(perm.key)} onChange={(e)=>{const p=newAdmin.notification_permissions||[];setNewAdmin({...newAdmin,notification_permissions:e.target.checked?[...p,perm.key]:p.filter(x=>x!==perm.key)})}} className="w-4 h-4 rounded" />
+                          <span className="text-sm text-gray-700">{perm.label}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
                 )}

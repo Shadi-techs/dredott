@@ -98,10 +98,10 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
   }
 
   return (
-    <div style={{ display: 'flex', height: '100%', background: '#F4F6FA' }}>
+    <div style={{ display: 'flex', height: '100%', background: '#F4F6FA', flexDirection: 'row' }}>
       
       {/* Sidebar */}
-      <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e5e7eb', padding: '24px 0', flexShrink: 0 }}>
+      <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e5e7eb', padding: '24px 0', flexShrink: 0, display: 'var(--sidebar-display, flex)', flexDirection: 'column' }} className='hidden md:flex'>
         <div style={{ padding: '0 16px 16px', borderBottom: '1px solid #e5e7eb', marginBottom: 8 }}>
           <p style={{ fontSize: 10, letterSpacing: '0.2em', color: '#9CA3AF', fontFamily: 'monospace', margin: '0 0 4px' }}>NOTIFICATIONS · UNIFIED</p>
           <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a2240', margin: 0 }}>Inbox</h2>

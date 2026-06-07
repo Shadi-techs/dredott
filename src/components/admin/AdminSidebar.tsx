@@ -15,7 +15,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  LayoutDashboard, Home, Car, Calendar, Users,
+  LayoutDashboard, Home, Car, Calendar, Users, Mail,
   Settings, ChevronLeft, Menu, X, LogOut,
   FileText, Wrench, BarChart3, Zap,
   Bell, ShieldCheck, Crown, Newspaper,
@@ -55,6 +55,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: '/admin',                icon: LayoutDashboard, label: 'Dashboard',         roles: ['super_admin', 'admin', 'viewer'] },
       { href: '/admin/notifications',  icon: Bell,            label: 'Notifications',     roles: ['super_admin', 'admin'] },
+      { href: '/admin/email',          icon: Mail,            label: 'Email',             roles: ['super_admin', 'admin'] },
     ],
   },
   {

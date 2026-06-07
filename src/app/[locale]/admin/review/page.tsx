@@ -91,40 +91,53 @@ export default function AdminReviewPage() {
   async function fetchPendingListings() {
     setLoading(true)
     try {
-      const [propertiesRes, carsRes] = await Promise.all([
-        supabase
-          .from('properties')
-          .select(`id, name, slug, area, price_per_night, bedrooms, bathrooms, max_guests, photos, review_status, created_at, owner:profiles!owner_user_id (id, first_name, last_name, email, phone)`)
-          .eq('review_status', 'pending_review')
-          .order('created_at', { ascending: false }),
-        supabase
-          .from('cars')
-          .select(`id, name, slug, brand, model, year, seats, price_per_day, photos, review_status, created_at, owner:profiles!owner_id (id, first_name, last_name, phone)`)
-          .eq('review_status', 'pending_review')
-          .order('created_at', { ascending: false }),
-      ])
-
-      let combined: PendingListing[] = []
-
-      if (propertiesRes.data && filterType !== 'car') {
-        combined = [...combined, ...propertiesRes.data.map(p => ({
-          ...p, type: 'property' as const,
-          owner: Array.isArray(p.owner) ? p.owner[0] : p.owner
-        }))]
-      }
-
-      if (carsRes.data && filterType !== 'property') {
-        combined = [...combined, ...carsRes.data.map(c => ({
-          ...c, type: 'car' as const,
-          owner: Array.isArray(c.owner) ? c.owner[0] : c.owner
-        }))]
-      }
-
-      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      setListings(combined)
+      const res = await fetch(`/api/admin/moderation/queue?type=${filterType}`)
+      if (!res.ok) throw new Error("Failed to fetch")
+      const data = await res.json()
+      setListings(data.listings || [])
     } catch (error) {
-      console.error('Error fetching listings:', error)
+      console.error("Error fetching listings:", error)
     } finally {
+      setLoading(false)
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       setLoading(false)
     }
   }
