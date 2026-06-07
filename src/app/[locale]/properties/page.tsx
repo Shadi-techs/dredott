@@ -10,7 +10,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   Search, SlidersHorizontal, X, Crown,
   MapPin, Star, Users, Bed, Wifi, Wind,
@@ -77,6 +77,9 @@ interface Property {
 
 export default function PropertiesPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const checkIn = searchParams.get('check_in') || ''
+  const checkOut = searchParams.get('check_out') || ''
 
   const [properties, setProperties] = useState<Property[]>([])
   const [areas, setAreas]           = useState<{ slug: string; name_en: string }[]>([])

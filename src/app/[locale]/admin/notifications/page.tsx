@@ -42,6 +42,14 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('all')
   const [showCompose, setShowCompose] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   useEffect(() => { fetchNotifications() }, [])
 
@@ -101,7 +109,7 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
     <div style={{ display: 'flex', height: '100%', background: '#F4F6FA', flexDirection: 'row' }}>
       
       {/* Sidebar */}
-      <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e5e7eb', padding: '24px 0', flexShrink: 0, display: 'var(--sidebar-display, flex)', flexDirection: 'column' }} className='hidden md:flex'>
+      {!isMobile && <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e5e7eb', padding: '24px 0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '0 16px 16px', borderBottom: '1px solid #e5e7eb', marginBottom: 8 }}>
           <p style={{ fontSize: 10, letterSpacing: '0.2em', color: '#9CA3AF', fontFamily: 'monospace', margin: '0 0 4px' }}>NOTIFICATIONS · UNIFIED</p>
           <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a2240', margin: 0 }}>Inbox</h2>
@@ -126,9 +134,21 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
         })}
       </div>
 
+      }
+
       {/* Main */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         
+        {/* Mobile Category Filter */}
+        {isMobile && (
+          <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '8px 16px', overflowX: 'auto', display: 'flex', gap: 8 }}>
+            {CATEGORIES.map(cat => (
+              <button key={cat.key} onClick={() => setActiveCategory(cat.key)} style={{ padding: '6px 12px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 12, whiteSpace: 'nowrap', background: activeCategory === cat.key ? '#0e1428' : '#F4F6FA', color: activeCategory === cat.key ? '#D4A843' : '#6B7280', fontWeight: activeCategory === cat.key ? 600 : 400 }}>
+              {cat.label} {getCategoryCount(cat.key) > 0 ? `(${getCategoryCount(cat.key)})` : ''}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Header */}
         <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
