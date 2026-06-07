@@ -84,6 +84,8 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [areas, setAreas]           = useState<{ slug: string; name_en: string }[]>([])
   const [loading, setLoading]       = useState(true)
+  const [user, setUser]                 = useState<any>(null)
+  const [hiddenIds, setHiddenIds]       = useState<Set<string>>(new Set())
   const [showFilters, setShowFilters] = useState(false)
 
   // City
@@ -99,6 +101,7 @@ export default function PropertiesPage() {
   const [maxPrice, setMaxPrice] = useState(0)
   const [minGuests, setMinGuests] = useState(0)
   const [amenities, setAmenities] = useState<string[]>([])
+  useEffect(() => { supabase.auth.getUser().then(({ data: { user: u } }) => setUser(u)) }, [])
   const [sortBy, setSortBy]     = useState('rank')
 
   // When city changes → fetch its areas + properties
