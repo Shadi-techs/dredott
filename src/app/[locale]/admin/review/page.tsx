@@ -27,7 +27,7 @@ interface PendingListing {
   type: 'property' | 'car'
   name: string
   slug: string
-  area: string
+  area?: string
   price_per_night?: number
   price_per_day?: number
   photos: string[]
