@@ -6,7 +6,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
 )
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const token = req.cookies.get('admin_token')?.value
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -18,15 +18,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const supabase = getSupabaseAdmin()
+    const { id } = await params
     const { data: property } = await supabase
       .from('properties')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (!property) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    if (property.owner_user_id) {
+    if (property?.owner_user_id) {
       const { data: owner } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, phone')
