@@ -72,8 +72,6 @@ export default function Header() {
   const currentLang   = LANGUAGES.find(l => l.code === currentLocale) || LANGUAGES[0]
   const tx            = TX[currentLocale] || TX.en
   const isAr          = currentLocale === 'ar'
-
-  if (pathname.includes('/admin')) return null
   if (pathname.includes('/owner')) return null
 
   useEffect(() => {
@@ -150,8 +148,6 @@ export default function Header() {
   const isHome         = pathname === `/${currentLocale}` || pathname === `/${currentLocale}/`
   const navBg          = (!isHome || scrolled || mobileOpen) ? 'rgba(14,20,40,0.95)' : 'linear-gradient(to bottom, rgba(14,20,40,0.75), transparent)'
 
-  if (pathname.includes('/admin')) return null
-  if (pathname.includes('/owner')) return null
 
   if (pathname.includes('/admin')) return null
   if (pathname.includes('/owner')) return null
