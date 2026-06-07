@@ -184,7 +184,8 @@ export default function AdminManagementPage({ params }: { params: { locale: stri
         can_delete_properties: false,
         can_approve_listings: false,
         can_manage_bookings: false,
-        can_view_financials: false
+        can_view_financials: false,
+        notification_permissions: ['new_listing', 'moderation']
       })
 
     } catch (err) {
