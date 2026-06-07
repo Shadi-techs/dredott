@@ -16,7 +16,7 @@ import {
   Search, MessageSquare, ChevronDown
 } from 'lucide-react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 // ============================================
 // TYPES
@@ -63,6 +63,8 @@ type ModalAction = 'approve' | 'reject' | 'changes_requested'
 // ============================================
 
 export default function AdminReviewPage() {
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
   const supabase = createClient()
   const router   = useRouter()
 
