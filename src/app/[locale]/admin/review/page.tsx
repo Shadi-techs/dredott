@@ -179,7 +179,7 @@ export default function AdminReviewPage() {
     const q = searchQuery.toLowerCase()
     return (
       listing.name.toLowerCase().includes(q) ||
-      `${listing.owner.first_name} ${listing.owner.last_name}`.toLowerCase().includes(q) ||
+      `${listing.owner?.first_name} ${listing.owner?.last_name}`.toLowerCase().includes(q) ||
       listing.area?.toLowerCase().includes(q)
     )
   })
@@ -354,9 +354,9 @@ function ListingCard({
         <div className="mb-3">
           <p className="text-xs text-[#6B7280] mb-0.5">Owner</p>
           <p className="text-sm text-[#1a2240] font-medium">
-            {listing.owner.first_name} {listing.owner.last_name}
+            {listing.owner?.first_name} {listing.owner?.last_name}
           </p>
-          <p className="text-xs text-[#6B7280]">{listing.owner.email}</p>
+          <p className="text-xs text-[#6B7280]">{listing.owner?.email}</p>
         </div>
 
         <div className="mb-3">
