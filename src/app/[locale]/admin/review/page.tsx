@@ -258,7 +258,7 @@ export default function AdminReviewPage() {
                 onApprove={() => openModal(listing, 'approve')}
                 onReject={() => openModal(listing, 'reject')}
                 onRequestChanges={() => openModal(listing, 'changes_requested')}
-                onView={() => router.push(`/${listing.type === 'property' ? 'en/properties' : 'en/cars'}/${listing.slug}`)}
+                onView={() => router.push(`/${locale}/admin/${listing.type === 'property' ? 'properties' : 'cars'}/${listing.id}`)}
               />
             ))}
           </div>
