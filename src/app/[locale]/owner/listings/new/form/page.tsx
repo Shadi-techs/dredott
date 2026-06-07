@@ -49,6 +49,25 @@ export default function ListingFormPage() {
     price_per_month: '',
   })
 
+  // Auto-save to localStorage
+  useEffect(() => {
+    if (Object.keys(formData).some(k => formData[k] !== '' && formData[k] !== 1 && formData[k] !== 2)) {
+      localStorage.setItem('listing_draft_' + type, JSON.stringify({ formData, photos }))
+    }
+  }, [formData, photos])
+
+  // Load draft on mount
+  useEffect(() => {
+    const draft = localStorage.getItem('listing_draft_' + type)
+    if (draft) {
+      try {
+        const { formData: savedForm, photos: savedPhotos } = JSON.parse(draft)
+        setFormData(savedForm)
+        setPhotos(savedPhotos || [])
+      } catch {}
+    }
+  }, [type])
+
   useEffect(() => {
     if (!type || (type !== 'property' && type !== 'car')) {
       router.push('/en/owner/listings/new')
