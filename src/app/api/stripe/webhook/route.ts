@@ -49,6 +49,19 @@ export async function POST(req: NextRequest) {
 
     // DB trigger auto-blocks dates (see schema.sql)
 
+    // Admin notification - payment received
+    if (booking) {
+      await supabase.from('admin_notifications').insert({
+        type: 'payment',
+        category: 'payment',
+        title: 'Payment received',
+        body: (booking.profiles?.first_name || 'Guest') + ' paid for ' + (booking.properties?.name || 'a property') + ' — $' + (paymentIntent.amount / 100).toFixed(2),
+        link: '/admin/bookings',
+        priority: 'normal',
+        read: false,
+      })
+    }
+
     // Send confirmation email
     if (booking?.profiles?.email) {
       await new Resend(process.env.RESEND_API_KEY || '').emails.send({

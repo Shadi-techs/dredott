@@ -121,6 +121,19 @@ export default function RegisterPage() {
         })
       }
 
+      // Admin notification - new user
+      await fetch('/api/admin/notifications/list', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          type: 'new_user',
+          category: 'user',
+          title: 'New user registered',
+          body: firstName + ' ' + lastName + ' just registered on DREDOTT',
+          link: '/admin/owners',
+          priority: 'normal',
+        })
+      })
       router.push(redirectTo)
       router.refresh()
     } catch (err: any) {

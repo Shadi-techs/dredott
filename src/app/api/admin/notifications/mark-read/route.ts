@@ -28,7 +28,9 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 2. جيب البيانات ──
-    const { notification_id, mark_all } = await req.json()
+    const body = await req.json()
+    const notification_id = body.notification_id || body.id
+    const mark_all = body.mark_all || body.all
 
     if (!notification_id && !mark_all) {
       return NextResponse.json({ error: 'notification_id or mark_all is required' }, { status: 400 })

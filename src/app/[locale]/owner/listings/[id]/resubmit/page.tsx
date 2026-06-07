@@ -172,6 +172,19 @@ export default function ResubmitPage({ params }: ResubmitPageProps) {
         link: `/${locale}/owner/listings`,
       })
 
+      // Admin notification - resubmission
+      await fetch('/api/admin/notifications/list', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          type: 'listing_resubmitted',
+          category: 'moderation',
+          title: 'Listing resubmitted for review',
+          body: listing.name + ' has been resubmitted after changes',
+          link: '/admin/review',
+          priority: 'normal',
+        })
+      })
       setSuccess(true)
       setTimeout(() => {
         router.push(`/${locale}/owner/listings?filter=pending`)
