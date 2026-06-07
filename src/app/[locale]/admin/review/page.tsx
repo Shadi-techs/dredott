@@ -101,44 +101,6 @@ export default function AdminReviewPage() {
       setLoading(false)
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      setLoading(false)
-    }
-  }
-
   async function fetchPresets() {
     const decisionType = modalAction === 'reject' ? 'reject' : 'changes_requested'
     const entityType   = selectedListing?.type || 'property'
