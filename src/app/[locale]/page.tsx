@@ -242,7 +242,7 @@ export default function HomePage() {
               </div>
 
               <button
-                onClick={() => { const params = new URLSearchParams(); if (checkIn) params.set('check_in', checkIn); if (checkOut) params.set('check_out', checkOut); router.push(`/${currentLocale}/properties?${params.toString()}`) }}
+                onClick={() => { const params = new URLSearchParams(); if (checkIn) params.set('check_in', checkIn); if (checkOut) params.set('check_out', checkOut); router.push(`/en/properties?${params.toString()}`) }}
                 className="bg-[#2C3A6B] hover:bg-[#2A9D8F] text-[#D4A843] px-6 py-3 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 <Search size={14} />

@@ -140,6 +140,18 @@ export default function PropertiesPage() {
     setLoading(false)
   }
 
+  const hideProperty = async (e: React.MouseEvent, propertyId: string) => {
+    e.stopPropagation()
+    if (!user) return
+    setHiddenIds(prev => new Set([...prev, propertyId]))
+    await supabase.from('search_hidden').upsert({
+      user_id: user.id,
+      entity_type: 'property',
+      entity_id: propertyId,
+      reason: 'user_hidden'
+    })
+  }
+
   const getPrice = (p: Property) => {
     if (priceType === 'week')  return p.price_per_week
     if (priceType === 'month') return p.price_per_month
@@ -404,6 +416,9 @@ export default function PropertiesPage() {
                         <Star size={12} color="#D4A843" fill="#D4A843" />
                         {p.display_rating.toFixed(1)}
                       </div>
+                    )}
+                    {user && (
+                      <button onClick={(e) => hideProperty(e, p.id)} title="Hide from search" style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(14,20,40,0.7)', border: 'none', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', fontSize: 14 }}>×</button>
                     )}
                     <div style={{ position: 'absolute', bottom: 10, right: 10, display: 'flex', gap: 4 }}>
                       {p.pool_access && <span style={chipStyle}>🏊</span>}
