@@ -175,18 +175,36 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
   const [showPass,   setShowPass]   = useState(false)
 
   // ✅ redirect حسب الـ role
-  const redirectByRole = (role: string) => {
+  const redirectByRole = async (role: string, userId: string) => {
     switch (role) {
       case 'super_admin':
       case 'admin':
       case 'viewer':
         router.push(`/${locale}/admin`)
         break
-      case 'property_owner':
-        router.push(`/${locale}/owner`)
+      case 'property_owner': {
+        // تحقق لو عنده listings
+        const { count } = await supabase
+          .from('properties')
+          .select('id', { count: 'exact', head: true })
+          .eq('owner_user_id', userId)
+        if (count && count > 0) {
+          router.push(`/${locale}/owner`)
+        } else {
+          // تحقق من السيارات
+          const { count: carCount } = await supabase
+            .from('cars')
+            .select('id', { count: 'exact', head: true })
+            .eq('owner_id', userId)
+          router.push(carCount && carCount > 0 ? `/${locale}/owner` : `/${locale}/owner/listings/new`)
+        }
+        break
+      }
+      case 'service_provider':
+        router.push(`/${locale}/provider`)
         break
       default:
-        router.push(`/${locale}`)
+        router.push(searchParams.get('redirect') || `/${locale}`)
     }
   }
 
@@ -229,7 +247,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
       if (redirectTo) {
        router.push(redirectTo)
       } else {
-        redirectByRole(profile?.role || 'guest')
+        redirectByRole(profile?.role || 'guest', data.user.id)
       }
     }, 1000)
     setLoading(false)

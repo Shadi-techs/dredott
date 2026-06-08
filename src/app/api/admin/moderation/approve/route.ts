@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
       .from(table)
       .update({
         review_status: 'approved',
+        status: 'available',
         updated_at: new Date().toISOString(),
       })
       .eq('id', entity_id)

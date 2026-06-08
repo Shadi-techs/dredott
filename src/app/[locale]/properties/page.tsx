@@ -4,16 +4,15 @@
 // ============================================
 'use client'
 
-import { useEffect, useState, useMemo, use } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import {
   Search, SlidersHorizontal, X,
   MapPin, Star, Wifi, Wind,
   Car, Waves, Shield, Coffee, Eye, Calendar
 } from 'lucide-react'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import CitySelector from '@/components/CitySelector'
 import { PROPERTIES_TX } from '@/lib/translations/properties'
 
@@ -57,8 +56,9 @@ interface Property {
   payment_method?: string; created_at: string
 }
 
-export default function PropertiesPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = use(params)
+export default function PropertiesPage() {
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
   const tx = PROPERTIES_TX[locale as keyof typeof PROPERTIES_TX] || PROPERTIES_TX.en
   const isRTL = locale === 'ar'
   const router = useRouter()
@@ -397,7 +397,6 @@ export default function PropertiesPage({ params }: { params: Promise<{ locale: s
         )}
       </div>
 
-      <Footer />
       <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}'}</style>
     </div>
   )
