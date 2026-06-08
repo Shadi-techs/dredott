@@ -49,6 +49,8 @@ export default function CarsPage() {
   const [cars, setCars]           = useState<Car[]>([])
   const [loading, setLoading]     = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [hiddenCarIds, setHiddenCarIds] = useState<Set<string>>(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCity, setSelectedCity] = useState('sharm')
 
@@ -59,7 +61,7 @@ export default function CarsPage() {
   const [sortBy, setSortBy]           = useState<'score'|'price_asc'|'price_desc'>('score')
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user))
+    supabase.auth.getUser().then(({ data }) => { setIsLoggedIn(!!data.user); setCurrentUser(data.user) })
   }, [])
 
   useEffect(() => {
@@ -114,6 +116,18 @@ export default function CarsPage() {
       whiteSpace: 'nowrap',
     }}>{children}</button>
   )
+
+  const hideCar = async (e: React.MouseEvent, carId: string) => {
+    e.stopPropagation()
+    if (!currentUser) return
+    setHiddenCarIds(prev => new Set([...prev, carId]))
+    await supabase.from('search_hidden').upsert({
+      user_id: currentUser.id,
+      entity_type: 'car',
+      entity_id: carId,
+      reason: 'user_hidden'
+    })
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -221,7 +235,7 @@ export default function CarsPage() {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
-            {filtered.map(car => (
+            {filtered.filter(c => !hiddenCarIds.has(c.id)).map(car => (
               <article key={car.id}
                 onClick={() => router.push(`/${locale}/cars/${car.id}`)}
                 style={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(0,0,0,0.06)', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s' }}
@@ -233,7 +247,10 @@ export default function CarsPage() {
                     ? <img src={car.photos[0]} alt={`${car.brand} ${car.model}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                     : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>🚗</div>
                   }
-                  <div style={{ position: 'absolute', top: 10, right: 10 }}>
+                  <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: 6 }}>
+                    {currentUser && (
+                      <button onClick={(e) => hideCar(e, car.id)} title="Hide" style={{ background: 'rgba(14,20,40,0.7)', border: 'none', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', fontSize: 14 }}>×</button>
+                    )}
                     <span style={{ background: 'rgba(255,255,255,0.9)', color: '#374151', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500, textTransform: 'capitalize' }}>
                       {car.transmission}
                     </span>
