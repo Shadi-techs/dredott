@@ -1,555 +1,338 @@
-// ============================================
-// Admin Cars List - Updated for Unified Schema
-// Path: src/app/[locale]/admin/cars/page.tsx
-// ============================================
-
 'use client'
-
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useRouter, usePathname } from 'next/navigation'
 import { 
-  Car,
-  Search,
-  Filter,
-  MapPin,
-  Users,
-  Star,
-  Eye,
-  Edit,
-  Trash2,
-  MoreVertical,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Crown,
-  Calendar
+  Car, Search, Eye, CheckCircle, Clock, XCircle,
+  Settings, ChevronRight, TrendingUp, Users,
+  Moon, Sun, Filter, RefreshCw
 } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 
-// ============================================
-// TYPES
-// ============================================
-
-interface CarListing {
-  id: string
-  name: string
-  slug: string
-  brand: string
-  model: string
-  year: number
-  area: string
-  price_per_day: number
-  seats: number
-  transmission: string
-  fuel_type: string
-  photos: string[]
-  review_status: string
-  internal_score: number | null
-  created_at: string
-  
-  owner: {
-    id: string
-    first_name: string
-    last_name: string
-    email: string
-    is_premium: boolean
+const TX = {
+  en: {
+    title: 'Cars Management',
+    subtitle: 'Manage all car listings',
+    total: 'Total Cars',
+    approved: 'Approved',
+    pending: 'Pending Review',
+    rejected: 'Rejected',
+    field_config: 'Field Configuration',
+    field_config_sub: 'Active fields & payment methods',
+    active_fields: 'Active Fields',
+    required_fields: 'Required Fields',
+    owner_fields: 'Owner Controls',
+    view_more: 'View More',
+    search: 'Search by brand, model, owner...',
+    all: 'All',
+    status: 'Status',
+    owner: 'Owner',
+    no_cars: 'No cars found',
+    view: 'View',
+    recent: 'Recent Submissions',
+    top: 'Top Rated',
+    payment: 'Payment Methods Enabled',
+  },
+  ar: {
+    title: 'إدارة السيارات',
+    subtitle: 'إدارة كل إعلانات السيارات',
+    total: 'إجمالي السيارات',
+    approved: 'معتمدة',
+    pending: 'قيد المراجعة',
+    rejected: 'مرفوضة',
+    field_config: 'إعدادات الحقول',
+    field_config_sub: 'الحقول النشطة وطرق الدفع',
+    active_fields: 'حقول مفعّلة',
+    required_fields: 'حقول إلزامية',
+    owner_fields: 'تحكم المالك',
+    view_more: 'عرض المزيد',
+    search: 'البحث بالماركة أو الموديل...',
+    all: 'الكل',
+    status: 'الحالة',
+    owner: 'المالك',
+    no_cars: 'لا توجد سيارات',
+    view: 'عرض',
+    recent: 'أحدث الإضافات',
+    top: 'الأعلى تقييماً',
+    payment: 'طرق الدفع المفعّلة',
   }
 }
-
-interface Stats {
-  total: number
-  approved: number
-  pending: number
-  rejected: number
-}
-
-// ============================================
-// MAIN COMPONENT
-// ============================================
 
 export default function AdminCarsPage() {
-  const supabase = createClient()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
+  const tx = TX[locale as keyof typeof TX] || TX.en
+  const isAr = locale === 'ar'
   const router = useRouter()
-  
-  const [cars, setCars] = useState<CarListing[]>([])
-  const [stats, setStats] = useState<Stats>({
-    total: 0,
-    approved: 0,
-    pending: 0,
-    rejected: 0
-  })
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'approved' | 'pending_review' | 'rejected'>('all')
-  const [showActionMenu, setShowActionMenu] = useState<string | null>(null)
 
-  // ============================================
-  // FETCH DATA
-  // ============================================
+  const [stats, setStats] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 })
+  const [cars, setCars] = useState<any[]>([])
+  const [fieldConfig, setFieldConfig] = useState({ active: 0, required: 0, ownerToggle: 0, payments: [] as string[] })
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [dark, setDark] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  const c = {
+    bg: dark ? '#080d1a' : '#F4F6FA',
+    card: dark ? '#0e1428' : '#fff',
+    card2: dark ? '#1a2240' : '#F8F9FB',
+    border: dark ? 'rgba(212,168,67,0.12)' : '#e5e7eb',
+    text: dark ? '#FBF0D0' : '#1a2240',
+    sub: dark ? '#6B7280' : '#9CA3AF',
+    gold: '#D4A843',
+    navy: '#2C3A6B',
+  }
 
   useEffect(() => {
-    fetchCars()
-    fetchStats()
-  }, [filterStatus])
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
-  async function fetchCars() {
+  useEffect(() => { fetchAll() }, [filter])
+
+  const fetchAll = async () => {
     setLoading(true)
     try {
-      let query = supabase
-        .from('cars')
-        .select(`
-          *,
-          owner:profiles!owner_id (
-            id,
-            first_name,
-            last_name,
-            email,
-            is_premium
-          )
-        `)
-        .order('created_at', { ascending: false })
+      // Stats
+      const [total, approved, pending, rejected] = await Promise.all([
+        fetch('/api/admin/cars/stats?type=total').then(r => r.json()),
+        fetch('/api/admin/cars/stats?type=approved').then(r => r.json()),
+        fetch('/api/admin/cars/stats?type=pending').then(r => r.json()),
+        fetch('/api/admin/cars/stats?type=rejected').then(r => r.json()),
+      ])
+      setStats({
+        total: total.count || 0,
+        approved: approved.count || 0,
+        pending: pending.count || 0,
+        rejected: rejected.count || 0,
+      })
 
-      // Apply status filter
-      if (filterStatus !== 'all') {
-        query = query.eq('review_status', filterStatus)
+      // Cars list
+      const carsRes = await fetch(`/api/admin/cars/list?status=${filter}`)
+      if (carsRes.ok) {
+        const data = await carsRes.json()
+        setCars(data.cars || [])
       }
 
-      const { data, error } = await query
-
-      if (error) throw error
-
-      // Process data
-      const processedData = (data || []).map(c => ({
-        ...c,
-        owner: Array.isArray(c.owner) ? c.owner[0] : c.owner
-      }))
-
-      setCars(processedData)
-    } catch (error) {
-      console.error('Error fetching cars:', error)
-    } finally {
-      setLoading(false)
+      // Field config summary
+      const fcRes = await fetch('/api/admin/field-config?section=cars')
+      if (fcRes.ok) {
+        const data = await fcRes.json()
+        const fields = data.fields || []
+        setFieldConfig({
+          active: fields.filter((f: any) => f.is_enabled).length,
+          required: fields.filter((f: any) => f.is_required).length,
+          ownerToggle: fields.filter((f: any) => f.owner_can_toggle).length,
+          payments: fields.filter((f: any) => f.field_key.startsWith('payment') && f.is_enabled).map((f: any) => f.label_en),
+        })
+      }
+    } catch (err) {
+      console.error(err)
     }
+    setLoading(false)
   }
 
-  async function fetchStats() {
-    try {
-      const [totalRes, approvedRes, pendingRes, rejectedRes] = await Promise.all([
-        supabase.from('cars').select('*', { count: 'exact', head: true }),
-        supabase.from('cars').select('*', { count: 'exact', head: true }).eq('review_status', 'approved'),
-        supabase.from('cars').select('*', { count: 'exact', head: true }).eq('review_status', 'pending_review'),
-        supabase.from('cars').select('*', { count: 'exact', head: true }).eq('review_status', 'rejected')
-      ])
+  const filteredCars = cars.filter(c =>
+    c.brand?.toLowerCase().includes(search.toLowerCase()) ||
+    c.model?.toLowerCase().includes(search.toLowerCase()) ||
+    c.owner?.first_name?.toLowerCase().includes(search.toLowerCase())
+  )
 
-      setStats({
-        total: totalRes.count || 0,
-        approved: approvedRes.count || 0,
-        pending: pendingRes.count || 0,
-        rejected: rejectedRes.count || 0
-      })
-    } catch (error) {
-      console.error('Error fetching stats:', error)
+  const StatWidget = ({ label, value, icon, color }: any) => (
+    <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, padding: '20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: 48, height: 48, borderRadius: 12, background: color + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{icon}</div>
+      <div>
+        <p style={{ fontSize: 28, fontWeight: 700, color: c.text, margin: '0 0 2px', fontFamily: "'Cormorant Garamond', serif" }}>{value}</p>
+        <p style={{ fontSize: 12, color: c.sub, margin: 0 }}>{label}</p>
+      </div>
+    </div>
+  )
+
+  const statusBadge = (status: string) => {
+    const map: Record<string, any> = {
+      approved: { bg: '#D1FAE5', color: '#065F46', label: isAr ? 'معتمد' : 'Approved' },
+      pending_review: { bg: '#FEF3C7', color: '#92400E', label: isAr ? 'قيد المراجعة' : 'Pending' },
+      rejected: { bg: '#FEE2E2', color: '#991B1B', label: isAr ? 'مرفوض' : 'Rejected' },
     }
+    const s = map[status] || { bg: '#F3F4F6', color: '#6B7280', label: status }
+    return <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: s.bg, color: s.color }}>{s.label}</span>
   }
-
-  // ============================================
-  // ACTIONS
-  // ============================================
-
-  async function deleteCar(carId: string) {
-    if (!confirm('Are you sure you want to delete this car? This action cannot be undone.')) {
-      return
-    }
-
-    try {
-      const { error } = await supabase
-        .from('cars')
-        .delete()
-        .eq('id', carId)
-
-      if (error) throw error
-
-      setCars(prev => prev.filter(c => c.id !== carId))
-      fetchStats()
-      setShowActionMenu(null)
-      alert('Car deleted successfully')
-    } catch (error) {
-      console.error('Error deleting car:', error)
-      alert('Failed to delete car')
-    }
-  }
-
-  // ============================================
-  // FILTERED DATA
-  // ============================================
-
-  const filteredCars = cars.filter(car => {
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesName = car.name.toLowerCase().includes(query)
-      const matchesBrand = car.brand.toLowerCase().includes(query)
-      const matchesModel = car.model.toLowerCase().includes(query)
-      const matchesArea = car.area?.toLowerCase().includes(query)
-      const matchesOwner = `${car.owner.first_name} ${car.owner.last_name}`.toLowerCase().includes(query)
-      return matchesName || matchesBrand || matchesModel || matchesArea || matchesOwner
-    }
-    return true
-  })
-
-  // ============================================
-  // RENDER
-  // ============================================
 
   return (
-    <div className="min-h-screen bg-[#F0F2F7]">
-      {/* Header */}
-      <div className="border-b border-[#1a2240]/10 bg-white">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
-                Car Rentals
-              </h1>
-              <p className="text-sm text-[#6B7280] mt-1">
-                Manage all car rental listings
-              </p>
-            </div>
-            <Link
-              href="/admin/cars/new"
-              className="px-4 py-2 bg-[#D4A843] text-[#F0F2F7] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
-            >
-              Add Car
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <StatCard label="Total" value={stats.total} color="blue" />
-            <StatCard label="Approved" value={stats.approved} color="green" />
-            <StatCard label="Pending" value={stats.pending} color="warning" />
-            <StatCard label="Rejected" value={stats.rejected} color="danger" />
-          </div>
+    <div style={{ minHeight: '100vh', background: c.bg, direction: isAr ? 'rtl' : 'ltr', transition: 'all 0.2s' }}>
+      
+      {/* Page Header */}
+      <div style={{ background: c.card, borderBottom: `1px solid ${c.border}`, padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <p style={{ fontSize: 10, letterSpacing: '0.2em', color: c.sub, fontFamily: 'monospace', margin: '0 0 4px' }}>ADMIN · {isAr ? 'السيارات' : 'CARS'}</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: c.text, margin: 0 }}>{tx.title}</h1>
+          <p style={{ fontSize: 13, color: c.sub, margin: '4px 0 0' }}>{tx.subtitle}</p>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setDark(!dark)} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
+            {dark ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+          <button onClick={fetchAll} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
+            <RefreshCw size={15} />
+          </button>
+          <button onClick={() => router.push(`/${locale}/admin/review`)} style={{ padding: '8px 16px', background: c.gold, border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#0e1428', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Clock size={14} /> {stats.pending > 0 ? `${stats.pending} ${tx.pending}` : tx.pending}
+          </button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="p-6 border-b border-[#1a2240]/10">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
-            <input
-              type="text"
-              placeholder="Search by name, brand, model, area, or owner..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-[#1a2240]/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
-            />
-          </div>
+      <div style={{ padding: '24px 28px', maxWidth: 1400, margin: '0 auto' }}>
 
-          {/* Status filter */}
-          <div className="flex items-center gap-2 bg-white border border-[#1a2240]/10 rounded-lg p-1">
-            {(['all', 'approved', 'pending_review', 'rejected'] as const).map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
-                  filterStatus === status
-                    ? 'bg-[#D4A843] text-[#F0F2F7]'
-                    : 'text-[#6B7280] hover:text-[#1a2240]'
-                }`}
-              >
-                {status === 'pending_review' ? 'Pending' : status}
+        {/* Stats Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
+          <StatWidget label={tx.total} value={stats.total} icon="🚗" color="#2C3A6B" />
+          <StatWidget label={tx.approved} value={stats.approved} icon="✅" color="#2A9D8F" />
+          <StatWidget label={tx.pending} value={stats.pending} icon="⏳" color="#D4A843" />
+          <StatWidget label={tx.rejected} value={stats.rejected} icon="❌" color="#ef4444" />
+        </div>
+
+        {/* Second Row — Field Config Widget + Payment */}
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 24 }}>
+          
+          {/* Field Config Widget */}
+          <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FBF0D0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Settings size={16} color={c.gold} />
+                </div>
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: c.text, margin: 0 }}>{tx.field_config}</p>
+                  <p style={{ fontSize: 11, color: c.sub, margin: 0 }}>{tx.field_config_sub}</p>
+                </div>
+              </div>
+              <button onClick={() => router.push(`/${locale}/admin/field-config?section=cars`)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, color: c.gold, fontWeight: 600 }}>
+                {tx.view_more} <ChevronRight size={12} />
               </button>
-            ))}
+            </div>
+            <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              {[
+                { label: tx.active_fields, value: fieldConfig.active, color: c.gold },
+                { label: tx.required_fields, value: fieldConfig.required, color: '#ef4444' },
+                { label: tx.owner_fields, value: fieldConfig.ownerToggle, color: '#2A9D8F' },
+              ].map((item, i) => (
+                <div key={i} style={{ textAlign: 'center', padding: '12px', background: c.card2, borderRadius: 10 }}>
+                  <p style={{ fontSize: 28, fontWeight: 700, color: item.color, margin: '0 0 4px', fontFamily: "'Cormorant Garamond', serif" }}>{item.value}</p>
+                  <p style={{ fontSize: 11, color: c.sub, margin: 0 }}>{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment Methods Widget */}
+          <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, padding: '16px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>💳</div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: c.text, margin: 0 }}>{tx.payment}</p>
+            </div>
+            {fieldConfig.payments.length === 0 ? (
+              <p style={{ fontSize: 13, color: c.sub }}>{isAr ? 'لا توجد طرق دفع مفعّلة' : 'No payment methods enabled'}</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {fieldConfig.payments.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: c.card2, borderRadius: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#2A9D8F' }} />
+                    <span style={{ fontSize: 13, color: c.text }}>{p}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="p-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]"></div>
+        {/* Cars List */}
+        <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, overflow: 'hidden' }}>
+          
+          {/* List Header */}
+          <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: c.sub }} />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder={tx.search}
+                style={{ width: '100%', padding: '8px 12px 8px 36px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, fontSize: 13, color: c.text, outline: 'none', boxSizing: 'border-box' as const }} />
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {['all', 'approved', 'pending_review', 'rejected'].map(s => (
+                <button key={s} onClick={() => setFilter(s)} style={{ padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: filter === s ? 600 : 400, background: filter === s ? c.gold : c.card2, color: filter === s ? '#0e1428' : c.sub }}>
+                  {s === 'all' ? tx.all : s === 'pending_review' ? tx.pending : s === 'approved' ? tx.approved : tx.rejected}
+                </button>
+              ))}
+            </div>
           </div>
-        ) : filteredCars.length === 0 ? (
-          <div className="text-center py-20">
-            <Car className="w-12 h-12 text-[#6B7280] mx-auto mb-4" />
-            <p className="text-[#6B7280] text-lg">No cars found</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F0F2F7] border-b border-[#1a2240]/10">
-                <tr>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Car</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Owner</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Details</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Price</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Score</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Status</th>
-                  <th className="text-right px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Actions</th>
+
+          {/* Cars Table/Cards */}
+          {loading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: c.sub }}>Loading...</div>
+          ) : filteredCars.length === 0 ? (
+            <div style={{ padding: 60, textAlign: 'center' }}>
+              <p style={{ fontSize: 32, marginBottom: 8 }}>🚗</p>
+              <p style={{ color: c.sub, fontSize: 14 }}>{tx.no_cars}</p>
+            </div>
+          ) : isMobile ? (
+            // Mobile Cards
+            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {filteredCars.map(car => (
+                <div key={car.id} style={{ background: c.card2, borderRadius: 12, border: `1px solid ${c.border}`, padding: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                    <div>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: c.text, margin: '0 0 2px' }}>{car.brand} {car.model} {car.year}</p>
+                      <p style={{ fontSize: 12, color: c.sub, margin: 0 }}>{car.owner?.first_name} {car.owner?.last_name}</p>
+                    </div>
+                    {statusBadge(car.review_status)}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 13, color: c.gold, fontWeight: 600 }}>EGP {car.price_per_day}/day</span>
+                    <button onClick={() => router.push(`/${locale}/admin/cars/${car.id}`)} style={{ padding: '6px 12px', background: c.navy, color: c.gold, border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>{tx.view}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Desktop Table
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: c.card2 }}>
+                  {['Car', 'Owner', 'Price', 'Status', ''].map(h => (
+                    <th key={h} style={{ padding: '12px 16px', textAlign: isAr ? 'right' : 'left', fontSize: 11, fontWeight: 600, color: c.sub, fontFamily: 'monospace', letterSpacing: '0.1em' }}>{h.toUpperCase()}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredCars.map((car, index) => (
-                  <CarRow
-                    key={car.id}
-                    car={car}
-                    index={index}
-                    showActionMenu={showActionMenu}
-                    setShowActionMenu={setShowActionMenu}
-                    onDelete={deleteCar}
-                  />
+                {filteredCars.map(car => (
+                  <tr key={car.id} style={{ borderTop: `1px solid ${c.border}` }} onMouseEnter={e => e.currentTarget.style.background = c.card2} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        {car.photos?.[0] ? <img src={car.photos[0]} style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }} /> : <div style={{ width: 40, height: 40, borderRadius: 8, background: c.card2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🚗</div>}
+                        <div>
+                          <p style={{ fontSize: 14, fontWeight: 600, color: c.text, margin: '0 0 2px' }}>{car.brand} {car.model}</p>
+                          <p style={{ fontSize: 11, color: c.sub, margin: 0, fontFamily: 'monospace' }}>{car.year} · {car.transmission}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, color: c.text }}>{car.owner?.first_name} {car.owner?.last_name || '—'}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: c.gold }}>EGP {car.price_per_day?.toLocaleString()}</span>
+                      <span style={{ fontSize: 11, color: c.sub }}>/day</span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>{statusBadge(car.review_status)}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <button onClick={() => router.push(`/${locale}/admin/cars/${car.id}`)} style={{ padding: '6px 14px', background: 'none', border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, color: c.gold, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <Eye size={13} /> {tx.view}
+                      </button>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ============================================
-// STAT CARD
-// ============================================
-
-function StatCard({ 
-  label, 
-  value, 
-  color 
-}: { 
-  label: string
-  value: number
-  color: string 
-}) {
-  const colors = {
-    blue: 'bg-[#60a5fa]/10 border-[#60a5fa]/30 text-[#60a5fa]',
-    green: 'bg-[#4ade80]/10 border-[#4ade80]/30 text-[#4ade80]',
-    warning: 'bg-[#fbbf24]/10 border-[#fbbf24]/30 text-[#fbbf24]',
-    danger: 'bg-[#f87171]/10 border-[#f87171]/30 text-[#f87171]'
-  }
-
-  return (
-    <div className={`rounded-lg border p-3 ${colors[color as keyof typeof colors]}`}>
-      <p className="text-xs opacity-90 mb-1">{label}</p>
-      <p className="text-2xl font-bold font-mono">{value}</p>
-    </div>
-  )
-}
-
-// ============================================
-// CAR ROW
-// ============================================
-
-function CarRow({
-  car,
-  index,
-  showActionMenu,
-  setShowActionMenu,
-  onDelete
-}: {
-  car: CarListing
-  index: number
-  showActionMenu: string | null
-  setShowActionMenu: (id: string | null) => void
-  onDelete: (id: string) => void
-}) {
-  const router = useRouter()
-  const mainPhoto = car.photos?.[0] || '/placeholder-car.jpg'
-  const displayRating = car.internal_score ? (car.internal_score / 2).toFixed(1) : '0.0'
-
-  return (
-    <tr
-      className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-        index % 2 === 0 ? 'bg-[#F0F2F7]/30' : ''
-      }`}
-    >
-      {/* Car */}
-      <td className="px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#F0F2F7] flex-shrink-0">
-            <Image
-              src={mainPhoto}
-              alt={`${car.brand} ${car.model}`}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="text-sm font-medium text-[#1a2240] truncate">
-                {car.brand} {car.model}
-              </p>
-              {car.owner.is_premium && (
-                <Crown className="w-4 h-4 text-[#D4A843]" />
-              )}
-            </div>
-            <div className="flex items-center gap-3 text-xs text-[#6B7280]">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                <span>{car.year}</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                <span>{car.area}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </td>
-
-      {/* Owner */}
-      <td className="px-4 py-4">
-        <p className="text-sm text-[#1a2240]">
-          {car.owner.first_name} {car.owner.last_name}
-        </p>
-        <p className="text-xs text-[#6B7280]">{car.owner.email}</p>
-      </td>
-
-      {/* Details */}
-      <td className="px-4 py-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-            <Users className="w-3 h-3" />
-            <span>{car.seats} seats</span>
-          </div>
-          <p className="text-xs text-[#6B7280]">{car.transmission}</p>
-          <p className="text-xs text-[#6B7280]">{car.fuel_type}</p>
-        </div>
-      </td>
-
-      {/* Price */}
-      <td className="px-4 py-4">
-        <p className="text-sm font-mono text-[#1a2240]">
-          EGP {car.price_per_day.toLocaleString()}
-        </p>
-        <p className="text-xs text-[#6B7280]">/day</p>
-      </td>
-
-      {/* Score */}
-      <td className="px-4 py-4">
-        {car.internal_score ? (
-          <div className="flex items-center gap-1.5">
-            <Star className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
-            <span className="text-sm font-mono text-[#1a2240]">{displayRating}</span>
-          </div>
-        ) : (
-          <span className="text-xs text-[#6B7280]">Not scored</span>
-        )}
-      </td>
-
-      {/* Status */}
-      <td className="px-4 py-4">
-        <StatusBadge status={car.review_status} />
-      </td>
-
-      {/* Actions */}
-      <td className="px-4 py-4 text-right">
-        <div className="relative inline-block">
-          <button
-            onClick={() => setShowActionMenu(showActionMenu === car.id ? null : car.id)}
-            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-          >
-            <MoreVertical className="w-4 h-4 text-[#6B7280]" />
-          </button>
-
-          {showActionMenu === car.id && (
-            <ActionMenu
-              car={car}
-              onClose={() => setShowActionMenu(null)}
-              onDelete={onDelete}
-            />
           )}
         </div>
-      </td>
-    </tr>
-  )
-}
-
-// ============================================
-// STATUS BADGE
-// ============================================
-
-function StatusBadge({ status }: { status: string }) {
-  const styles = {
-    approved: 'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/30',
-    pending_review: 'bg-[#fbbf24]/10 text-[#fbbf24] border-[#fbbf24]/30',
-    rejected: 'bg-[#f87171]/10 text-[#f87171] border-[#f87171]/30',
-    needs_edit: 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/30'
-  }
-
-  const icons = {
-    approved: CheckCircle2,
-    pending_review: Clock,
-    rejected: XCircle,
-    needs_edit: Edit
-  }
-
-  const Icon = icons[status as keyof typeof icons] || Clock
-
-  const displayStatus = status === 'pending_review' ? 'Pending' : status.replace('_', ' ')
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border capitalize ${styles[status as keyof typeof styles] || styles.pending_review}`}>
-      <Icon className="w-3.5 h-3.5" />
-      {displayStatus}
-    </span>
-  )
-}
-
-// ============================================
-// ACTION MENU
-// ============================================
-
-function ActionMenu({
-  car,
-  onClose,
-  onDelete
-}: {
-  car: CarListing
-  onClose: () => void
-  onDelete: (id: string) => void
-}) {
-  return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-40" onClick={onClose} />
-
-      {/* Menu */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg border border-[#1a2240]/10 shadow-xl z-50 py-1">
-        <Link
-          href={`/cars/${car.slug}`}
-          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
-        >
-          <Eye className="w-4 h-4 text-[#6B7280]" />
-          View on Site
-        </Link>
-        
-        <Link
-          href={`/admin/cars/${car.id}/edit`}
-          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
-        >
-          <Edit className="w-4 h-4 text-[#6B7280]" />
-          Edit Car
-        </Link>
-        
-        <div className="border-t border-[#1a2240]/10 my-1" />
-        
-        <button
-          onClick={() => {
-            onDelete(car.id)
-          }}
-          className="w-full px-4 py-2 text-left text-sm text-[#f87171] hover:bg-[#f87171]/10 transition-colors flex items-center gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete Car
-        </button>
       </div>
-    </>
+    </div>
   )
 }
