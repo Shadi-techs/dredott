@@ -1,584 +1,277 @@
-// ============================================
-// Admin Properties List - Updated for Unified Schema
-// Path: src/app/[locale]/admin/properties/page.tsx
-// ============================================
-
 'use client'
-
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { 
-  Building2,
-  Search,
-  Filter,
-  MapPin,
-  Users,
-  Star,
-  Eye,
-  Edit,
-  Trash2,
-  MoreVertical,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Crown,
-  Shield
-} from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { Search, Eye, Clock, Moon, Sun, RefreshCw, Settings, ChevronRight } from 'lucide-react'
 
-// ============================================
-// TYPES
-// ============================================
-
-interface Property {
-  id: string
-  name: string
-  slug: string
-  area: string
-  price_per_night: number
-  bedrooms: number
-  bathrooms: number
-  max_guests: number
-  photos: string[]
-  review_status: string
-  internal_score: number | null
-  platform_managed: boolean
-  created_at: string
-  
-  owner: {
-    id: string
-    first_name: string
-    last_name: string
-    email: string
-    is_premium: boolean
+const TX = {
+  en: {
+    title: 'Properties Management', subtitle: 'Manage all property listings',
+    total: 'Total', approved: 'Approved', pending: 'Pending', rejected: 'Rejected',
+    field_config: 'Field Configuration', field_config_sub: 'Active fields & payment methods',
+    active_fields: 'Active Fields', required_fields: 'Required', owner_fields: 'Owner Controls',
+    view_more: 'View More', search: 'Search by name, area, owner...',
+    all: 'All', no_props: 'No properties found', view: 'View',
+    payment: 'Payment Methods Enabled',
+  },
+  ar: {
+    title: 'إدارة الإقامات', subtitle: 'إدارة كل إعلانات الإقامات',
+    total: 'الإجمالي', approved: 'معتمدة', pending: 'قيد المراجعة', rejected: 'مرفوضة',
+    field_config: 'إعدادات الحقول', field_config_sub: 'الحقول النشطة وطرق الدفع',
+    active_fields: 'حقول مفعّلة', required_fields: 'إلزامية', owner_fields: 'تحكم المالك',
+    view_more: 'عرض المزيد', search: 'البحث بالاسم أو المنطقة...',
+    all: 'الكل', no_props: 'لا توجد إقامات', view: 'عرض',
+    payment: 'طرق الدفع المفعّلة',
   }
-  
-  verification_status?: boolean
 }
-
-interface Stats {
-  total: number
-  approved: number
-  pending: number
-  rejected: number
-  platform_managed: number
-}
-
-// ============================================
-// MAIN COMPONENT
-// ============================================
 
 export default function AdminPropertiesPage() {
-  const supabase = createClient()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
+  const tx = TX[locale as keyof typeof TX] || TX.en
+  const isAr = locale === 'ar'
   const router = useRouter()
-  
-  const [properties, setProperties] = useState<Property[]>([])
-  const [stats, setStats] = useState<Stats>({
-    total: 0,
-    approved: 0,
-    pending: 0,
-    rejected: 0,
-    platform_managed: 0
-  })
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'approved' | 'pending_review' | 'rejected'>('all')
-  const [filterType, setFilterType] = useState<'all' | 'platform_managed' | 'owner'>('all')
-  const [showActionMenu, setShowActionMenu] = useState<string | null>(null)
 
-  // ============================================
-  // FETCH DATA
-  // ============================================
+  const [stats, setStats] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 })
+  const [properties, setProperties] = useState<any[]>([])
+  const [fieldConfig, setFieldConfig] = useState({ active: 0, required: 0, ownerToggle: 0, payments: [] as string[] })
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [dark, setDark] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  const c = {
+    bg: dark ? '#080d1a' : '#F4F6FA',
+    card: dark ? '#0e1428' : '#fff',
+    card2: dark ? '#1a2240' : '#F8F9FB',
+    border: dark ? 'rgba(212,168,67,0.12)' : '#e5e7eb',
+    text: dark ? '#FBF0D0' : '#1a2240',
+    sub: dark ? '#6B7280' : '#9CA3AF',
+    gold: '#D4A843', navy: '#2C3A6B',
+  }
 
   useEffect(() => {
-    fetchProperties()
-    fetchStats()
-  }, [filterStatus, filterType])
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
-  async function fetchProperties() {
+  useEffect(() => { fetchAll() }, [filter])
+
+  const fetchAll = async () => {
     setLoading(true)
     try {
-      let query = supabase
-        .from('properties')
-        .select(`
-          *,
-          owner:profiles!owner_user_id (
-            id,
-            first_name,
-            last_name,
-            email,
-            is_premium
-          )
-        `)
-        .order('created_at', { ascending: false })
-
-      // Apply status filter
-      if (filterStatus !== 'all') {
-        query = query.eq('review_status', filterStatus)
-      }
-
-      // Apply type filter
-      if (filterType === 'platform_managed') {
-        query = query.eq('platform_managed', true)
-      } else if (filterType === 'owner') {
-        query = query.eq('platform_managed', false)
-      }
-
-      const { data, error } = await query
-
-      if (error) throw error
-
-      // Process data
-      const processedData = (data || []).map(p => ({
-        ...p,
-        owner: Array.isArray(p.owner) ? p.owner[0] : p.owner
-      }))
-
-      setProperties(processedData)
-    } catch (error) {
-      console.error('Error fetching properties:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function fetchStats() {
-    try {
-      const [totalRes, approvedRes, pendingRes, rejectedRes, platformRes] = await Promise.all([
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }).eq('review_status', 'approved'),
-        supabase.from('properties').select('*', { count: 'exact', head: true }).eq('review_status', 'pending_review'),
-        supabase.from('properties').select('*', { count: 'exact', head: true }).eq('review_status', 'rejected'),
-        supabase.from('properties').select('*', { count: 'exact', head: true }).eq('platform_managed', true)
+      const [total, approved, pending, rejected, propsRes, fcRes] = await Promise.all([
+        fetch('/api/admin/properties/stats?type=total').then(r => r.json()),
+        fetch('/api/admin/properties/stats?type=approved').then(r => r.json()),
+        fetch('/api/admin/properties/stats?type=pending').then(r => r.json()),
+        fetch('/api/admin/properties/stats?type=rejected').then(r => r.json()),
+        fetch(`/api/admin/properties/list?status=${filter}`),
+        fetch('/api/admin/field-config?section=properties'),
       ])
-
-      setStats({
-        total: totalRes.count || 0,
-        approved: approvedRes.count || 0,
-        pending: pendingRes.count || 0,
-        rejected: rejectedRes.count || 0,
-        platform_managed: platformRes.count || 0
-      })
-    } catch (error) {
-      console.error('Error fetching stats:', error)
-    }
+      setStats({ total: total.count || 0, approved: approved.count || 0, pending: pending.count || 0, rejected: rejected.count || 0 })
+      if (propsRes.ok) { const d = await propsRes.json(); setProperties(d.properties || []) }
+      if (fcRes.ok) {
+        const d = await fcRes.json()
+        const fields = d.fields || []
+        setFieldConfig({
+          active: fields.filter((f: any) => f.is_enabled).length,
+          required: fields.filter((f: any) => f.is_required).length,
+          ownerToggle: fields.filter((f: any) => f.owner_can_toggle).length,
+          payments: fields.filter((f: any) => f.field_key.startsWith('payment') && f.is_enabled).map((f: any) => f.label_en),
+        })
+      }
+    } catch (err) { console.error(err) }
+    setLoading(false)
   }
 
-  // ============================================
-  // ACTIONS
-  // ============================================
+  const filtered = properties.filter(p =>
+    p.name?.toLowerCase().includes(search.toLowerCase()) ||
+    p.area?.toLowerCase().includes(search.toLowerCase()) ||
+    p.owner?.first_name?.toLowerCase().includes(search.toLowerCase())
+  )
 
-  async function deleteProperty(propertyId: string) {
-    if (!confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
-      return
+  const StatWidget = ({ label, value, icon, color }: any) => (
+    <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, padding: 20, display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: 48, height: 48, borderRadius: 12, background: color + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{icon}</div>
+      <div>
+        <p style={{ fontSize: 28, fontWeight: 700, color: c.text, margin: '0 0 2px', fontFamily: "'Cormorant Garamond', serif" }}>{value}</p>
+        <p style={{ fontSize: 12, color: c.sub, margin: 0 }}>{label}</p>
+      </div>
+    </div>
+  )
+
+  const statusBadge = (status: string) => {
+    const map: Record<string, any> = {
+      approved: { bg: '#D1FAE5', color: '#065F46', label: isAr ? 'معتمد' : 'Approved' },
+      pending_review: { bg: '#FEF3C7', color: '#92400E', label: isAr ? 'قيد المراجعة' : 'Pending' },
+      rejected: { bg: '#FEE2E2', color: '#991B1B', label: isAr ? 'مرفوض' : 'Rejected' },
     }
-
-    try {
-      const { error } = await supabase
-        .from('properties')
-        .delete()
-        .eq('id', propertyId)
-
-      if (error) throw error
-
-      setProperties(prev => prev.filter(p => p.id !== propertyId))
-      fetchStats()
-      setShowActionMenu(null)
-      alert('Property deleted successfully')
-    } catch (error) {
-      console.error('Error deleting property:', error)
-      alert('Failed to delete property')
-    }
+    const s = map[status] || { bg: '#F3F4F6', color: '#6B7280', label: status }
+    return <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: s.bg, color: s.color }}>{s.label}</span>
   }
-
-  // ============================================
-  // FILTERED DATA
-  // ============================================
-
-  const filteredProperties = properties.filter(property => {
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesName = property.name.toLowerCase().includes(query)
-      const matchesArea = property.area?.toLowerCase().includes(query)
-      const matchesOwner = `${property.owner.first_name} ${property.owner.last_name}`.toLowerCase().includes(query)
-      return matchesName || matchesArea || matchesOwner
-    }
-    return true
-  })
-
-  // ============================================
-  // RENDER
-  // ============================================
 
   return (
-    <div className="min-h-screen bg-[#F0F2F7]">
-      {/* Header */}
-      <div className="border-b border-[#1a2240]/10 bg-white">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
-                Properties
-              </h1>
-              <p className="text-sm text-[#6B7280] mt-1">
-                Manage all property listings
-              </p>
+    <div style={{ minHeight: '100vh', background: c.bg, direction: isAr ? 'rtl' : 'ltr', transition: 'all 0.2s' }}>
+      <div style={{ background: c.card, borderBottom: `1px solid ${c.border}`, padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <p style={{ fontSize: 10, letterSpacing: '0.2em', color: c.sub, fontFamily: 'monospace', margin: '0 0 4px' }}>ADMIN · {isAr ? 'الإقامات' : 'PROPERTIES'}</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: c.text, margin: 0 }}>{tx.title}</h1>
+          <p style={{ fontSize: 13, color: c.sub, margin: '4px 0 0' }}>{tx.subtitle}</p>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setDark(!dark)} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
+            {dark ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+          <button onClick={fetchAll} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
+            <RefreshCw size={15} />
+          </button>
+          <button onClick={() => router.push(`/${locale}/admin/review`)} style={{ padding: '8px 16px', background: c.gold, border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#0e1428', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Clock size={14} /> {stats.pending > 0 ? `${stats.pending} ${tx.pending}` : tx.pending}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ padding: '24px 28px', maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
+          <StatWidget label={tx.total} value={stats.total} icon="🏠" color="#2C3A6B" />
+          <StatWidget label={tx.approved} value={stats.approved} icon="✅" color="#2A9D8F" />
+          <StatWidget label={tx.pending} value={stats.pending} icon="⏳" color="#D4A843" />
+          <StatWidget label={tx.rejected} value={stats.rejected} icon="❌" color="#ef4444" />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 24 }}>
+          <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FBF0D0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Settings size={16} color={c.gold} />
+                </div>
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: c.text, margin: 0 }}>{tx.field_config}</p>
+                  <p style={{ fontSize: 11, color: c.sub, margin: 0 }}>{tx.field_config_sub}</p>
+                </div>
+              </div>
+              <button onClick={() => router.push(`/${locale}/admin/field-config?section=properties`)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, color: c.gold, fontWeight: 600 }}>
+                {tx.view_more} <ChevronRight size={12} />
+              </button>
             </div>
-            <Link
-              href="/admin/properties/new"
-              className="px-4 py-2 bg-[#D4A843] text-[#F0F2F7] rounded-lg font-medium hover:bg-[#c49835] transition-colors"
-            >
-              Add Property
-            </Link>
+            <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              {[
+                { label: tx.active_fields, value: fieldConfig.active, color: c.gold },
+                { label: tx.required_fields, value: fieldConfig.required, color: '#ef4444' },
+                { label: tx.owner_fields, value: fieldConfig.ownerToggle, color: '#2A9D8F' },
+              ].map((item, i) => (
+                <div key={i} style={{ textAlign: 'center', padding: 12, background: c.card2, borderRadius: 10 }}>
+                  <p style={{ fontSize: 28, fontWeight: 700, color: item.color, margin: '0 0 4px', fontFamily: "'Cormorant Garamond', serif" }}>{item.value}</p>
+                  <p style={{ fontSize: 11, color: c.sub, margin: 0 }}>{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <StatCard label="Total" value={stats.total} color="blue" />
-            <StatCard label="Approved" value={stats.approved} color="green" />
-            <StatCard label="Pending" value={stats.pending} color="warning" />
-            <StatCard label="Rejected" value={stats.rejected} color="danger" />
-            <StatCard label="Platform Managed" value={stats.platform_managed} color="gold" />
+          <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, padding: '16px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>💳</div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: c.text, margin: 0 }}>{tx.payment}</p>
+            </div>
+            {fieldConfig.payments.length === 0 ? (
+              <p style={{ fontSize: 13, color: c.sub }}>{isAr ? 'لا توجد طرق دفع مفعّلة' : 'No payment methods enabled'}</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {fieldConfig.payments.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: c.card2, borderRadius: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#2A9D8F' }} />
+                    <span style={{ fontSize: 13, color: c.text }}>{p}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Filters */}
-      <div className="p-6 border-b border-[#1a2240]/10">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
-            <input
-              type="text"
-              placeholder="Search by name, area, or owner..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-[#1a2240]/10 rounded-lg pl-10 pr-4 py-2 text-sm text-[#1a2240] placeholder:text-[#6B7280] focus:outline-none focus:border-[#D4A843]/50"
-            />
-          </div>
-
-          {/* Status filter */}
-          <div className="flex items-center gap-2 bg-white border border-[#1a2240]/10 rounded-lg p-1">
-            {(['all', 'approved', 'pending_review', 'rejected'] as const).map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
-                  filterStatus === status
-                    ? 'bg-[#D4A843] text-[#F0F2F7]'
-                    : 'text-[#6B7280] hover:text-[#1a2240]'
-                }`}
-              >
-                {status === 'pending_review' ? 'Pending' : status}
-              </button>
-            ))}
+        <div style={{ background: c.card, borderRadius: 14, border: `1px solid ${c.border}`, overflow: 'hidden' }}>
+          <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: c.sub }} />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder={tx.search}
+                style={{ width: '100%', padding: '8px 12px 8px 36px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, fontSize: 13, color: c.text, outline: 'none', boxSizing: 'border-box' as const }} />
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {['all', 'approved', 'pending_review', 'rejected'].map(s => (
+                <button key={s} onClick={() => setFilter(s)} style={{ padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: filter === s ? 600 : 400, background: filter === s ? c.gold : c.card2, color: filter === s ? '#0e1428' : c.sub }}>
+                  {s === 'all' ? tx.all : s === 'pending_review' ? tx.pending : s === 'approved' ? tx.approved : tx.rejected}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Type filter */}
-          <div className="flex items-center gap-2 bg-white border border-[#1a2240]/10 rounded-lg p-1">
-            {(['all', 'platform_managed', 'owner'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setFilterType(type)}
-                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
-                  filterType === type
-                    ? 'bg-[#D4A843] text-[#F0F2F7]'
-                    : 'text-[#6B7280] hover:text-[#1a2240]'
-                }`}
-              >
-                {type === 'platform_managed' ? 'Platform' : type}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]"></div>
-          </div>
-        ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-20">
-            <Building2 className="w-12 h-12 text-[#6B7280] mx-auto mb-4" />
-            <p className="text-[#6B7280] text-lg">No properties found</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F0F2F7] border-b border-[#1a2240]/10">
-                <tr>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Property</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Owner</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Details</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Price</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Score</th>
-                  <th className="text-left px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Status</th>
-                  <th className="text-right px-4 py-3 text-xs font-mono text-[#6B7280] uppercase">Actions</th>
+          {loading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: c.sub }}>Loading...</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ padding: 60, textAlign: 'center' }}>
+              <p style={{ fontSize: 32, marginBottom: 8 }}>🏠</p>
+              <p style={{ color: c.sub, fontSize: 14 }}>{tx.no_props}</p>
+            </div>
+          ) : isMobile ? (
+            <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {filtered.map(p => (
+                <div key={p.id} style={{ background: c.card2, borderRadius: 12, border: `1px solid ${c.border}`, padding: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                    <div>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: c.text, margin: '0 0 2px' }}>{p.name}</p>
+                      <p style={{ fontSize: 12, color: c.sub, margin: 0 }}>{p.area?.replace(/_/g, ' ')} · {p.owner?.first_name}</p>
+                    </div>
+                    {statusBadge(p.review_status)}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 13, color: c.gold, fontWeight: 600 }}>EGP {p.price_per_night}/night</span>
+                    <button onClick={() => router.push(`/${locale}/admin/properties/${p.id}`)} style={{ padding: '6px 12px', background: c.navy, color: c.gold, border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>{tx.view}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: c.card2 }}>
+                  {['Property', 'Area', 'Owner', 'Price', 'Status', ''].map(h => (
+                    <th key={h} style={{ padding: '12px 16px', textAlign: isAr ? 'right' : 'left', fontSize: 11, fontWeight: 600, color: c.sub, fontFamily: 'monospace', letterSpacing: '0.1em' }}>{h.toUpperCase()}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredProperties.map((property, index) => (
-                  <PropertyRow
-                    key={property.id}
-                    property={property}
-                    index={index}
-                    showActionMenu={showActionMenu}
-                    setShowActionMenu={setShowActionMenu}
-                    onDelete={deleteProperty}
-                  />
+                {filtered.map(p => (
+                  <tr key={p.id} style={{ borderTop: `1px solid ${c.border}` }} onMouseEnter={e => e.currentTarget.style.background = c.card2} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        {p.photos?.[0] ? <img src={p.photos[0]} style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }} /> : <div style={{ width: 40, height: 40, borderRadius: 8, background: c.card2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🏠</div>}
+                        <div>
+                          <p style={{ fontSize: 14, fontWeight: 600, color: c.text, margin: '0 0 2px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</p>
+                          <p style={{ fontSize: 11, color: c.sub, margin: 0, fontFamily: 'monospace' }}>{p.type} · {p.bedrooms}bd</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, color: c.text }}>{p.area?.replace(/_/g, ' ')}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, color: c.text }}>{p.owner?.first_name} {p.owner?.last_name || '—'}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: c.gold }}>EGP {p.price_per_night?.toLocaleString()}</span>
+                      <span style={{ fontSize: 11, color: c.sub }}>/night</span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>{statusBadge(p.review_status)}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <button onClick={() => router.push(`/${locale}/admin/properties/${p.id}`)} style={{ padding: '6px 14px', background: 'none', border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, color: c.gold, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <Eye size={13} /> {tx.view}
+                      </button>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ============================================
-// STAT CARD
-// ============================================
-
-function StatCard({ 
-  label, 
-  value, 
-  color 
-}: { 
-  label: string
-  value: number
-  color: string 
-}) {
-  const colors = {
-    blue: 'bg-[#60a5fa]/10 border-[#60a5fa]/30 text-[#60a5fa]',
-    green: 'bg-[#4ade80]/10 border-[#4ade80]/30 text-[#4ade80]',
-    warning: 'bg-[#fbbf24]/10 border-[#fbbf24]/30 text-[#fbbf24]',
-    danger: 'bg-[#f87171]/10 border-[#f87171]/30 text-[#f87171]',
-    gold: 'bg-[#D4A843]/10 border-[#D4A843]/30 text-[#D4A843]'
-  }
-
-  return (
-    <div className={`rounded-lg border p-3 ${colors[color as keyof typeof colors]}`}>
-      <p className="text-xs opacity-90 mb-1">{label}</p>
-      <p className="text-2xl font-bold font-mono">{value}</p>
-    </div>
-  )
-}
-
-// ============================================
-// PROPERTY ROW
-// ============================================
-
-function PropertyRow({
-  property,
-  index,
-  showActionMenu,
-  setShowActionMenu,
-  onDelete
-}: {
-  property: Property
-  index: number
-  showActionMenu: string | null
-  setShowActionMenu: (id: string | null) => void
-  onDelete: (id: string) => void
-}) {
-  const router = useRouter()
-  const mainPhoto = property.photos?.[0] || '/placeholder-property.jpg'
-  const displayRating = property.internal_score ? (property.internal_score / 2).toFixed(1) : '0.0'
-
-  return (
-    <tr
-      className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-        index % 2 === 0 ? 'bg-[#F0F2F7]/30' : ''
-      }`}
-    >
-      {/* Property */}
-      <td className="px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#F0F2F7] flex-shrink-0">
-            <Image
-              src={mainPhoto}
-              alt={property.name}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="text-sm font-medium text-[#1a2240] truncate">
-                {property.name}
-              </p>
-              {property.platform_managed && (
-                <span className="px-2 py-0.5 rounded-full bg-[#D4A843]/10 text-[#D4A843] text-xs font-mono border border-[#D4A843]/30">
-                  Platform
-                </span>
-              )}
-              {property.owner.is_premium && (
-                <Crown className="w-4 h-4 text-[#D4A843]" />
-              )}
-            </div>
-            <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-              <MapPin className="w-3 h-3" />
-              <span>{property.area}</span>
-            </div>
-          </div>
-        </div>
-      </td>
-
-      {/* Owner */}
-      <td className="px-4 py-4">
-        <p className="text-sm text-[#1a2240]">
-          {property.owner.first_name} {property.owner.last_name}
-        </p>
-        <p className="text-xs text-[#6B7280]">{property.owner.email}</p>
-      </td>
-
-      {/* Details */}
-      <td className="px-4 py-4">
-        <div className="flex items-center gap-3 text-sm text-[#6B7280]">
-          <span>{property.bedrooms} bed</span>
-          <span>•</span>
-          <span>{property.bathrooms} bath</span>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Users className="w-3 h-3" />
-            <span>{property.max_guests}</span>
-          </div>
-        </div>
-      </td>
-
-      {/* Price */}
-      <td className="px-4 py-4">
-        <p className="text-sm font-mono text-[#1a2240]">
-          EGP {property.price_per_night.toLocaleString()}
-        </p>
-        <p className="text-xs text-[#6B7280]">/night</p>
-      </td>
-
-      {/* Score */}
-      <td className="px-4 py-4">
-        {property.internal_score ? (
-          <div className="flex items-center gap-1.5">
-            <Star className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
-            <span className="text-sm font-mono text-[#1a2240]">{displayRating}</span>
-          </div>
-        ) : (
-          <span className="text-xs text-[#6B7280]">Not scored</span>
-        )}
-      </td>
-
-      {/* Status */}
-      <td className="px-4 py-4">
-        <StatusBadge status={property.review_status} />
-      </td>
-
-      {/* Actions */}
-      <td className="px-4 py-4 text-right">
-        <div className="relative inline-block">
-          <button
-            onClick={() => setShowActionMenu(showActionMenu === property.id ? null : property.id)}
-            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-          >
-            <MoreVertical className="w-4 h-4 text-[#6B7280]" />
-          </button>
-
-          {showActionMenu === property.id && (
-            <ActionMenu
-              property={property}
-              onClose={() => setShowActionMenu(null)}
-              onDelete={onDelete}
-            />
           )}
         </div>
-      </td>
-    </tr>
-  )
-}
-
-// ============================================
-// STATUS BADGE
-// ============================================
-
-function StatusBadge({ status }: { status: string }) {
-  const styles = {
-    approved: 'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/30',
-    pending_review: 'bg-[#fbbf24]/10 text-[#fbbf24] border-[#fbbf24]/30',
-    rejected: 'bg-[#f87171]/10 text-[#f87171] border-[#f87171]/30',
-    needs_edit: 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/30'
-  }
-
-  const icons = {
-    approved: CheckCircle2,
-    pending_review: Clock,
-    rejected: XCircle,
-    needs_edit: Edit
-  }
-
-  const Icon = icons[status as keyof typeof icons] || Clock
-
-  const displayStatus = status === 'pending_review' ? 'Pending' : status.replace('_', ' ')
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border capitalize ${styles[status as keyof typeof styles] || styles.pending_review}`}>
-      <Icon className="w-3.5 h-3.5" />
-      {displayStatus}
-    </span>
-  )
-}
-
-// ============================================
-// ACTION MENU
-// ============================================
-
-function ActionMenu({
-  property,
-  onClose,
-  onDelete
-}: {
-  property: Property
-  onClose: () => void
-  onDelete: (id: string) => void
-}) {
-  return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-40" onClick={onClose} />
-
-      {/* Menu */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg border border-[#1a2240]/10 shadow-xl z-50 py-1">
-        <Link
-          href={`/properties/${property.slug}`}
-          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
-        >
-          <Eye className="w-4 h-4 text-[#6B7280]" />
-          View on Site
-        </Link>
-        
-        <Link
-          href={`/admin/properties/${property.id}/edit`}
-          className="w-full px-4 py-2 text-left text-sm text-[#1a2240] hover:bg-white/5 transition-colors flex items-center gap-2"
-        >
-          <Edit className="w-4 h-4 text-[#6B7280]" />
-          Edit Property
-        </Link>
-        
-        <div className="border-t border-[#1a2240]/10 my-1" />
-        
-        <button
-          onClick={() => {
-            onDelete(property.id)
-          }}
-          className="w-full px-4 py-2 text-left text-sm text-[#f87171] hover:bg-[#f87171]/10 transition-colors flex items-center gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete Property
-        </button>
       </div>
-    </>
+    </div>
   )
 }
