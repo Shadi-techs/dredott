@@ -101,7 +101,7 @@ export default function AdminCarsPage() {
         .from('cars')
         .select(`
           *,
-          owner:profiles!owner_user_id (
+          owner:profiles!owner_id (
             id,
             first_name,
             last_name,
