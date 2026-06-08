@@ -72,7 +72,6 @@ export default function Header() {
   const currentLang   = LANGUAGES.find(l => l.code === currentLocale) || LANGUAGES[0]
   const tx            = TX[currentLocale] || TX.en
   const isAr          = currentLocale === 'ar'
-  if (pathname.includes('/owner')) return null
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
