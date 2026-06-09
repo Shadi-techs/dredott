@@ -38,6 +38,7 @@ export default function HomePage() {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [scrollY, setScrollY] = useState(0)
+  const [showStickySearch, setShowStickySearch] = useState(false)
   
   // Property Filter State
   const [selectedArea, setSelectedArea] = useState('all')
@@ -105,6 +106,28 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
       
+
+      {/* Sticky Search Bar */}
+      {showStickySearch && (
+        <div style={{ position: 'fixed', top: 64, left: 0, right: 0, zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.08)', padding: '10px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+            <select style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }}>
+              <option value="all">All areas</option>
+              <option value="naama">Naama Bay</option>
+              <option value="sharks">Sharks Bay</option>
+              <option value="hadaba">Hadaba</option>
+            </select>
+            <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)} min={new Date().toISOString().split('T')[0]}
+              style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }} />
+            <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)} min={checkIn || new Date().toISOString().split('T')[0]}
+              style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }} />
+            <button onClick={() => { const params = new URLSearchParams(); if (checkIn) params.set('check_in', checkIn); if (checkOut) params.set('check_out', checkOut); router.push(`/en/properties?${params.toString()}`) }}
+              style={{ padding: '8px 20px', background: '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              Search
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section - Editorial with Video */}
       <section className="relative h-screen flex items-center overflow-hidden">
