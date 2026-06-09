@@ -50,7 +50,6 @@ const ALL_TABS = [
   { flag: 'nav_cars',     key: 'cars',     path: '/cars'       },
   { flag: 'nav_blog',     key: 'blog',     path: '/blog'       },
   { flag: 'nav_services', key: 'services', path: '/services'   },
-  { flag: 'nav_jobs',     key: 'jobs',     path: '/jobs'       },
 ]
 
 export default function Header() {

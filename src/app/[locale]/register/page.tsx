@@ -11,6 +11,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, Eye, EyeOff, User, Phone, Upload, Camera, Loader2, Check } from 'lucide-react'
+import { usePageFlag } from '@/lib/hooks/usePageFlag'
 
 
 
@@ -23,6 +24,7 @@ const supabase = createBrowserClient(
 export default function RegisterPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { enabled: registrationEnabled, loading: flagLoading } = usePageFlag('registration_enabled')
 
   const [step, setStep] = useState(1)
   const [email, setEmail] = useState('')
@@ -159,6 +161,22 @@ export default function RegisterPage() {
       setLoading(false)
     }
   }
+
+  if (flagLoading) return (
+    <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center">
+      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    </div>
+  )
+
+  if (!registrationEnabled) return (
+    <div className="min-h-screen bg-[#FAF9F6] flex flex-col items-center justify-center gap-4 text-center p-8">
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: '#2C3A6B' }}>🔒</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: '#2C3A6B', margin: 0 }}>Registration Closed</h1>
+      <p className="text-gray-500 max-w-md">New registrations are temporarily disabled. To create an account, please contact us on WhatsApp.</p>
+      <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} className="bg-[#2A9D8F] text-white px-6 py-3 rounded-lg font-semibold text-sm">WhatsApp Us</a>
+      <Link href="/en" className="text-sm text-gray-400 hover:text-gray-600">← Back to home</Link>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] flex flex-col">

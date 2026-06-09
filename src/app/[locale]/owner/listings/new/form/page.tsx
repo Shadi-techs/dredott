@@ -327,7 +327,7 @@ export default function ListingFormPage() {
                 disabled={uploadingPhotos}
               />
             </label>
-          </div>
+          </div>}
 
           {/* Basic Info */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">

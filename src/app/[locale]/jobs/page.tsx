@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, use } from 'react'
 import { Search, MapPin, Clock, Lock, Briefcase } from 'lucide-react'
+import { usePageFlag } from '@/lib/hooks/usePageFlag'
 
 const CATEGORIES = ['hospitality', 'maintenance', 'cleaning', 'restaurants', 'security', 'admin']
 const JOB_TYPES  = ['full_time', 'part_time', 'freelance']
@@ -8,6 +9,7 @@ const JOB_TYPES  = ['full_time', 'part_time', 'freelance']
 export default function JobsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const isAr = locale === 'ar'
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('jobs_page_enabled')
   const [jobs, setJobs]     = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState('')
@@ -37,6 +39,21 @@ export default function JobsPage({ params }: { params: Promise<{ locale: string 
     const diff = new Date(expires_at).getTime() - Date.now()
     return Math.max(0, Math.floor(diff / 86400000))
   }
+
+  if (flagLoading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6' }}>
+      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    </div>
+  )
+
+  if (!pageEnabled) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6', gap: 16, textAlign: 'center', padding: 32 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: '#2C3A6B' }}>💼</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: '#2C3A6B', margin: 0 }}>{isAr ? 'الوظائف — قريباً' : 'Jobs — Coming Soon'}</h1>
+      <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 400 }}>{isAr ? 'هذا القسم غير متاح حالياً. تواصل معنا عبر واتساب.' : 'This section is currently unavailable. Contact us on WhatsApp.'}</p>
+      <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} style={{ background: '#2A9D8F', color: '#fff', padding: '10px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>WhatsApp</a>
+    </div>
+  )
 
   return (
     <div style={{ background: '#FAF9F6', minHeight: '100vh' }} dir={isAr ? 'rtl' : 'ltr'}>

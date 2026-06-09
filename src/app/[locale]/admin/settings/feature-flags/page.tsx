@@ -30,6 +30,7 @@ const MODULE_COLORS: Record<string, string> = {
   cars:       '#2A9D8F',
   blog:       '#a78bfa',
   bookings:   '#4ade80',
+  jobs:       '#f97316',
   general:    '#D4A843',
 }
 
@@ -38,6 +39,7 @@ const MODULE_LABELS: Record<string, string> = {
   cars:       'Cars',
   blog:       'Blog',
   bookings:   'Bookings',
+  jobs:       'Jobs',
   general:    'General',
 }
 

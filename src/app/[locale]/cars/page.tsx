@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import CitySelector from '@/components/CitySelector'
 import { CARS_TX } from '@/lib/translations/cars'
+import { usePageFlag } from '@/lib/hooks/usePageFlag'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,7 +25,7 @@ interface Car {
   seats: number; price_per_day: number; price_per_week: number | null
   price_hidden: boolean; internal_score: number | null
   photos: string[]; transmission: string; fuel_type: string
-  km_limit: number | null; payment_method?: string
+  km_limit: number | null; payment_method?: string; listing_type?: string
 }
 
 const FUEL_TYPES = ['petrol', 'diesel', 'electric', 'hybrid']
@@ -40,6 +41,8 @@ export default function CarsPage() {
   const tx = CARS_TX[locale as keyof typeof CARS_TX] || CARS_TX.en
   const isRTL = locale === 'ar'
   const router = useRouter()
+
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('cars_page_accessible')
 
   const [cars, setCars] = useState<Car[]>([])
   const [loading, setLoading] = useState(true)
@@ -116,6 +119,21 @@ export default function CarsPage() {
   )
 
   const labelStyle: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#9ca3af', marginBottom: 10 }
+
+  if (flagLoading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6' }}>
+      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    </div>
+  )
+
+  if (!pageEnabled) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6', gap: 16, textAlign: 'center', padding: 32 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: '#2C3A6B' }}>🚗</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: '#2C3A6B', margin: 0 }}>Cars — Coming Soon</h1>
+      <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 400 }}>This section is currently unavailable. Please check back later or contact us on WhatsApp.</p>
+      <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} style={{ background: '#2A9D8F', color: '#fff', padding: '10px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>WhatsApp Us</a>
+    </div>
+  )
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6', direction: isRTL ? 'rtl' : 'ltr' }}>
