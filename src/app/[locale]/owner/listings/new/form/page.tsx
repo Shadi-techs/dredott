@@ -1,55 +1,227 @@
 // ============================================
 // Listing Form — DREDOTT
 // Path: src/app/[locale]/owner/listings/new/form/page.tsx
-// Dynamic form for both properties and cars
 // ============================================
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { 
-  Upload, X, AlertCircle, CheckCircle, 
-  MapPin, DollarSign, Home, Car, Calendar 
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import {
+  Upload, X, AlertCircle, CheckCircle,
+  MapPin, DollarSign, Home, Car, Calendar,
 } from 'lucide-react'
 import { CAR_BRANDS, BRAND_NAMES } from '@/lib/car-data'
 
 const supabase = createClient()
 
-export default function ListingFormPage() {
+// ── Translations ───────────────────────────────────────────
+const TX: Record<string, Record<string, string>> = {
+  en: {
+    addProperty: 'Add Property',
+    addCar: 'Add Car Rental',
+    subtitle: 'Fill in the details below. Your listing will be reviewed within 24-48 hours.',
+    photos: 'Photos',
+    photoMin: '* (Minimum 1)',
+    photoOptional: '(optional)',
+    uploading: 'Uploading...',
+    clickUpload: 'Click to upload photos',
+    basicInfo: 'Basic Information',
+    title: 'Title',
+    titlePropPlaceholder: 'e.g. Cozy Apartment in Naama Bay',
+    titleCarPlaceholder: 'e.g. Toyota Corolla 2023',
+    description: 'Description',
+    descOptional: '(optional)',
+    propertyDetails: 'Property Details',
+    area: 'Area',
+    selectArea: 'Select area',
+    type: 'Type',
+    bedrooms: 'Bedrooms',
+    bathrooms: 'Bathrooms',
+    maxGuests: 'Max Guests',
+    sizeSqm: 'Size (sqm)',
+    priceNight: 'Price per Night (EGP)',
+    carDetails: 'Car Details',
+    listingType: 'Listing Type',
+    forRent: '🚗 For Rent',
+    forSale: '🏷️ For Sale (coming soon)',
+    brand: 'Brand',
+    selectBrand: 'Select brand...',
+    model: 'Model',
+    selectModel: 'Select model...',
+    otherModel: 'Other (specify below)',
+    enterModel: 'Enter model name',
+    year: 'Year',
+    transmission: 'Transmission',
+    automatic: 'Automatic',
+    manual: 'Manual',
+    fuelType: 'Fuel Type',
+    petrol: 'Petrol',
+    diesel: 'Diesel',
+    electric: 'Electric',
+    hybrid: 'Hybrid',
+    seats: 'Seats',
+    dailyRate: 'Daily Rate (EGP)',
+    monthlyRate: 'Monthly Rate (EGP)',
+    submit: 'Submit for Review',
+    submitting: 'Submitting...',
+    cancel: 'Cancel',
+    reviewProcess: 'Review Process',
+    reviewInfo: "Your listing will be reviewed by our team within 24-48 hours. You'll receive a notification once it's approved or if changes are needed.",
+    namaaArea: 'Naama Bay',
+    sharksArea: 'Sharks Bay',
+    nabqArea: 'Nabq Bay',
+    oldMarketArea: 'Old Market',
+    hadabaArea: 'Hadaba',
+    montazahArea: 'Montazah',
+    rasUmSid: 'Ras Um Sid',
+    apartment: 'Apartment',
+    villa: 'Villa',
+    studio: 'Studio',
+    chalet: 'Chalet',
+  },
+  ar: {
+    addProperty: 'إضافة عقار',
+    addCar: 'إضافة سيارة',
+    subtitle: 'أدخل التفاصيل أدناه. سيتم مراجعة إعلانك خلال 24-48 ساعة.',
+    photos: 'الصور',
+    photoMin: '* (الحد الأدنى صورة واحدة)',
+    photoOptional: '(اختياري)',
+    uploading: 'جاري الرفع...',
+    clickUpload: 'اضغط لرفع الصور',
+    basicInfo: 'المعلومات الأساسية',
+    title: 'العنوان',
+    titlePropPlaceholder: 'مثال: شقة مريحة في نعمة باي',
+    titleCarPlaceholder: 'مثال: تويوتا كورولا 2023',
+    description: 'الوصف',
+    descOptional: '(اختياري)',
+    propertyDetails: 'تفاصيل العقار',
+    area: 'المنطقة',
+    selectArea: 'اختر المنطقة',
+    type: 'النوع',
+    bedrooms: 'غرف النوم',
+    bathrooms: 'دورات المياه',
+    maxGuests: 'أقصى عدد للضيوف',
+    sizeSqm: 'المساحة (متر مربع)',
+    priceNight: 'السعر لليلة (جنيه)',
+    carDetails: 'تفاصيل السيارة',
+    listingType: 'نوع الإعلان',
+    forRent: '🚗 للإيجار',
+    forSale: '🏷️ للبيع (قريباً)',
+    brand: 'الماركة',
+    selectBrand: 'اختر الماركة...',
+    model: 'الموديل',
+    selectModel: 'اختر الموديل...',
+    otherModel: 'أخرى (حدد أدناه)',
+    enterModel: 'أدخل اسم الموديل',
+    year: 'سنة الصنع',
+    transmission: 'ناقل الحركة',
+    automatic: 'أوتوماتيك',
+    manual: 'عادي',
+    fuelType: 'نوع الوقود',
+    petrol: 'بنزين',
+    diesel: 'ديزل',
+    electric: 'كهربائي',
+    hybrid: 'هجين',
+    seats: 'عدد المقاعد',
+    dailyRate: 'السعر اليومي (جنيه)',
+    monthlyRate: 'السعر الشهري (جنيه)',
+    submit: 'إرسال للمراجعة',
+    submitting: 'جاري الإرسال...',
+    cancel: 'إلغاء',
+    reviewProcess: 'عملية المراجعة',
+    reviewInfo: 'سيتم مراجعة إعلانك من قِبَل فريقنا خلال 24-48 ساعة. ستتلقى إشعاراً عند الموافقة أو إذا كانت هناك تعديلات مطلوبة.',
+    namaaArea: 'نعمة باي',
+    sharksArea: 'شاركس باي',
+    nabqArea: 'نبق باي',
+    oldMarketArea: 'السوق القديم',
+    hadabaArea: 'الحدبة',
+    montazahArea: 'المنتزه',
+    rasUmSid: 'رأس أم سيد',
+    apartment: 'شقة',
+    villa: 'فيلا',
+    studio: 'استوديو',
+    chalet: 'شاليه',
+  },
+  ru: {
+    addProperty: 'Добавить объект',
+    addCar: 'Добавить авто',
+    subtitle: 'Заполните форму. Объявление будет проверено в течение 24-48 часов.',
+    photos: 'Фотографии',
+    photoMin: '* (минимум 1)',
+    photoOptional: '(необязательно)',
+    uploading: 'Загрузка...',
+    clickUpload: 'Нажмите для загрузки фото',
+    basicInfo: 'Основная информация',
+    title: 'Название',
+    titlePropPlaceholder: 'напр. Уютная квартира в Naama Bay',
+    titleCarPlaceholder: 'напр. Toyota Corolla 2023',
+    description: 'Описание',
+    descOptional: '(необязательно)',
+    propertyDetails: 'Детали объекта',
+    area: 'Район',
+    selectArea: 'Выберите район',
+    type: 'Тип',
+    bedrooms: 'Спальни',
+    bathrooms: 'Ванные',
+    maxGuests: 'Макс. гостей',
+    sizeSqm: 'Площадь (кв.м)',
+    priceNight: 'Цена за ночь (EGP)',
+    carDetails: 'Детали автомобиля',
+    listingType: 'Тип объявления',
+    forRent: '🚗 В аренду',
+    forSale: '🏷️ На продажу (скоро)',
+    brand: 'Марка',
+    selectBrand: 'Выберите марку...',
+    model: 'Модель',
+    selectModel: 'Выберите модель...',
+    otherModel: 'Другое (укажите)',
+    enterModel: 'Введите название модели',
+    year: 'Год',
+    transmission: 'Коробка передач',
+    automatic: 'Автомат',
+    manual: 'Механика',
+    fuelType: 'Тип топлива',
+    petrol: 'Бензин',
+    diesel: 'Дизель',
+    electric: 'Электро',
+    hybrid: 'Гибрид',
+    seats: 'Мест',
+    dailyRate: 'Суточная ставка (EGP)',
+    monthlyRate: 'Месячная ставка (EGP)',
+    submit: 'Отправить на проверку',
+    submitting: 'Отправка...',
+    cancel: 'Отмена',
+    reviewProcess: 'Процесс проверки',
+    reviewInfo: 'Ваше объявление будет проверено нашей командой в течение 24-48 часов.',
+    namaaArea: 'Naama Bay', sharksArea: 'Sharks Bay', nabqArea: 'Nabq Bay',
+    oldMarketArea: 'Old Market', hadabaArea: 'Hadaba', montazahArea: 'Montazah', rasUmSid: 'Ras Um Sid',
+    apartment: 'Квартира', villa: 'Вилла', studio: 'Студия', chalet: 'Шале',
+  },
+}
+
+function t(locale: string, key: string): string {
+  return TX[locale]?.[key] ?? TX.en[key] ?? key
+}
+
+// ── Form component (needs Suspense for useSearchParams) ─────
+function ListingFormInner({ locale }: { locale: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const type = searchParams.get('type') as 'property' | 'car'
-  
-  const [subscription, setSubscription] = useState<any>(null)
-  const [fieldConfig, setFieldConfig] = useState<Record<string, { is_enabled: boolean, is_required: boolean, owner_can_toggle: boolean }>>({})
+  const isAr = locale === 'ar'
 
-  useEffect(() => {
-    if (!type) return
-    const section = type === 'car' ? 'cars' : 'properties'
-    fetch(`/api/admin/field-config?section=${section}`)
-      .then(r => r.json())
-      .then(data => {
-        const config: Record<string, any> = {}
-        ;(data.fields || []).forEach((f: any) => {
-          config[f.field_key] = { is_enabled: f.is_enabled, is_required: f.is_required, owner_can_toggle: f.owner_can_toggle }
-        })
-        setFieldConfig(config)
-      })
-      .catch(() => {})
-  }, [type])
-
-  const isFieldEnabled = (key: string) => fieldConfig[key]?.is_enabled !== false
-  const isFieldRequired = (key: string) => fieldConfig[key]?.is_required === true
+  const [fieldConfig, setFieldConfig] = useState<Record<string, { is_enabled: boolean; is_required: boolean }>>({})
   const [loading, setLoading] = useState(false)
   const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [photos, setPhotos] = useState<string[]>([])
+  const [submitError, setSubmitError] = useState('')
   const [formData, setFormData] = useState<any>({
     name: '',
     description: '',
     photos: [],
-    // Property specific
+    // Property
     area: '',
     property_type: 'apartment',
     bedrooms: 1,
@@ -57,7 +229,7 @@ export default function ListingFormPage() {
     max_guests: 2,
     size_sqm: '',
     price_per_night: '',
-    // Car specific
+    // Car
     brand: '',
     model: '',
     year: new Date().getFullYear(),
@@ -69,570 +241,452 @@ export default function ListingFormPage() {
     listing_type: 'rental',
   })
 
-  // Auto-save to localStorage
+  // Load field config
   useEffect(() => {
-    if (Object.keys(formData).some(k => formData[k] !== '' && formData[k] !== 1 && formData[k] !== 2)) {
+    if (!type) return
+    const section = type === 'car' ? 'cars' : 'properties'
+    fetch(`/api/admin/field-config?section=${section}`)
+      .then(r => r.json())
+      .then(data => {
+        const config: Record<string, any> = {}
+        ;(data.fields || []).forEach((f: any) => {
+          config[f.field_key] = { is_enabled: f.is_enabled, is_required: f.is_required }
+        })
+        setFieldConfig(config)
+      })
+      .catch(() => {})
+  }, [type])
+
+  // Auto-save draft
+  useEffect(() => {
+    if (formData.name) {
       localStorage.setItem('listing_draft_' + type, JSON.stringify({ formData, photos }))
     }
-  }, [formData, photos])
+  }, [formData, photos, type])
 
-  // Load draft on mount
+  // Load draft
   useEffect(() => {
     const draft = localStorage.getItem('listing_draft_' + type)
     if (draft) {
       try {
-        const { formData: savedForm, photos: savedPhotos } = JSON.parse(draft)
-        setFormData(savedForm)
+        const { formData: saved, photos: savedPhotos } = JSON.parse(draft)
+        setFormData(saved)
         setPhotos(savedPhotos || [])
       } catch {}
     }
   }, [type])
 
+  // Redirect if type missing
   useEffect(() => {
     if (!type || (type !== 'property' && type !== 'car')) {
-      router.push('/en/owner/listings/new')
-      return
+      router.push(`/${locale}/owner/listings/new`)
     }
-    checkSubscription()
-  }, [type])
+  }, [type, locale, router])
 
-  const checkSubscription = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      router.push('/en/login')
-      return
-    }
+  const isFieldEnabled = (key: string) => fieldConfig[key]?.is_enabled !== false
+  const isFieldRequired = (key: string) => fieldConfig[key]?.is_required === true
 
-    const { data: sub } = await supabase
-      .rpc('get_user_active_subscription', { p_user_id: user.id })
-      .single()
-    
-    if (!sub || (sub as any).remaining_slots === 0) {
-      router.push('/en/owner/packages')
-      return
-    }
-
-    setSubscription(sub)
-  }
-
+  // ── Photo upload ────────────────────────────────────────
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
-
     setUploadingPhotos(true)
-
     try {
       const uploadedUrls: string[] = []
-
       for (const file of Array.from(files)) {
-        const fileExt = file.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `listings/${fileName}`
-
-        const { error: uploadError, data } = await supabase.storage
-          .from('car-photos')
-          .upload(filePath, file)
-
-        if (uploadError) throw uploadError
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('car-photos')
-          .getPublicUrl(filePath)
-
+        const ext = file.name.split('.').pop()
+        const path = `listings/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        const { error } = await supabase.storage.from('car-photos').upload(path, file)
+        if (error) throw error
+        const { data: { publicUrl } } = supabase.storage.from('car-photos').getPublicUrl(path)
         uploadedUrls.push(publicUrl)
       }
-
-      setPhotos([...photos, ...uploadedUrls])
-      setFormData({ ...formData, photos: [...photos, ...uploadedUrls] })
-    } catch (error) {
-      console.error('Photo upload error:', error)
-      alert('Failed to upload photos')
+      const merged = [...photos, ...uploadedUrls]
+      setPhotos(merged)
+      setFormData((prev: any) => ({ ...prev, photos: merged }))
+    } catch (err: any) {
+      alert('Photo upload failed: ' + (err.message || 'Unknown error'))
     } finally {
       setUploadingPhotos(false)
     }
   }
 
   const removePhoto = (index: number) => {
-    const newPhotos = photos.filter((_, i) => i !== index)
-    setPhotos(newPhotos)
-    setFormData({ ...formData, photos: newPhotos })
+    const next = photos.filter((_, i) => i !== index)
+    setPhotos(next)
+    setFormData((prev: any) => ({ ...prev, photos: next }))
   }
 
+  // ── Submit ──────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setSubmitError('')
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      // Find active user subscription
-      const { data: userSubs } = await supabase
-        .from('user_subscriptions')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .limit(1)
-
-      if (!userSubs || userSubs.length === 0) throw new Error('No active subscription')
-      const userSubId = userSubs[0].id
-      const { data: slots } = await supabase
-        .from('listing_slots').select('id').eq('subscription_id', userSubId).eq('status', 'available').limit(1)
-
-      const slotId = slots[0].id
+      const slug = (formData.name || type)
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .slice(0, 60)
+        + '-' + Date.now()
 
       if (type === 'property') {
-        // Insert property
-        const { data: property, error } = await supabase
-          .from('properties')
-          .insert({
-            owner_user_id: user.id,
-            slot_id: slotId,
-            name: formData.name,
-            description: formData.description,
-            photos: formData.photos,
-            area: formData.area,
-            type: formData.property_type,
-            bedrooms: formData.bedrooms,
-            bathrooms: formData.bathrooms,
-            max_guests: formData.max_guests,
-            size_sqm: parseFloat(formData.size_sqm),
-            price_per_night: parseFloat(formData.price_per_night),
-            review_status: 'pending_review',
-            status: 'unavailable',
-          })
-          .select()
-          .single()
-
+        const { error } = await supabase.from('properties').insert({
+          owner_id: user.id,
+          slug,
+          name: formData.name,
+          description: formData.description || null,
+          photos: photos,
+          area: formData.area,
+          type: formData.property_type,
+          bedrooms: Number(formData.bedrooms),
+          bathrooms: Number(formData.bathrooms),
+          max_guests: Number(formData.max_guests),
+          size_sqm: formData.size_sqm ? parseFloat(formData.size_sqm) : null,
+          price_per_night: parseFloat(formData.price_per_night),
+          status: 'coming_soon',
+        })
         if (error) throw error
-
-        // Reserve slot
-        await supabase
-          .from('listing_slots')
-          .update({
-            status: 'reserved',
-            slot_type: 'property',
-            slot_item_id: property.id,
-            reserved_at: new Date().toISOString(),
-          })
-          .eq('id', slotId)
 
       } else {
-        // Insert car
-        const { data: car, error } = await supabase
-          .from('cars')
-          .insert({
-            owner_id: user.id,
-            slot_id: slotId,
-            slug: formData.brand.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + formData.model.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now(),
-            name: formData.name,
-            description: formData.description,
-            photos: formData.photos,
-            brand: formData.brand,
-            model: formData.model,
-            year: formData.year,
-            transmission: formData.transmission,
-            fuel_type: formData.fuel_type,
-            seats: formData.seats,
-            price_per_day: parseFloat(formData.price_per_day),
-            price_per_month: formData.price_per_month ? parseFloat(formData.price_per_month) : null,
-            review_status: 'pending_review',
-            status: 'unavailable',
-          })
-          .select()
-          .single()
-
-        await supabase.from('admin_notifications').insert({ type: 'new_listing', title: 'New Car Pending Review', body: formData.brand + ' ' + formData.model + ' submitted for review', link: '/admin/review', read: false })
+        const { error } = await supabase.from('cars').insert({
+          owner_id: user.id,
+          slug,
+          name: formData.name || `${formData.brand} ${formData.model}`,
+          description: formData.description || null,
+          photos: photos,
+          brand: formData.brand,
+          model: formData.model,
+          year: Number(formData.year),
+          transmission: formData.transmission,
+          fuel_type: formData.fuel_type,
+          seats: Number(formData.seats),
+          price_per_day: parseFloat(formData.price_per_day),
+          price_per_month: formData.price_per_month ? parseFloat(formData.price_per_month) : null,
+          listing_type: formData.listing_type,
+          status: 'coming_soon',
+        })
         if (error) throw error
-
-        // Reserve slot
-        await supabase
-          .from('listing_slots')
-          .update({
-            status: 'reserved',
-            slot_type: 'car',
-            slot_item_id: car.id,
-            reserved_at: new Date().toISOString(),
-          })
-          .eq('id', slotId)
       }
 
-      // Success
-      router.push('/en/owner/listings?filter=pending')
+      // Clear draft
+      localStorage.removeItem('listing_draft_' + type)
 
-    } catch (error: any) {
-      console.error('Submit error:', error)
-      alert(error.message || 'Failed to submit listing')
+      // Notify admin
+      await supabase.from('admin_notifications').insert({
+        type: 'new_listing',
+        title: type === 'property' ? 'New Property Pending Review' : 'New Car Pending Review',
+        body: formData.name || `${formData.brand} ${formData.model}`,
+        link: '/admin/review',
+        read: false,
+      }).then(() => {})
+
+      router.push(`/${locale}/owner/listings?filter=pending`)
+
+    } catch (err: any) {
+      console.error('Submit error:', err)
+      setSubmitError(err.message || 'Submission failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
+  const inputCls = 'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4A843] focus:border-transparent text-sm'
+  const labelCls = `block text-sm font-medium text-gray-700 mb-1 ${isAr ? 'text-right' : ''}`
+
   return (
-    <div className="min-h-screen bg-[#FAF9F6]">
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        
+    <div className="min-h-screen bg-[#FAF9F6]" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            {type === 'property' ? (
-              <Home className="w-8 h-8 text-blue-600" />
-            ) : (
-              <Car className="w-8 h-8 text-purple-600" />
-            )}
-            <h1 className="text-2xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              {type === 'property' ? 'Add Property' : 'Add Car Rental'}
+            {type === 'property'
+              ? <Home className="w-8 h-8 text-[#2C3A6B]" />
+              : <Car className="w-8 h-8 text-[#D4A843]" />
+            }
+            <h1 className="text-2xl font-bold text-[#2C3A6B]"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              {type === 'property' ? t(locale, 'addProperty') : t(locale, 'addCar')}
             </h1>
           </div>
-          <p className="text-sm text-gray-500">
-            Fill in the details below. Your listing will be reviewed within 24-48 hours.
-          </p>
+          <p className="text-sm text-gray-500">{t(locale, 'subtitle')}</p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* Photos */}
-          {isFieldEnabled('photos') && <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-[#2C3A6B] mb-3">
-              Photos {isFieldRequired('photos') ? '* (Minimum 1)' : '(optional)'}
-            </label>
-            
-            <div className="grid grid-cols-3 gap-3 mb-3">
-              {photos.map((url, index) => (
-                <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
-                  <img src={url} alt="" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
+        {/* Error */}
+        {submitError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{submitError}</p>
+          </div>
+        )}
 
-            <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#D4A843] transition-colors">
-              <Upload className="w-8 h-8 text-gray-400 mb-2" />
-              <span className="text-sm text-gray-500">
-                {uploadingPhotos ? 'Uploading...' : 'Click to upload photos'}
-              </span>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                className="hidden"
-                disabled={uploadingPhotos}
-              />
-            </label>
-          </div>}
+        <form onSubmit={handleSubmit} className="space-y-6">
+
+          {/* Photos */}
+          {isFieldEnabled('photos') && (
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <label className={`block text-sm font-semibold text-[#2C3A6B] mb-3`}>
+                {t(locale, 'photos')} {isFieldRequired('photos') ? t(locale, 'photoMin') : t(locale, 'photoOptional')}
+              </label>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                {photos.map((url, i) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => removePhoto(i)}
+                      className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#D4A843] transition-colors">
+                <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                <span className="text-sm text-gray-500">
+                  {uploadingPhotos ? t(locale, 'uploading') : t(locale, 'clickUpload')}
+                </span>
+                <input type="file" multiple accept="image/*"
+                  onChange={handlePhotoUpload} className="hidden" disabled={uploadingPhotos} />
+              </label>
+            </div>
+          )}
 
           {/* Basic Info */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-            <h3 className="font-semibold text-[#2C3A6B]">Basic Information</h3>
-            
+            <h3 className={`font-semibold text-[#2C3A6B] ${isAr ? 'text-right' : ''}`}>
+              {t(locale, 'basicInfo')}
+            </h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.name}
+              <label className={labelCls}>{t(locale, 'title')} *</label>
+              <input type="text" required value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder={type === 'property' ? 'e.g. Cozy Apartment in Naama Bay' : 'e.g. Toyota Corolla 2023'}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4A843] focus:border-transparent"
-              />
+                placeholder={type === 'property' ? t(locale, 'titlePropPlaceholder') : t(locale, 'titleCarPlaceholder')}
+                className={inputCls} />
             </div>
-
             {isFieldEnabled('description') && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description {isFieldRequired('description') ? '*' : '(optional)'}
-              </label>
-              <textarea
-                required={isFieldRequired('description')}
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={4}
-                placeholder="Describe your listing..."
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4A843] focus:border-transparent"
-              />
-            </div>
+              <div>
+                <label className={labelCls}>
+                  {t(locale, 'description')} {isFieldRequired('description') ? '*' : t(locale, 'descOptional')}
+                </label>
+                <textarea required={isFieldRequired('description')} value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={4} placeholder="..."
+                  className={inputCls + ' resize-none'} />
+              </div>
             )}
           </div>
 
-          {/* Property Specific Fields */}
+          {/* Property fields */}
           {type === 'property' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-              <h3 className="font-semibold text-[#2C3A6B]">Property Details</h3>
-              
+              <h3 className={`font-semibold text-[#2C3A6B] ${isAr ? 'text-right' : ''}`}>
+                {t(locale, 'propertyDetails')}
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Area *</label>
-                  <select
-                    required
-                    value={formData.area}
+                  <label className={labelCls}>{t(locale, 'area')} *</label>
+                  <select required value={formData.area}
                     onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  >
-                    <option value="">Select area</option>
-                    <option value="naama_bay">Naama Bay</option>
-                    <option value="sharks_bay">Sharks Bay</option>
-                    <option value="nabq_bay">Nabq Bay</option>
-                    <option value="old_market">Old Market</option>
-                    <option value="hadaba">Hadaba</option>
+                    className={inputCls}>
+                    <option value="">{t(locale, 'selectArea')}</option>
+                    <option value="naama_bay">{t(locale, 'namaaArea')}</option>
+                    <option value="sharks_bay">{t(locale, 'sharksArea')}</option>
+                    <option value="nabq">{t(locale, 'nabqArea')}</option>
+                    <option value="old_market">{t(locale, 'oldMarketArea')}</option>
+                    <option value="hadaba">{t(locale, 'hadabaArea')}</option>
+                    <option value="montazah">{t(locale, 'montazahArea')}</option>
+                    <option value="ras_um_sid">{t(locale, 'rasUmSid')}</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
-                  <select
-                    required
-                    value={formData.property_type}
+                  <label className={labelCls}>{t(locale, 'type')} *</label>
+                  <select required value={formData.property_type}
                     onChange={(e) => setFormData({ ...formData, property_type: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  >
-                    <option value="apartment">Apartment</option>
-                    <option value="villa">Villa</option>
-                    <option value="studio">Studio</option>
-                    <option value="chalet">Chalet</option>
+                    className={inputCls}>
+                    <option value="apartment">{t(locale, 'apartment')}</option>
+                    <option value="villa">{t(locale, 'villa')}</option>
+                    <option value="studio">{t(locale, 'studio')}</option>
+                    <option value="chalet">{t(locale, 'chalet')}</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms *</label>
-                  <input
-                    type="number"
-                    required
-                    min={0}
-                    value={formData.bedrooms}
+                  <label className={labelCls}>{t(locale, 'bedrooms')} *</label>
+                  <input type="number" required min={0} value={formData.bedrooms}
                     onChange={(e) => setFormData({ ...formData, bedrooms: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms *</label>
-                  <input
-                    type="number"
-                    required
-                    min={1}
-                    value={formData.bathrooms}
+                  <label className={labelCls}>{t(locale, 'bathrooms')} *</label>
+                  <input type="number" required min={1} value={formData.bathrooms}
                     onChange={(e) => setFormData({ ...formData, bathrooms: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Max Guests *</label>
-                  <input
-                    type="number"
-                    required
-                    min={1}
-                    value={formData.max_guests}
+                  <label className={labelCls}>{t(locale, 'maxGuests')} *</label>
+                  <input type="number" required min={1} value={formData.max_guests}
                     onChange={(e) => setFormData({ ...formData, max_guests: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Size (sqm)</label>
-                  <input
-                    type="number"
-                    value={formData.size_sqm}
+                  <label className={labelCls}>{t(locale, 'sizeSqm')}</label>
+                  <input type="number" value={formData.size_sqm}
                     onChange={(e) => setFormData({ ...formData, size_sqm: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price per Night (EGP) *</label>
-                <input
-                  type="number"
-                  required
-                  min={0}
-                  value={formData.price_per_night}
+                <label className={labelCls}>{t(locale, 'priceNight')} *</label>
+                <input type="number" required min={0} value={formData.price_per_night}
                   onChange={(e) => setFormData({ ...formData, price_per_night: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                />
+                  className={inputCls} />
               </div>
             </div>
           )}
 
-          {/* Car Specific Fields */}
+          {/* Car fields */}
           {type === 'car' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-              <h3 className="font-semibold text-[#2C3A6B]">Car Details</h3>
+              <h3 className={`font-semibold text-[#2C3A6B] ${isAr ? 'text-right' : ''}`}>
+                {t(locale, 'carDetails')}
+              </h3>
+              {/* Listing type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type *</label>
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                    <input type="radio" value="rental" checked={formData.listing_type === 'rental'} onChange={() => setFormData({ ...formData, listing_type: 'rental' })} />
-                    <span style={{ fontSize: 14 }}>🚗 For Rent</span>
+                <label className={labelCls}>{t(locale, 'listingType')} *</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" value="rental"
+                      checked={formData.listing_type === 'rental'}
+                      onChange={() => setFormData({ ...formData, listing_type: 'rental' })} />
+                    <span className="text-sm">{t(locale, 'forRent')}</span>
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', opacity: 0.5 }}>
-                    <input type="radio" value="sale" disabled checked={formData.listing_type === 'sale'} onChange={() => setFormData({ ...formData, listing_type: 'sale' })} />
-                    <span style={{ fontSize: 14 }}>🏷️ For Sale (coming soon)</span>
+                  <label className="flex items-center gap-2 cursor-pointer opacity-50">
+                    <input type="radio" value="sale" disabled
+                      checked={formData.listing_type === 'sale'}
+                      onChange={() => setFormData({ ...formData, listing_type: 'sale' })} />
+                    <span className="text-sm">{t(locale, 'forSale')}</span>
                   </label>
                 </div>
               </div>
-              
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Brand *</label>
-                  <select
-                    required
-                    value={formData.brand}
+                  <label className={labelCls}>{t(locale, 'brand')} *</label>
+                  <select required value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value, model: '' })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  >
-                    <option value="">Select brand...</option>
+                    className={inputCls}>
+                    <option value="">{t(locale, 'selectBrand')}</option>
                     {BRAND_NAMES.map(b => <option key={b} value={b}>{b}</option>)}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Model *</label>
-                  {formData.brand && formData.brand !== "Other" ? (
-                    <select
-                      required
-                      value={formData.model}
+                  <label className={labelCls}>{t(locale, 'model')} *</label>
+                  {formData.brand && formData.brand !== 'Other' ? (
+                    <select required value={formData.model}
                       onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                    >
-                      <option value="">Select model...</option>
-                      {(CAR_BRANDS[formData.brand] || []).map(m => <option key={m} value={m}>{m}</option>)}
-                      <option value="Other">Other (specify below)</option>
+                      className={inputCls}>
+                      <option value="">{t(locale, 'selectModel')}</option>
+                      {(CAR_BRANDS[formData.brand] || []).map((m: string) => <option key={m} value={m}>{m}</option>)}
+                      <option value="Other">{t(locale, 'otherModel')}</option>
                     </select>
                   ) : (
-                    <input
-                      type="text"
-                      required
-                      value={formData.model}
+                    <input type="text" required value={formData.model}
                       onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                      placeholder="Enter model name"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                    />
+                      placeholder={t(locale, 'enterModel')} className={inputCls} />
                   )}
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Year *</label>
-                  <input
-                    type="number"
-                    required
-                    min={2000}
-                    max={new Date().getFullYear() + 1}
+                  <label className={labelCls}>{t(locale, 'year')} *</label>
+                  <input type="number" required min={2000} max={new Date().getFullYear() + 1}
                     value={formData.year}
                     onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Transmission *</label>
-                  <select
-                    required
-                    value={formData.transmission}
+                  <label className={labelCls}>{t(locale, 'transmission')} *</label>
+                  <select required value={formData.transmission}
                     onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  >
-                    <option value="automatic">Automatic</option>
-                    <option value="manual">Manual</option>
+                    className={inputCls}>
+                    <option value="automatic">{t(locale, 'automatic')}</option>
+                    <option value="manual">{t(locale, 'manual')}</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fuel Type *</label>
-                  <select
-                    required
-                    value={formData.fuel_type}
+                  <label className={labelCls}>{t(locale, 'fuelType')} *</label>
+                  <select required value={formData.fuel_type}
                     onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  >
-                    <option value="petrol">Petrol</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="electric">Electric</option>
-                    <option value="hybrid">Hybrid</option>
+                    className={inputCls}>
+                    <option value="petrol">{t(locale, 'petrol')}</option>
+                    <option value="diesel">{t(locale, 'diesel')}</option>
+                    <option value="electric">{t(locale, 'electric')}</option>
+                    <option value="hybrid">{t(locale, 'hybrid')}</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Seats *</label>
-                  <input
-                    type="number"
-                    required
-                    min={2}
-                    max={9}
+                  <label className={labelCls}>{t(locale, 'seats')} *</label>
+                  <input type="number" required min={2} max={9}
                     value={formData.seats}
                     onChange={(e) => setFormData({ ...formData, seats: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Daily Rate (EGP) *</label>
-                  <input
-                    type="number"
-                    required
-                    min={0}
-                    value={formData.price_per_day}
+                  <label className={labelCls}>{t(locale, 'dailyRate')} *</label>
+                  <input type="number" required min={0} value={formData.price_per_day}
                     onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Rate (EGP)</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={formData.price_per_month}
+                  <label className={labelCls}>{t(locale, 'monthlyRate')}</label>
+                  <input type="number" min={0} value={formData.price_per_month}
                     onChange={(e) => setFormData({ ...formData, price_per_month: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-                  />
+                    className={inputCls} />
                 </div>
               </div>
             </div>
           )}
 
-          {/* Submit */}
+          {/* Actions */}
           <div className="flex items-center gap-4">
-            <button
-              type="submit"
-              disabled={loading || photos.length < 1}
-              className="flex-1 bg-[#2C3A6B] hover:bg-[#243058] text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? 'Submitting...' : 'Submit for Review'}
+            <button type="submit" disabled={loading || photos.length < 1}
+              className="flex-1 bg-[#2C3A6B] hover:bg-[#243058] text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {loading ? t(locale, 'submitting') : t(locale, 'submit')}
             </button>
-            
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-6 py-3 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
+            <button type="button" onClick={() => router.back()}
+              className="px-6 py-3 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50">
+              {t(locale, 'cancel')}
             </button>
           </div>
 
-          {/* Info */}
+          {/* Review info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-blue-800">
-                <p className="font-semibold mb-1">Review Process</p>
-                <p>Your listing will be reviewed by our team within 24-48 hours. You'll receive a notification once it's approved or if changes are needed.</p>
+                <p className={`font-semibold mb-1 ${isAr ? 'text-right' : ''}`}>{t(locale, 'reviewProcess')}</p>
+                <p className={isAr ? 'text-right' : ''}>{t(locale, 'reviewInfo')}</p>
               </div>
             </div>
           </div>
         </form>
       </div>
     </div>
+  )
+}
+
+// ── Page wrapper — extracts locale from path ────────────────
+export default function ListingFormPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params)
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]" />
+      </div>
+    }>
+      <ListingFormInner locale={locale} />
+    </Suspense>
   )
 }
