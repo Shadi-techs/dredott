@@ -100,9 +100,10 @@ function StatusBadge({ status }: { status: string }) {
 // ============================================
 
 function OwnerDrawer({
-  owner, onClose, onAction
+  owner, locale, onClose, onAction
 }: {
   owner: Owner | null
+  locale: string
   onClose: () => void
   onAction: (ownerId: string, verificationId: string, action: 'approve' | 'reject' | 'changes_requested', reason?: string) => Promise<void>
 }) {
@@ -160,9 +161,14 @@ function OwnerDrawer({
                 </div>
               </div>
             </div>
-            <button onClick={onClose} className="text-[#6B7280] hover:text-[#1a2240]">
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <a href={`/${locale}/admin/owners/${owner.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0e1428] text-[#D4A843] text-xs font-semibold border border-[#D4A843]/30 hover:bg-[#1a2240] transition-colors" style={{ textDecoration: 'none' }}>
+                <ExternalLink className="w-3 h-3" /> Full Profile
+              </a>
+              <button onClick={onClose} className="text-[#6B7280] hover:text-[#1a2240]">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Verification status */}
@@ -450,6 +456,8 @@ function OwnerCard({ owner, onClick }: { owner: Owner; onClick: () => void }) {
 
 export default function AdminOwnersPage() {
   const supabase = createClient()
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
+  const locale   = pathname.split('/')[1] || 'en'
 
   const [owners, setOwners]           = useState<Owner[]>([])
   const [loading, setLoading]         = useState(true)
@@ -734,6 +742,7 @@ export default function AdminOwnersPage() {
       {/* Drawer */}
       <OwnerDrawer
         owner={selectedOwner}
+        locale={locale}
         onClose={() => setSelectedOwner(null)}
         onAction={handleVerificationAction}
       />

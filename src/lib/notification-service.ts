@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 // import { sendEmail } from "@/lib/email-service"; // TODO: implement in email phase
 
 export type NotificationType =
@@ -28,7 +28,7 @@ export interface NotificationPayload {
  * Send notification to owner in database + email
  */
 export async function sendOwnerNotification(payload: NotificationPayload) {
-  const supabase = await createClient();
+  const supabase = getSupabaseAdmin();
 
   try {
     // 1. Save to database
@@ -160,6 +160,68 @@ export async function notifyPropertyChangesRequested(
       action: "changes_requested",
       allowResubmission: true,
     },
+  });
+}
+
+// Car Approved
+export async function notifyCarApproved(
+  ownerId: string,
+  carId: string,
+  carName: string,
+  adminId: string
+) {
+  return sendOwnerNotification({
+    userId: ownerId,
+    type: "car_approved",
+    title: `✅ Car Listing Approved!`,
+    message: `Your car "${carName}" has been approved and is now live on the platform. Start receiving bookings!`,
+    entityType: "car",
+    entityId: carId,
+    adminId,
+    link: `/owner/listings/${carId}`,
+    metadata: { carName, action: "approved" },
+  });
+}
+
+// Car Rejected
+export async function notifyCarRejected(
+  ownerId: string,
+  carId: string,
+  carName: string,
+  rejectionReason: string,
+  adminId: string
+) {
+  return sendOwnerNotification({
+    userId: ownerId,
+    type: "car_rejected",
+    title: `❌ Car Listing Not Approved`,
+    message: `Your car "${carName}" was not approved. Reason: ${rejectionReason}. You can list a different car.`,
+    entityType: "car",
+    entityId: carId,
+    adminId,
+    link: `/owner/listings`,
+    metadata: { carName, reason: rejectionReason, action: "rejected", isFinal: true },
+  });
+}
+
+// Car Changes Requested
+export async function notifyCarChangesRequested(
+  ownerId: string,
+  carId: string,
+  carName: string,
+  changesReason: string,
+  adminId: string
+) {
+  return sendOwnerNotification({
+    userId: ownerId,
+    type: "car_changes_requested",
+    title: `⚠️ Car Listing Changes Required`,
+    message: `Your car "${carName}" needs some updates. Required changes: ${changesReason}. Please update and resubmit for review.`,
+    entityType: "car",
+    entityId: carId,
+    adminId,
+    link: `/owner/listings/${carId}/edit`,
+    metadata: { carName, reason: changesReason, action: "changes_requested", allowResubmission: true },
   });
 }
 

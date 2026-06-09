@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import * as jose from 'jose'
-import { notifyPropertyRejected } from '@/lib/notification-service'
+import { notifyPropertyRejected, notifyCarRejected } from '@/lib/notification-service'
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.ADMIN_JWT_SECRET || 'admin-super-secret-change-in-production'
@@ -116,15 +116,10 @@ export async function POST(req: NextRequest) {
     // ── 9. ابعت notification للـ owner ✅ جديد ──
     try {
       if (entity_type === 'property') {
-        await notifyPropertyRejected(
-          current.owner_id,
-          entity_id,
-          current.name,
-          rejectionReasonText,
-          payload.sub as string
-        )
+        await notifyPropertyRejected(current.owner_id, entity_id, current.name, rejectionReasonText, payload.sub as string)
+      } else if (entity_type === 'car') {
+        await notifyCarRejected(current.owner_id, entity_id, current.name, rejectionReasonText, payload.sub as string)
       }
-      // TODO: Add notifyCarRejected for cars
     } catch (notifyError) {
       console.error('Notification error:', notifyError)
       // مش بنوقف الـ process
