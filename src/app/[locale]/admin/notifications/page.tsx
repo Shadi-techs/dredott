@@ -64,22 +64,29 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
     setLoading(false)
   }
 
+  const signalLayoutRefresh = () => {
+    // Triggers the layout's storage listener to refresh the badge count
+    localStorage.setItem('admin_notif_read', Date.now().toString())
+  }
+
   const markRead = async (id: string) => {
-    await fetch('/api/admin/notifications/mark-read', { 
-      method: 'POST', 
-      headers: {'Content-Type': 'application/json'}, 
-      body: JSON.stringify({ id }) 
+    await fetch('/api/admin/notifications/mark-read', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
     })
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+    signalLayoutRefresh()
   }
 
   const markAllRead = async () => {
-    await fetch('/api/admin/notifications/mark-read', { 
-      method: 'POST', 
-      headers: {'Content-Type': 'application/json'}, 
-      body: JSON.stringify({ all: true }) 
+    await fetch('/api/admin/notifications/mark-read', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ all: true })
     })
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    signalLayoutRefresh()
   }
 
   const deleteNotif = async (id: string) => {

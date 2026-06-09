@@ -70,13 +70,34 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
 
   useEffect(() => {
     if (!user) return
+
     async function fetchUnread() {
       try {
         const res = await fetch('/api/admin/notifications/unread-count')
         if (res.ok) { const data = await res.json(); setUnread(data.count || 0) }
       } catch {}
     }
+
     fetchUnread()
+
+    // Poll every 30 seconds
+    const interval = setInterval(fetchUnread, 30_000)
+
+    // Refresh when tab regains focus (e.g. after reading notifications)
+    const onFocus = () => fetchUnread()
+    window.addEventListener('focus', onFocus)
+
+    // Refresh when notifications page signals "all read"
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'admin_notif_read') fetchUnread()
+    }
+    window.addEventListener('storage', onStorage)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('storage', onStorage)
+    }
   }, [user])
 
   if (isPublicPath) return <>{children}</>
