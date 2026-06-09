@@ -21,6 +21,25 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   const [loading, setLoading]   = useState(true)
   const [unread, setUnread]     = useState(0)
 
+  // Auto-lock after 3 minutes of inactivity
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    const resetTimer = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        document.cookie = 'admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+        router.push(`/${locale}/admin/login?reason=timeout`)
+      }, 3 * 60 * 1000)
+    }
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart']
+    events.forEach(e => window.addEventListener(e, resetTimer))
+    resetTimer()
+    return () => {
+      clearTimeout(timer)
+      events.forEach(e => window.removeEventListener(e, resetTimer))
+    }
+  }, [locale])
+
   const isPublicPath = PUBLIC_ADMIN_PATHS.some(p => pathname.includes(p))
 
   useEffect(() => {

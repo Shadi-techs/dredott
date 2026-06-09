@@ -102,14 +102,11 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
   }
 
   return (
-    <div className="min-h-screen bg-[#F0F2F7] flex items-center justify-center px-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4A843]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2A9D8F]/5 rounded-full blur-3xl" />
-      </div>
+    <div style={{ minHeight: "100vh", background: "#F0F2F7", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
 
-      <div className="relative w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-2xl border border-[#D4A843]/20 p-8">
+
+      <div style={{ width: "100%", maxWidth: 440 }}>
+        <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 20px 60px rgba(0,0,0,0.12)", border: "1px solid rgba(212,168,67,0.2)", padding: "32px 28px" }}>
 
           {/* Title */}
           <div className="text-center mb-8">
@@ -135,7 +132,7 @@ export default function VerifyPinPage({ params }: { params: Promise<{ locale: st
                 <input
                   key={index}
                   ref={(el) => { inputRefs.current[index] = el }}
-                  type="text"
+                  type="password"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
