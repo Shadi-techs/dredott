@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useRouter, usePathname } from 'next/navigation'
 import { Settings, Car, Home, ToggleLeft, ToggleRight, Save, Bell, ChevronDown, ChevronUp, Moon, Sun } from 'lucide-react'
 
@@ -28,7 +29,10 @@ export default function FieldConfigPage() {
   const [fields, setFields] = useState<Field[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [activeSection, setActiveSection] = useState('cars')
+  const searchParams = useSearchParams()
+  const urlSection = searchParams.get('section') || ''
+  const [activeSection, setActiveSection] = useState(urlSection || 'cars')
+  const singleSection = !!urlSection
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ fields: true, payment: true })
   const [dark, setDark] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -140,8 +144,8 @@ export default function FieldConfigPage() {
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px' }}>
 
-        {/* Section Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+        {/* Section Tabs - only if no section in URL */}
+        <div style={{ display: singleSection ? 'none' : 'flex', gap: 8, marginBottom: 24 }}>
           {SECTIONS.map(s => (
             <button key={s.key} onClick={() => setActiveSection(s.key)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, border: `1px solid ${activeSection === s.key ? colors.gold : colors.border}`, background: activeSection === s.key ? (dark ? '#1a2240' : '#FBF0D0') : colors.card, cursor: 'pointer', fontSize: 14, fontWeight: activeSection === s.key ? 600 : 400, color: activeSection === s.key ? colors.gold : colors.text }}>
               {s.icon} {isAr ? s.label_ar : s.label_en}
