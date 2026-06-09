@@ -56,7 +56,6 @@ const NAV_SECTIONS: NavSection[] = [
       { href: '/admin',                icon: LayoutDashboard, label: 'Dashboard',         roles: ['super_admin', 'admin', 'viewer'] },
       { href: '/admin/notifications',  icon: Bell,            label: 'Notifications',     roles: ['super_admin', 'admin'] },
       { href: '/admin/email',          icon: Mail,            label: 'Email',             roles: ['super_admin', 'admin'] },
-      { href: '/admin/field-config',   icon: Settings,        label: 'Field Config',      roles: ['super_admin'] },
     ],
   },
   {
