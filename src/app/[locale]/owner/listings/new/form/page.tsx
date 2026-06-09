@@ -23,6 +23,25 @@ export default function ListingFormPage() {
   const type = searchParams.get('type') as 'property' | 'car'
   
   const [subscription, setSubscription] = useState<any>(null)
+  const [fieldConfig, setFieldConfig] = useState<Record<string, { is_enabled: boolean, is_required: boolean, owner_can_toggle: boolean }>>({})
+
+  useEffect(() => {
+    if (!type) return
+    const section = type === 'car' ? 'cars' : 'properties'
+    fetch(`/api/admin/field-config?section=${section}`)
+      .then(r => r.json())
+      .then(data => {
+        const config: Record<string, any> = {}
+        ;(data.fields || []).forEach((f: any) => {
+          config[f.field_key] = { is_enabled: f.is_enabled, is_required: f.is_required, owner_can_toggle: f.owner_can_toggle }
+        })
+        setFieldConfig(config)
+      })
+      .catch(() => {})
+  }, [type])
+
+  const isFieldEnabled = (key: string) => fieldConfig[key]?.is_enabled !== false
+  const isFieldRequired = (key: string) => fieldConfig[key]?.is_required === true
   const [loading, setLoading] = useState(false)
   const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [photos, setPhotos] = useState<string[]>([])
@@ -273,9 +292,9 @@ export default function ListingFormPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Photos */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          {isFieldEnabled('photos') && <div className="bg-white rounded-xl border border-gray-200 p-6">
             <label className="block text-sm font-semibold text-[#2C3A6B] mb-3">
-              Photos * (Minimum 5)
+              Photos {isFieldRequired('photos') ? '* (Minimum 1)' : '(optional)'}
             </label>
             
             <div className="grid grid-cols-3 gap-3 mb-3">
@@ -327,12 +346,13 @@ export default function ListingFormPage() {
               />
             </div>
 
+            {isFieldEnabled('description') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description *
+                Description {isFieldRequired('description') ? '*' : '(optional)'}
               </label>
               <textarea
-                required
+                required={isFieldRequired('description')}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
@@ -340,6 +360,7 @@ export default function ListingFormPage() {
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4A843] focus:border-transparent"
               />
             </div>
+            )}
           </div>
 
           {/* Property Specific Fields */}

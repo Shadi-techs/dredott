@@ -20,6 +20,18 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   const [user, setUser]         = useState<any>(null)
   const [loading, setLoading]   = useState(true)
   const [unread, setUnread]     = useState(0)
+  const [dark, setDark]         = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('admin_dark_mode')
+    if (saved === 'true') setDark(true)
+  }, [])
+
+  const toggleDark = () => {
+    const newVal = !dark
+    setDark(newVal)
+    localStorage.setItem('admin_dark_mode', String(newVal))
+  }
 
   // Auto-lock after 3 minutes of inactivity
   useEffect(() => {
@@ -80,7 +92,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   if (!user) return null
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: dark ? '#080d1a' : '#F4F6FA', color: dark ? '#FBF0D0' : '#1a2240', transition: 'all 0.2s' }} data-dark={dark}>
 
       {/* ── Top Header — اللوجو + Bell ── */}
       <div className="flex items-center justify-between px-6 py-3 bg-[#0e1428] border-b border-[#D4A843]/20 flex-shrink-0 z-40">
