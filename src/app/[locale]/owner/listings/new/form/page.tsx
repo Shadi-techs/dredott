@@ -13,6 +13,7 @@ import {
   MapPin, DollarSign, Home, Car, Calendar,
 } from 'lucide-react'
 import { CAR_BRANDS, BRAND_NAMES } from '@/lib/car-data'
+import { toast } from '@/components/owner/Toast'
 
 const supabase = createClient()
 
@@ -333,7 +334,7 @@ function ListingFormInner({ locale }: { locale: string }) {
       setPhotos(merged)
       setFormData((prev: any) => ({ ...prev, photos: merged }))
     } catch (err: any) {
-      alert('Photo upload failed: ' + (err.message || 'Unknown error'))
+      toast.error(err.message || 'Unknown error', 'Photo upload failed')
     } finally {
       setUploadingPhotos(false)
     }
@@ -377,6 +378,7 @@ function ListingFormInner({ locale }: { locale: string }) {
           size_sqm: formData.size_sqm ? parseFloat(formData.size_sqm) : null,
           price_per_night: parseFloat(formData.price_per_night),
           status: 'coming_soon',
+          review_status: 'pending_review',
         })
         if (error) throw error
 
@@ -397,6 +399,7 @@ function ListingFormInner({ locale }: { locale: string }) {
           price_per_month: formData.price_per_month ? parseFloat(formData.price_per_month) : null,
           listing_type: formData.listing_type,
           status: 'coming_soon',
+          review_status: 'pending_review',
         })
         if (error) throw error
       }
@@ -413,11 +416,14 @@ function ListingFormInner({ locale }: { locale: string }) {
         read: false,
       }).then(() => {})
 
+      toast.success('Listing submitted — under review!')
       router.push(`/${locale}/owner/listings?filter=pending`)
 
     } catch (err: any) {
       console.error('Submit error:', err)
-      setSubmitError(err.message || 'Submission failed. Please try again.')
+      const msg = err.message || 'Submission failed. Please try again.'
+      setSubmitError(msg)
+      toast.error(msg, 'Submit failed')
     } finally {
       setLoading(false)
     }

@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { 
-  Plus, Clock, CheckCircle, XCircle, MessageSquare, Eye, EyeOff, 
+import {
+  Plus, Clock, CheckCircle, XCircle, MessageSquare, Eye, EyeOff,
   Home, Car, AlertCircle, RotateCcw, Trash2
 } from 'lucide-react'
+import { toast } from '@/components/owner/Toast'
 
 const supabase = createClient()
 
@@ -75,7 +76,7 @@ export default function OwnerListingsPage() {
           resubmission_count, status, created_at, 
           verification_status, price_per_night
         `)
-        .eq('owner_user_id', user.id)
+        .eq('owner_id', user.id)
         .order('created_at', { ascending: false })
 
       // Get cars
@@ -105,8 +106,9 @@ export default function OwnerListingsPage() {
       if (filter === 'needs-changes') combined = combined.filter(l => l.review_status === 'changes_requested')
 
       setListings(combined)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Fetch error:', error)
+      toast.error(error?.message || 'Failed to load listings. Please refresh.')
     } finally {
       setLoading(false)
     }
@@ -115,23 +117,23 @@ export default function OwnerListingsPage() {
   const toggleHide = async (id: string, type: string, currentStatus: string) => {
     const newStatus = currentStatus === 'available' ? 'unavailable' : 'available'
     const table = type === 'property' ? 'properties' : 'cars'
-    
-    await supabase
-      .from(table)
-      .update({ status: newStatus })
-      .eq('id', id)
-    
+    const { error } = await supabase.from(table).update({ status: newStatus }).eq('id', id)
+    if (error) { toast.error(error.message, 'Could not update status'); return }
+    toast.success(newStatus === 'available' ? 'Listing is now live' : 'Listing hidden')
     fetchListings()
   }
 
   const deleteListing = async (id: string, type: string) => {
     if (!confirm('Are you sure? This action cannot be undone.')) return
-
     setDeletingId(id)
     try {
       const table = type === 'property' ? 'properties' : 'cars'
-      await supabase.from(table).delete().eq('id', id)
+      const { error } = await supabase.from(table).delete().eq('id', id)
+      if (error) { toast.error(error.message, 'Delete failed'); return }
+      toast.success('Listing deleted')
       fetchListings()
+    } catch (err: any) {
+      toast.error(err?.message || 'Delete failed')
     } finally {
       setDeletingId(null)
     }

@@ -10,6 +10,7 @@ import { use, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Calendar, Users, Phone, MessageCircle, CheckCircle, X, Loader2, AlertCircle } from 'lucide-react'
+import { toast } from '@/components/owner/Toast'
 
 interface OwnerBookingRequestsProps {
   params: Promise<{ locale: string }>
@@ -75,8 +76,9 @@ export default function OwnerBookingRequestsPage({ params }: OwnerBookingRequest
         setRequests(data)
       }
       setLoading(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching requests:', error)
+      toast.error(error?.message || 'Failed to load booking requests')
       setLoading(false)
     }
   }
@@ -126,13 +128,15 @@ export default function OwnerBookingRequestsPage({ params }: OwnerBookingRequest
       })
 
       if (response.ok) {
+        toast.success(isRtl ? 'تم تأكيد الحجز' : 'Booking confirmed')
         await fetchRequests()
       } else {
-        alert(isRtl ? 'فشل التأكيد' : 'Failed to confirm')
+        const body = await response.json().catch(() => ({}))
+        toast.error(body?.error || (isRtl ? 'فشل التأكيد' : 'Failed to confirm'), isRtl ? 'خطأ' : 'Error')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Confirm error:', error)
-      alert(isRtl ? 'حدث خطأ' : 'Error occurred')
+      toast.error(error?.message || (isRtl ? 'حدث خطأ' : 'Error occurred'), isRtl ? 'خطأ' : 'Error')
     } finally {
       setProcessingId(null)
     }
@@ -157,13 +161,15 @@ export default function OwnerBookingRequestsPage({ params }: OwnerBookingRequest
       })
 
       if (response.ok) {
+        toast.success(isRtl ? 'تم رفض الحجز' : 'Booking rejected')
         await fetchRequests()
       } else {
-        alert(isRtl ? 'فشل الرفض' : 'Failed to reject')
+        const body = await response.json().catch(() => ({}))
+        toast.error(body?.error || (isRtl ? 'فشل الرفض' : 'Failed to reject'), isRtl ? 'خطأ' : 'Error')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Reject error:', error)
-      alert(isRtl ? 'حدث خطأ' : 'Error occurred')
+      toast.error(error?.message || (isRtl ? 'حدث خطأ' : 'Error occurred'), isRtl ? 'خطأ' : 'Error')
     } finally {
       setProcessingId(null)
     }

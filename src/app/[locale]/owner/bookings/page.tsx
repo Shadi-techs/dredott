@@ -16,6 +16,7 @@ import { Card } from '@/components/owner/Card'
 import { Button } from '@/components/owner/Button'
 import { ScreenHeader } from '@/components/owner/ScreenHeader'
 import { getStrings } from '@/lib/owner/strings'
+import { toast } from '@/components/owner/Toast'
 
 // ============================================
 // TYPES
@@ -577,6 +578,7 @@ export default function BookingsPage({ params }: { params: Promise<{ locale: str
 
     if (error) {
       console.error('Error loading bookings:', error)
+      toast.error(error.message, 'Failed to load bookings')
     } else {
       setBookings(data || [])
     }

@@ -15,6 +15,7 @@ import { Button } from '@/components/owner/Button'
 import { Badge } from '@/components/owner/Badge'
 import { getStrings } from '@/lib/owner/strings'
 import { DENSITY } from '@/lib/owner/theme'
+import { toast } from '@/components/owner/Toast'
 
 interface TeamMember {
   id: string
@@ -129,11 +130,13 @@ export default function TeamPage({ params }: { params: Promise<{ locale: string 
       //   body: JSON.stringify({ email: inviteEmail, token }) 
       // })
 
+      toast.success('Invite sent!')
       setShowInviteModal(false)
       setInviteEmail('')
       void loadData()
-    } catch (err) {
+    } catch (err: any) {
       console.error('Invite error:', err)
+      toast.error(err?.message || 'Failed to send invite', 'Invite error')
     } finally {
       setInviting(false)
     }
@@ -142,11 +145,9 @@ export default function TeamPage({ params }: { params: Promise<{ locale: string 
   const handleRemove = async (memberId: string) => {
     if (!confirm('Remove this member?')) return
 
-    await supabase
-      .from('team_members')
-      .delete()
-      .eq('id', memberId)
-
+    const { error } = await supabase.from('team_members').delete().eq('id', memberId)
+    if (error) { toast.error(error.message, 'Remove failed'); return }
+    toast.success('Member removed')
     void loadData()
   }
 

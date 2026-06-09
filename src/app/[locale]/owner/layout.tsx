@@ -13,6 +13,7 @@ import {
 
 import { OwnerThemeProvider } from '@/components/owner/ThemeProvider'
 import { PermissionsProvider } from '@/components/owner/PermissionsProvider'
+import { ToastContainer } from '@/components/owner/Toast'
 import { getStrings } from '@/lib/owner/strings'
 import { createClient } from '@/lib/supabase/client'
 
@@ -249,6 +250,7 @@ export default function OwnerLayout({
             {children}
           </main>
         </div>
+        <ToastContainer />
         <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </PermissionsProvider>
     </OwnerThemeProvider>

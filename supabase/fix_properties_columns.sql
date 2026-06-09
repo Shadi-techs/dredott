@@ -1,39 +1,9 @@
 -- ============================================================
--- Migration: Fix properties table - add missing columns
--- Run this in Supabase SQL Editor
+-- DEPRECATED: This migration is superseded by add_moderation_columns.sql
+-- Run add_moderation_columns.sql instead — it includes everything here
+-- plus review_status, cars columns, and RLS policies.
 -- ============================================================
 
--- Add bathrooms column (was missing from original schema)
-ALTER TABLE public.properties
-  ADD COLUMN IF NOT EXISTS bathrooms INTEGER DEFAULT 1;
-
--- Add size_sqm column (used in listing form)
-ALTER TABLE public.properties
-  ADD COLUMN IF NOT EXISTS size_sqm DECIMAL(10,2);
-
--- Add owner_policy so owners can insert their own properties
--- (the current INSERT policy may be missing)
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies
-    WHERE tablename = 'properties' AND policyname = 'Owners can insert their own properties'
-  ) THEN
-    CREATE POLICY "Owners can insert their own properties"
-      ON public.properties FOR INSERT
-      WITH CHECK (auth.uid() = owner_id);
-  END IF;
-END $$;
-
--- Allow owners to update their own properties
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies
-    WHERE tablename = 'properties' AND policyname = 'Owners can update their own properties'
-  ) THEN
-    CREATE POLICY "Owners can update their own properties"
-      ON public.properties FOR UPDATE
-      USING (auth.uid() = owner_id);
-  END IF;
-END $$;
+-- Kept for reference only — safe to skip if you run add_moderation_columns.sql
+ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS bathrooms INTEGER DEFAULT 1;
+ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS size_sqm  DECIMAL(10,2);

@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-  Bell, CheckCircle, AlertCircle, Info, XCircle, 
+import {
+  Bell, CheckCircle, AlertCircle, Info, XCircle,
   Clock, RotateCcw, Trash2, ArrowRight
 } from 'lucide-react'
+import { toast } from '@/components/owner/Toast'
 
 const supabase_client = async () => {
   const { createClient } = await import('@/lib/supabase/client')
@@ -118,8 +119,9 @@ export default function NotificationsPage() {
       const response = await fetch('/api/owner/notifications')
       const data = await response.json()
       setNotifications(data || [])
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch notifications:', error)
+      toast.error(error?.message || 'Failed to load notifications')
     } finally {
       setLoading(false)
     }
@@ -127,50 +129,46 @@ export default function NotificationsPage() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await fetch('/api/owner/notifications/mark-read', {
+      const res = await fetch('/api/owner/notifications/mark-read', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notificationId }),
       })
-
+      if (!res.ok) throw new Error('Request failed')
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === notificationId ? { ...n, read: true } : n
-        )
+        prev.map((n) => n.id === notificationId ? { ...n, read: true } : n)
       )
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to mark as read:', error)
+      toast.error('Could not mark notification as read')
     }
   }
 
   const markAllAsRead = async () => {
     try {
-      await fetch('/api/owner/notifications/mark-read', {
+      const res = await fetch('/api/owner/notifications/mark-read', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ markAllAsRead: true }),
       })
-
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read: true }))
-      )
-    } catch (error) {
+      if (!res.ok) throw new Error('Request failed')
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+      toast.success('All notifications marked as read')
+    } catch (error: any) {
       console.error('Failed to mark all as read:', error)
+      toast.error('Could not mark all as read')
     }
   }
 
   const deleteNotification = async (notificationId: string) => {
     setDeletingId(notificationId)
     try {
-      await fetch(`/api/owner/notifications/${notificationId}`, {
-        method: 'DELETE',
-      })
-
-      setNotifications((prev) =>
-        prev.filter((n) => n.id !== notificationId)
-      )
-    } catch (error) {
+      const res = await fetch(`/api/owner/notifications/${notificationId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Delete failed')
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
+    } catch (error: any) {
       console.error('Failed to delete notification:', error)
+      toast.error('Could not delete notification')
     } finally {
       setDeletingId(null)
     }
