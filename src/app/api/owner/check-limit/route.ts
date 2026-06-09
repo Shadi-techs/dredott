@@ -1,8 +1,7 @@
 // ============================================
 // Check Listing Limit API
 // Path: src/app/api/owner/check-limit/route.ts
-// Uses new post-based subscription model
-// Returns: { allowed, used, max, package, reason }
+// Returns: { allowed, used, max, remaining, package, reason }
 // ============================================
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -21,17 +20,10 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Get active subscription
-    const { data: sub } = await supabase
-      .from('subscriptions')
-      .select(`
-        id, max_posts, is_free, free_until, expires_at, is_premium,
-        subscription_packages(name)
-      `)
-      .eq('owner_id', user.id)
-      .order('started_at', { ascending: false })
-      .limit(1)
-      .single()
+    // Use the get_user_active_subscription RPC (counts live listings dynamically)
+    const { data: sub, error } = await supabase
+      .rpc('get_user_active_subscription', { p_user_id: user.id })
+      .maybeSingle() as { data: any; error: any }
 
     // No subscription at all
     if (!sub) {
@@ -39,46 +31,35 @@ export async function GET(req: NextRequest) {
         allowed: false,
         used: 0,
         max: 0,
+        remaining: 0,
         package: null,
-        reason: 'No active subscription. Please subscribe first to add listings.',
+        reason: 'no_subscription',
       })
     }
 
-    // Check if subscription is still valid
-    const isActive = sub.is_free
-      ? (!sub.free_until || new Date(sub.free_until) > new Date())
-      : (!sub.expires_at || new Date(sub.expires_at) > new Date())
-
-    if (!isActive) {
+    // Subscription expired
+    if (sub.expires_at && new Date(sub.expires_at) <= new Date()) {
       return NextResponse.json({
         allowed: false,
-        used: 0,
-        max: sub.max_posts || 0,
-        package: (sub.subscription_packages as any)?.name || null,
-        reason: 'Your subscription has expired. Please renew to add listings.',
+        used: sub.used_slots,
+        max: sub.total_slots,
+        remaining: 0,
+        package: sub.package_name_en,
+        reason: 'expired',
       })
     }
 
-    // Count current listings (properties + cars = posts)
-    const [{ count: propCount }, { count: carCount }] = await Promise.all([
-      supabase.from('properties').select('*', { count: 'exact', head: true }).eq('owner_id', user.id),
-      supabase.from('cars').select('*', { count: 'exact', head: true }).eq('owner_id', user.id),
-    ])
-
-    const used    = (propCount ?? 0) + (carCount ?? 0)
-    const max     = sub.max_posts || 1
-    const pkg     = (sub.subscription_packages as any)?.name || 'Starter'
-    const allowed = used < max
+    const allowed = sub.remaining_slots > 0
 
     return NextResponse.json({
       allowed,
-      used,
-      max,
-      package: pkg,
+      used: sub.used_slots,
+      max: sub.total_slots,
+      remaining: sub.remaining_slots,
+      package: sub.package_name_en,
+      package_ar: sub.package_name_ar,
       is_premium: sub.is_premium,
-      reason: allowed
-        ? null
-        : `You've used all ${max} post${max > 1 ? 's' : ''} in your ${pkg} plan. Upgrade to add more listings.`,
+      reason: allowed ? null : 'limit_reached',
     })
   } catch (err: any) {
     console.error('check-limit error:', err)

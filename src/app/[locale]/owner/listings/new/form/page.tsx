@@ -212,6 +212,16 @@ function ListingFormInner({ locale }: { locale: string }) {
   const type = searchParams.get('type') as 'property' | 'car'
   const isAr = locale === 'ar'
 
+  const [slotCheck, setSlotCheck] = useState<{
+    loaded: boolean
+    allowed: boolean
+    used: number
+    max: number
+    remaining: number
+    packageName: string | null
+    reason: string | null
+  }>({ loaded: false, allowed: true, used: 0, max: 0, remaining: 0, packageName: null, reason: null })
+
   const [fieldConfig, setFieldConfig] = useState<Record<string, { is_enabled: boolean; is_required: boolean }>>({})
   const [loading, setLoading] = useState(false)
   const [uploadingPhotos, setUploadingPhotos] = useState(false)
@@ -240,6 +250,24 @@ function ListingFormInner({ locale }: { locale: string }) {
     price_per_month: '',
     listing_type: 'rental',
   })
+
+  // Check slot limit
+  useEffect(() => {
+    fetch('/api/owner/check-limit')
+      .then(r => r.json())
+      .then(data => {
+        setSlotCheck({
+          loaded: true,
+          allowed: data.allowed ?? false,
+          used: data.used ?? 0,
+          max: data.max ?? 0,
+          remaining: data.remaining ?? 0,
+          packageName: data.package ?? null,
+          reason: data.reason ?? null,
+        })
+      })
+      .catch(() => setSlotCheck(s => ({ ...s, loaded: true, allowed: false, reason: 'error' })))
+  }, [])
 
   // Load field config
   useEffect(() => {
@@ -417,13 +445,71 @@ function ListingFormInner({ locale }: { locale: string }) {
           <p className="text-sm text-gray-500">{t(locale, 'subtitle')}</p>
         </div>
 
-        {/* Error */}
-        {submitError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-700">{submitError}</p>
+        {/* Slot limit gate */}
+        {!slotCheck.loaded ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#D4A843]" />
           </div>
-        )}
+        ) : !slotCheck.allowed ? (
+          <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-6 text-center">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-amber-500" />
+            </div>
+            <h2 className="text-xl font-bold text-[#2C3A6B] mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              {slotCheck.reason === 'no_subscription'
+                ? (isAr ? 'لا يوجد اشتراك نشط' : 'No Active Subscription')
+                : slotCheck.reason === 'expired'
+                ? (isAr ? 'انتهى اشتراكك' : 'Subscription Expired')
+                : (isAr ? 'استنفدت كل الـ slots' : 'All Slots Used')}
+            </h2>
+            <p className="text-sm text-gray-600 mb-2">
+              {slotCheck.reason === 'no_subscription'
+                ? (isAr
+                    ? 'اشتري باقة لتبدأ في نشر عقاراتك وسياراتك'
+                    : 'Subscribe to a package to start publishing your listings')
+                : slotCheck.reason === 'expired'
+                ? (isAr ? 'جدد اشتراكك للمتابعة' : 'Renew your subscription to continue')
+                : (isAr
+                    ? `استخدمت ${slotCheck.used} من ${slotCheck.max} slots في باقة "${slotCheck.packageName}". رقّي باقتك لإضافة المزيد`
+                    : `You've used ${slotCheck.used} of ${slotCheck.max} slots in your "${slotCheck.packageName}" plan. Upgrade to add more listings.`)}
+            </p>
+            <a
+              href={`/${locale}/owner/packages`}
+              className="inline-block mt-4 bg-[#D4A843] hover:bg-[#c49835] text-white px-8 py-3 rounded-xl font-semibold transition-colors"
+            >
+              {isAr ? 'عرض الباقات' : 'View Packages'}
+            </a>
+          </div>
+        ) : (
+          <>
+            {/* Slot indicator */}
+            <div className="mb-4 flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-2.5">
+              <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">
+                {isAr ? 'الـ Slots المتاحة' : 'Available Slots'}
+              </span>
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  {Array.from({ length: Math.min(slotCheck.max, 10) }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-2.5 h-2.5 rounded-full ${i < slotCheck.used ? 'bg-[#D4A843]' : 'bg-gray-200'}`}
+                    />
+                  ))}
+                  {slotCheck.max > 10 && <span className="text-xs text-gray-400 ml-1">+{slotCheck.max - 10}</span>}
+                </div>
+                <span className="text-xs font-semibold text-[#2C3A6B]">
+                  {slotCheck.remaining} {isAr ? 'متاح' : 'left'} / {slotCheck.max}
+                </span>
+              </div>
+            </div>
+
+            {/* Submit error */}
+            {submitError && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">{submitError}</p>
+              </div>
+            )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -672,6 +758,8 @@ function ListingFormInner({ locale }: { locale: string }) {
             </div>
           </div>
         </form>
+          </>
+        )}
       </div>
     </div>
   )
