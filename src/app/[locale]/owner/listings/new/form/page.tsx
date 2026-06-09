@@ -66,6 +66,7 @@ export default function ListingFormPage() {
     seats: 5,
     price_per_day: '',
     price_per_month: '',
+    listing_type: 'rental',
   })
 
   // Auto-save to localStorage
@@ -466,6 +467,19 @@ export default function ListingFormPage() {
           {type === 'car' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
               <h3 className="font-semibold text-[#2C3A6B]">Car Details</h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type *</label>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                    <input type="radio" value="rental" checked={formData.listing_type === 'rental'} onChange={() => setFormData({ ...formData, listing_type: 'rental' })} />
+                    <span style={{ fontSize: 14 }}>🚗 For Rent</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', opacity: 0.5 }}>
+                    <input type="radio" value="sale" disabled checked={formData.listing_type === 'sale'} onChange={() => setFormData({ ...formData, listing_type: 'sale' })} />
+                    <span style={{ fontSize: 14 }}>🏷️ For Sale (coming soon)</span>
+                  </label>
+                </div>
+              </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>

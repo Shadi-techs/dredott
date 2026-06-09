@@ -74,7 +74,7 @@ export default function CarsPage() {
     if (!city) { setCars([]); setLoading(false); return }
     const { data } = await supabase
       .from('cars')
-      .select('id, name, name_en, name_ar, brand, model, year, seats, transmission, fuel_type, price_per_day, price_per_week, price_hidden, internal_score, photos, km_limit, payment_method')
+      .select('id, name, name_en, name_ar, brand, model, year, seats, transmission, fuel_type, price_per_day, price_per_week, price_hidden, internal_score, photos, km_limit, payment_method, listing_type')
       .eq('city_id', city.id)
       .eq('review_status', 'approved')
       .eq('status', 'available')
@@ -252,6 +252,7 @@ export default function CarsPage() {
                     : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>🚗</div>
                   }
                   <div style={{ position: 'absolute', top: 10, right: isRTL ? 'auto' : 10, left: isRTL ? 10 : 'auto', display: 'flex', gap: 6 }}>
+                    <span style={{ background: car.listing_type === 'sale' ? '#2C3A6B' : '#2A9D8F', color: '#fff', padding: '3px 8px', borderRadius: 20, fontSize: 10, fontWeight: 700 }}>{car.listing_type === 'sale' ? (locale === 'ar' ? 'للبيع' : 'FOR SALE') : (locale === 'ar' ? 'للإيجار' : 'FOR RENT')}</span>
                     {currentUser && (
                       <button onClick={e => hideCar(e, car.id)} style={{ background: 'rgba(14,20,40,0.7)', border: 'none', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', fontSize: 14 }}>×</button>
                     )}
