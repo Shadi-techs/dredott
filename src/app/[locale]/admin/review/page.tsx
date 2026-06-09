@@ -257,9 +257,6 @@ export default function AdminReviewPage() {
               <ListingCard
                 key={listing.id}
                 listing={listing}
-                onApprove={() => openModal(listing, 'approve')}
-                onReject={() => openModal(listing, 'reject')}
-                onRequestChanges={() => openModal(listing, 'changes_requested')}
                 onView={() => router.push(`/${locale}/admin/${listing.type === 'property' ? 'properties' : 'cars'}/${listing.id}`)}
               />
             ))}
@@ -293,12 +290,9 @@ export default function AdminReviewPage() {
 // ============================================
 
 function ListingCard({
-  listing, onApprove, onReject, onRequestChanges, onView
+  listing, onView
 }: {
   listing: PendingListing
-  onApprove: () => void
-  onReject: () => void
-  onRequestChanges: () => void
   onView: () => void
 }) {
   const isProperty = listing.type === 'property'
@@ -373,19 +367,10 @@ function ListingCard({
           <span>Submitted {new Date(listing.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
         </div>
 
-        {/* 4 actions */}
-        <div className="grid grid-cols-2 gap-2">
-          <button onClick={onView} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#F0F2F7] border border-[#1a2240]/10 text-[#6B7280] hover:text-[#1a2240] hover:border-[#D4A843]/30 transition-colors text-sm">
-            <Eye className="w-4 h-4" /> View
-          </button>
-          <button onClick={onApprove} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#4ade80]/10 border border-[#4ade80]/30 text-[#4ade80] hover:bg-[#4ade80]/20 transition-colors text-sm">
-            <CheckCircle2 className="w-4 h-4" /> Approve
-          </button>
-          <button onClick={onRequestChanges} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#fbbf24]/10 border border-[#fbbf24]/30 text-[#fbbf24] hover:bg-[#fbbf24]/20 transition-colors text-sm">
-            <MessageSquare className="w-4 h-4" /> Changes
-          </button>
-          <button onClick={onReject} className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#f87171]/10 border border-[#f87171]/30 text-[#f87171] hover:bg-[#f87171]/20 transition-colors text-sm">
-            <XCircle className="w-4 h-4" /> Reject
+        {/* Single action: Review inside */}
+        <div className="grid grid-cols-1 gap-2">
+          <button onClick={onView} className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#0e1428] border border-[#D4A843]/30 text-[#D4A843] hover:bg-[#1a2240] transition-colors text-sm font-semibold">
+            <Eye className="w-4 h-4" /> Review Listing →
           </button>
         </div>
       </div>
