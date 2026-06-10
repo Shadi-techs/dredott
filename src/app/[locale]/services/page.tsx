@@ -1,306 +1,292 @@
 'use client'
 
-import { useState, useEffect, use, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import {
-  Search, MapPin, Phone, Star, ExternalLink,
-  MessageCircle, ArrowRight, ChevronRight, X
-} from 'lucide-react'
+import { useState, useEffect, use } from 'react'
+import { Search, MapPin, Star, MessageCircle, ChevronRight, X } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-// ─── i18n ────────────────────────────────────────────────────────────────────
+// ── i18n ─────────────────────────────────────────────────────────────────────
 const TX: Record<string, {
-  tagline: string; headline: string; sub: string
-  searchPlaceholder: string; allCats: string; allAreas: string
-  featured: string; allProviders: string; noResults: string; noResultsSub: string
-  loading: string; view: string; whatsapp: string; providers: string
+  badge: string; h1: string; sub: string; placeholder: string
+  allCats: string; allAreas: string; featured: string; all: string
+  empty: string; emptySub: string; view: string; wa: string
   areas: Record<string, string>
 }> = {
   en: {
-    tagline: 'Service Providers',
-    headline: 'Trusted Services in Sharm El‑Sheikh',
+    badge: 'Service Providers · Sharm El‑Sheikh',
+    h1: 'Trusted Services on the Red Sea',
     sub: 'Verified providers for cleaning, maintenance, transfers and more',
-    searchPlaceholder: 'Search services…',
-    allCats: 'All Services', allAreas: 'All Areas',
-    featured: 'Featured', allProviders: 'All Providers',
-    noResults: 'No providers found', noResultsSub: 'Try a different filter',
-    loading: 'Loading…', view: 'View', whatsapp: 'WhatsApp', providers: 'providers',
+    placeholder: 'Search services…', allCats: 'All', allAreas: 'All Areas',
+    featured: 'Featured', all: 'All Providers',
+    empty: 'No providers found', emptySub: 'Try a different filter',
+    view: 'View', wa: 'WhatsApp',
     areas: { naama_bay: 'Naama Bay', sharks_bay: 'Sharks Bay', hadaba: 'Hadaba', om_el_seed: 'Om El Seed' },
   },
   ar: {
-    tagline: 'مزودو الخدمة',
-    headline: 'خدمات موثوقة في شرم الشيخ',
+    badge: 'مزودو الخدمة · شرم الشيخ',
+    h1: 'خدمات موثوقة على البحر الأحمر',
     sub: 'مزودون معتمدون للتنظيف والصيانة والنقل وأكثر',
-    searchPlaceholder: 'ابحث عن خدمة…',
-    allCats: 'كل الخدمات', allAreas: 'كل المناطق',
-    featured: 'مميز', allProviders: 'كل مزودي الخدمة',
-    noResults: 'لا يوجد مزودو خدمة', noResultsSub: 'جرب فلتر مختلف',
-    loading: 'جاري التحميل…', view: 'عرض', whatsapp: 'واتساب', providers: 'مزود',
+    placeholder: 'ابحث عن خدمة…', allCats: 'الكل', allAreas: 'كل المناطق',
+    featured: 'مميز', all: 'كل المزودين',
+    empty: 'لا يوجد مزودو خدمة', emptySub: 'جرب فلتر مختلف',
+    view: 'عرض', wa: 'واتساب',
     areas: { naama_bay: 'نعمة باي', sharks_bay: 'خليج الشارك', hadaba: 'الحدبة', om_el_seed: 'أم السيد' },
   },
   ru: {
-    tagline: 'Поставщики услуг',
-    headline: 'Проверенные услуги в Шарм-эль-Шейхе',
-    sub: 'Аккредитованные поставщики уборки, обслуживания, трансферов и многого другого',
-    searchPlaceholder: 'Найти услугу…',
-    allCats: 'Все услуги', allAreas: 'Все районы',
-    featured: 'Рекомендуем', allProviders: 'Все поставщики',
-    noResults: 'Ничего не найдено', noResultsSub: 'Попробуйте другой фильтр',
-    loading: 'Загрузка…', view: 'Открыть', whatsapp: 'WhatsApp', providers: 'поставщики',
+    badge: 'Поставщики услуг · Шарм-эль-Шейх',
+    h1: 'Проверенные услуги на Красном море',
+    sub: 'Аккредитованные поставщики уборки, обслуживания и трансферов',
+    placeholder: 'Найти услугу…', allCats: 'Все', allAreas: 'Все районы',
+    featured: 'Рекомендуем', all: 'Все поставщики',
+    empty: 'Ничего не найдено', emptySub: 'Попробуйте другой фильтр',
+    view: 'Открыть', wa: 'WhatsApp',
     areas: { naama_bay: 'Наама Бей', sharks_bay: 'Шаркс Бей', hadaba: 'Хадаба', om_el_seed: 'Ом Эль Сид' },
   },
   de: {
-    tagline: 'Dienstleister',
-    headline: 'Vertrauenswürdige Dienste in Scharm el-Scheich',
-    sub: 'Geprüfte Anbieter für Reinigung, Wartung, Transfers und mehr',
-    searchPlaceholder: 'Dienste suchen…',
-    allCats: 'Alle Dienste', allAreas: 'Alle Gebiete',
-    featured: 'Empfohlen', allProviders: 'Alle Anbieter',
-    noResults: 'Keine Anbieter gefunden', noResultsSub: 'Anderen Filter versuchen',
-    loading: 'Laden…', view: 'Anzeigen', whatsapp: 'WhatsApp', providers: 'Anbieter',
+    badge: 'Dienstleister · Scharm el-Scheich',
+    h1: 'Vertrauenswürdige Dienste am Roten Meer',
+    sub: 'Geprüfte Anbieter für Reinigung, Wartung und Transfers',
+    placeholder: 'Dienste suchen…', allCats: 'Alle', allAreas: 'Alle Gebiete',
+    featured: 'Empfohlen', all: 'Alle Anbieter',
+    empty: 'Keine Anbieter', emptySub: 'Anderen Filter versuchen',
+    view: 'Ansehen', wa: 'WhatsApp',
     areas: { naama_bay: 'Naama Bay', sharks_bay: 'Sharks Bay', hadaba: 'Hadaba', om_el_seed: 'Om El Seed' },
   },
   it: {
-    tagline: 'Fornitori di servizi',
-    headline: 'Servizi fidati a Sharm El-Sheikh',
-    sub: 'Fornitori verificati per pulizie, manutenzione, trasferimenti e altro',
-    searchPlaceholder: 'Cerca servizi…',
-    allCats: 'Tutti i servizi', allAreas: 'Tutte le zone',
-    featured: 'In evidenza', allProviders: 'Tutti i fornitori',
-    noResults: 'Nessun fornitore trovato', noResultsSub: 'Prova un filtro diverso',
-    loading: 'Caricamento…', view: 'Vedi', whatsapp: 'WhatsApp', providers: 'fornitori',
+    badge: 'Fornitori · Sharm El-Sheikh',
+    h1: 'Servizi fidati sul Mar Rosso',
+    sub: 'Fornitori verificati per pulizie, manutenzione e trasferimenti',
+    placeholder: 'Cerca servizi…', allCats: 'Tutti', allAreas: 'Tutte le zone',
+    featured: 'In evidenza', all: 'Tutti i fornitori',
+    empty: 'Nessun fornitore', emptySub: 'Prova un altro filtro',
+    view: 'Vedi', wa: 'WhatsApp',
     areas: { naama_bay: 'Naama Bay', sharks_bay: 'Sharks Bay', hadaba: 'Hadaba', om_el_seed: 'Om El Seed' },
   },
   uk: {
-    tagline: 'Постачальники послуг',
-    headline: 'Перевірені послуги в Шарм-ель-Шейху',
+    badge: 'Постачальники · Шарм-ель-Шейх',
+    h1: 'Перевірені послуги на Червоному морі',
     sub: 'Акредитовані постачальники прибирання, обслуговування та трансферів',
-    searchPlaceholder: 'Пошук послуг…',
-    allCats: 'Всі послуги', allAreas: 'Всі райони',
-    featured: 'Рекомендовано', allProviders: 'Всі постачальники',
-    noResults: 'Нічого не знайдено', noResultsSub: 'Спробуйте інший фільтр',
-    loading: 'Завантаження…', view: 'Переглянути', whatsapp: 'WhatsApp', providers: 'постачальники',
+    placeholder: 'Пошук послуг…', allCats: 'Всі', allAreas: 'Всі райони',
+    featured: 'Рекомендовано', all: 'Всі постачальники',
+    empty: 'Нічого не знайдено', emptySub: 'Спробуйте інший фільтр',
+    view: 'Переглянути', wa: 'WhatsApp',
     areas: { naama_bay: 'Наама Бей', sharks_bay: 'Шаркс Бей', hadaba: 'Хадаба', om_el_seed: 'Ом Ель Сід' },
   },
 }
 
 const AREAS = ['naama_bay', 'sharks_bay', 'hadaba', 'om_el_seed']
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 export default function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
-  const tx         = TX[locale] || TX.en
-  const isAr       = locale === 'ar'
-  const router     = useRouter()
+  const tx   = TX[locale] || TX.en
+  const isAr = locale === 'ar'
 
   const [categories, setCategories] = useState<any[]>([])
   const [providers, setProviders]   = useState<any[]>([])
-  const [counts, setCounts]         = useState<Record<string, number>>({})
   const [loading, setLoading]       = useState(true)
-  const [selectedCat, setSelectedCat] = useState('')
+  const [selectedCat, setSelectedCat]   = useState('')
   const [selectedArea, setSelectedArea] = useState('')
-  const [search, setSearch]         = useState('')
-  const searchRef                   = useRef<HTMLInputElement>(null)
+  const [search, setSearch]             = useState('')
 
-  useEffect(() => { fetchCategories() }, [])
-  useEffect(() => { fetchProviders() }, [selectedCat, selectedArea])
+  useEffect(() => {
+    fetch('/api/services/categories')
+      .then(r => r.json())
+      .then(d => setCategories(d.categories || []))
+  }, [])
 
-  async function fetchCategories() {
-    const res  = await fetch('/api/services/categories')
-    const data = await res.json()
-    setCategories(data.categories || [])
-  }
-
-  async function fetchProviders() {
+  useEffect(() => {
     setLoading(true)
     const qs = new URLSearchParams({ limit: '60' })
     if (selectedCat)  qs.set('category_id', selectedCat)
     if (selectedArea) qs.set('area', selectedArea)
-    const res  = await fetch(`/api/services?${qs}`)
-    const data = await res.json()
-    const all  = [...(data.featured || []), ...(data.providers || [])]
-    setProviders(all)
-    // build counts per category from full result (unfiltered cat)
-    if (!selectedCat) {
-      const c: Record<string, number> = {}
-      all.forEach(p => { if (p.category_id) c[p.category_id] = (c[p.category_id] || 0) + 1 })
-      setCounts(c)
-    }
-    setLoading(false)
-  }
+    fetch(`/api/services?${qs}`)
+      .then(r => r.json())
+      .then(d => {
+        setProviders([...(d.featured || []), ...(d.providers || [])])
+        setLoading(false)
+      })
+  }, [selectedCat, selectedArea])
 
   const filtered = providers.filter(p => {
     if (!search) return true
     const name = (isAr ? p.business_name_ar : p.business_name) || p.business_name || ''
     return name.toLowerCase().includes(search.toLowerCase())
   })
-
   const featuredList = filtered.filter(p => p.featured)
   const regularList  = filtered.filter(p => !p.featured)
 
   return (
-    <div style={{ background: '#FAF9F6', minHeight: '100vh' }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-[#FAF9F6]" dir={isAr ? 'rtl' : 'ltr'}>
       <Header />
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: 'linear-gradient(160deg, #0e1428 0%, #2C3A6B 55%, #1a3a5c 100%)',
-        padding: '80px 24px 56px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* decorative circles */}
-        <div style={{ position: 'absolute', top: -80, right: isAr ? 'auto' : -80, left: isAr ? -80 : 'auto', width: 300, height: 300, borderRadius: '50%', border: '1px solid rgba(212,168,67,0.08)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: -40, right: isAr ? 'auto' : -40, left: isAr ? -40 : 'auto', width: 200, height: 200, borderRadius: '50%', border: '1px solid rgba(212,168,67,0.12)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,168,67,0.3), transparent)' }} />
+      <section
+        className="relative py-24 overflow-hidden flex items-center"
+        style={{ background: 'linear-gradient(135deg, #0e1428 0%, #2C3A6B 60%, #1a2440 100%)' }}
+      >
+        {/* noise grain overlay */}
+        <div className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 10, color: '#D4A843', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 14 }}>
-            — {tx.tagline}
-          </p>
-          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 400, color: '#FAF9F6', lineHeight: 1.15, marginBottom: 10, maxWidth: 620 }}>
-            {tx.headline}
+        {/* scrolling ticker at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-[rgba(14,20,40,0.7)] border-y border-[rgba(212,168,67,0.2)] py-3 overflow-hidden"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="flex whitespace-nowrap text-[11px] tracking-[0.3em] text-[#D4A843]" style={{ animation: 'marquee 25s linear infinite' }}>
+            <span>CLEANING ✦ MAINTENANCE ✦ TRANSFERS ✦ PLUMBING ✦ AC REPAIR ✦ LAUNDRY ✦ SECURITY ✦ TRANSPORT ✦ </span>
+            <span>CLEANING ✦ MAINTENANCE ✦ TRANSFERS ✦ PLUMBING ✦ AC REPAIR ✦ LAUNDRY ✦ SECURITY ✦ TRANSPORT ✦ </span>
+          </div>
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-8 w-full">
+          <div className="text-[11px] tracking-[0.28em] text-[#D4A843] mb-5"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            <span className="inline-block w-1 h-1 rounded-full bg-[#D4A843] mr-3 align-middle" />
+            {tx.badge}
+            <span className="inline-block w-1 h-1 rounded-full bg-[#D4A843] ml-3 align-middle" />
+          </div>
+
+          <h1 className="text-5xl lg:text-7xl text-white leading-none mb-5"
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400 }}>
+            {tx.h1.split(' on ')[0]}<br />
+            <em className="text-[#D4A843]">{tx.h1.includes(' on ') ? 'on ' + tx.h1.split(' on ')[1] : ''}</em>
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(201,206,221,0.7)', marginBottom: 32, maxWidth: 480 }}>
-            {tx.sub}
-          </p>
 
-          {/* Search bar */}
-          <div style={{ position: 'relative', maxWidth: 500 }}>
-            <Search style={{
-              position: 'absolute',
-              top: '50%', transform: 'translateY(-50%)',
-              [isAr ? 'right' : 'left']: 16,
-              color: '#9ca3af', width: 16, height: 16, pointerEvents: 'none',
-            }} />
+          <p className="text-white/60 text-base mb-10 max-w-lg">{tx.sub}</p>
+
+          {/* Search */}
+          <div className="relative max-w-lg">
+            <Search className="absolute top-1/2 -translate-y-1/2 text-[#9ca3af] w-4 h-4 pointer-events-none"
+              style={{ [isAr ? 'right' : 'left']: 16 }} />
             <input
-              ref={searchRef}
               type="text"
-              placeholder={tx.searchPlaceholder}
+              placeholder={tx.placeholder}
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                padding: isAr ? '13px 48px 13px 16px' : '13px 16px 13px 48px',
-                borderRadius: 12, border: '1.5px solid rgba(212,168,67,0.25)',
-                fontSize: 14, background: 'rgba(255,255,255,0.05)',
-                color: '#fff', outline: 'none', backdropFilter: 'blur(8px)',
-                transition: 'border-color 0.2s',
-              }}
-              onFocus={e => e.target.style.borderColor = 'rgba(212,168,67,0.6)'}
-              onBlur={e => e.target.style.borderColor = 'rgba(212,168,67,0.25)'}
+              className="w-full bg-white/10 backdrop-blur-sm border border-[rgba(212,168,67,0.25)] rounded-xl text-white placeholder-white/40 text-sm outline-none focus:border-[#D4A843] transition-colors"
+              style={{ padding: isAr ? '13px 48px 13px 16px' : '13px 16px 13px 48px' }}
             />
             {search && (
-              <button onClick={() => setSearch('')} style={{
-                position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-                [isAr ? 'left' : 'right']: 14,
-                background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 4,
-              }}>
-                <X size={14} />
+              <button onClick={() => setSearch('')}
+                className="absolute top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 p-1"
+                style={{ [isAr ? 'left' : 'right']: 12 }}>
+                <X size={13} />
               </button>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── CATEGORY GRID ─────────────────────────────────────────────────── */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e8e4de' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px' }}>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-            {/* All button */}
-            <CategoryChip
-              active={selectedCat === ''}
+      {/* ── FILTERS ──────────────────────────────────────────────────────── */}
+      <div className="bg-white border-b border-[rgba(26,36,64,0.08)] sticky top-[64px] z-30">
+        <div className="max-w-6xl mx-auto px-8 py-4">
+          {/* Category chips */}
+          <div className="flex gap-2 flex-wrap">
+            <button
               onClick={() => setSelectedCat('')}
-              icon="✦"
-              label={tx.allCats}
-            />
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                selectedCat === ''
+                  ? 'bg-[#2C3A6B] text-[#D4A843] border-[#2C3A6B]'
+                  : 'bg-white text-gray-500 border-[#e5e7eb] hover:border-[#2C3A6B] hover:text-[#2C3A6B]'
+              }`}
+            >
+              {tx.allCats}
+            </button>
             {categories.map(cat => (
-              <CategoryChip
+              <button
                 key={cat.id}
-                active={selectedCat === cat.id}
                 onClick={() => setSelectedCat(cat.id === selectedCat ? '' : cat.id)}
-                icon={cat.icon}
-                label={isAr ? cat.name_ar : cat.name_en}
-                count={counts[cat.id]}
-              />
+                className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                  selectedCat === cat.id
+                    ? 'bg-[#2C3A6B] text-[#D4A843] border-[#2C3A6B]'
+                    : 'bg-white text-gray-500 border-[#e5e7eb] hover:border-[#2C3A6B] hover:text-[#2C3A6B]'
+                }`}
+              >
+                {cat.icon} {isAr ? cat.name_ar : cat.name_en}
+              </button>
             ))}
           </div>
 
-          {/* Area filter */}
-          {selectedCat === '' && (
-            <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+          {/* Area chips */}
+          <div className="flex gap-2 flex-wrap mt-3">
+            <button
+              onClick={() => setSelectedArea('')}
+              className={`px-3 py-1 rounded-full text-[11px] font-medium border transition-all ${
+                selectedArea === ''
+                  ? 'bg-[#D4A843] text-[#2C3A6B] border-[#D4A843]'
+                  : 'bg-transparent text-gray-400 border-[#e5e7eb] hover:border-[#D4A843] hover:text-[#2C3A6B]'
+              }`}
+            >
+              {tx.allAreas}
+            </button>
+            {AREAS.map(a => (
               <button
-                onClick={() => setSelectedArea('')}
-                style={{
-                  padding: '4px 12px', borderRadius: 100, fontSize: 11, border: '1px solid',
-                  cursor: 'pointer', fontWeight: 500, transition: 'all 0.15s',
-                  background: selectedArea === '' ? '#D4A843' : 'transparent',
-                  color: selectedArea === '' ? '#2C3A6B' : '#9ca3af',
-                  borderColor: selectedArea === '' ? '#D4A843' : '#e0dbd4',
-                }}>
-                {tx.allAreas}
+                key={a}
+                onClick={() => setSelectedArea(a === selectedArea ? '' : a)}
+                className={`px-3 py-1 rounded-full text-[11px] font-medium border transition-all ${
+                  selectedArea === a
+                    ? 'bg-[#D4A843] text-[#2C3A6B] border-[#D4A843]'
+                    : 'bg-transparent text-gray-400 border-[#e5e7eb] hover:border-[#D4A843] hover:text-[#2C3A6B]'
+                }`}
+              >
+                {tx.areas[a] || a.replace('_', ' ')}
               </button>
-              {AREAS.map(a => (
-                <button key={a} onClick={() => setSelectedArea(a === selectedArea ? '' : a)} style={{
-                  padding: '4px 12px', borderRadius: 100, fontSize: 11, border: '1px solid',
-                  cursor: 'pointer', fontWeight: 500, transition: 'all 0.15s',
-                  background: selectedArea === a ? '#D4A843' : 'transparent',
-                  color: selectedArea === a ? '#2C3A6B' : '#9ca3af',
-                  borderColor: selectedArea === a ? '#D4A843' : '#e0dbd4',
-                }}>
-                  {tx.areas[a] || a}
-                </button>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* ── PROVIDERS ─────────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px 80px' }}>
-
+      {/* ── PROVIDERS ────────────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto px-8 py-16">
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '80px 0', color: '#9ca3af' }}>
-            <div style={{ width: 36, height: 36, border: '3px solid #e8e4de', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ fontSize: 13 }}>{tx.loading}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="bg-white rounded-xl border border-[rgba(26,36,64,0.08)] h-80 animate-pulse" />
+            ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <p style={{ fontSize: 40, marginBottom: 16 }}>🔍</p>
-            <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 24, color: '#2C3A6B', marginBottom: 8 }}>{tx.noResults}</p>
-            <p style={{ fontSize: 14, color: '#9ca3af' }}>{tx.noResultsSub}</p>
+          <div className="text-center py-24">
+            <p className="text-5xl mb-6">🔍</p>
+            <h3 className="text-3xl text-[#2C3A6B] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              {tx.empty}
+            </h3>
+            <p className="text-gray-400 text-sm">{tx.emptySub}</p>
           </div>
         ) : (
           <>
             {/* Featured */}
             {featuredList.length > 0 && (
-              <section style={{ marginBottom: 48 }}>
-                <SectionLabel label={tx.featured} gold />
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                  gap: 20,
-                }}>
-                  {featuredList.map(p => (
-                    <ProviderCard key={p.id} provider={p} locale={locale} isAr={isAr} tx={tx} featured />
+              <section className="mb-16">
+                <div className="flex items-center gap-4 mb-8">
+                  <span className="text-[11px] tracking-[0.2em] text-[#B8860B]"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    — {tx.featured.toUpperCase()}
+                  </span>
+                  <div className="flex-1 h-px bg-[rgba(212,168,67,0.2)]" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {featuredList.map((p, i) => (
+                    <ProviderCard key={p.id} provider={p} index={i} locale={locale} isAr={isAr} tx={tx} featured />
                   ))}
                 </div>
-                <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #e8e4de 30%, #e8e4de 70%, transparent)', marginTop: 48 }} />
               </section>
             )}
 
-            {/* Regular */}
+            {/* All providers */}
             {regularList.length > 0 && (
               <section>
-                {featuredList.length > 0 && <SectionLabel label={tx.allProviders} />}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                  gap: 20,
-                }}>
-                  {regularList.map(p => (
-                    <ProviderCard key={p.id} provider={p} locale={locale} isAr={isAr} tx={tx} />
+                {featuredList.length > 0 && (
+                  <div className="flex items-center gap-4 mb-8">
+                    <span className="text-[11px] tracking-[0.2em] text-gray-400"
+                      style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      — {tx.all.toUpperCase()}
+                    </span>
+                    <div className="flex-1 h-px bg-[rgba(26,36,64,0.06)]" />
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {regularList.map((p, i) => (
+                    <ProviderCard key={p.id} provider={p} index={i} locale={locale} isAr={isAr} tx={tx} />
                   ))}
                 </div>
               </section>
@@ -310,237 +296,129 @@ export default function ServicesPage({ params }: { params: Promise<{ locale: str
       </div>
 
       <Footer />
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg) } }
-        @media (max-width: 640px) {
-          .provider-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+      <style>{`@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
     </div>
   )
 }
 
-// ─── Category Chip ────────────────────────────────────────────────────────────
-function CategoryChip({ active, onClick, icon, label, count }: {
-  active: boolean; onClick: () => void; icon: string; label: string; count?: number
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '7px 16px', borderRadius: 100,
-        fontSize: 13, fontWeight: active ? 600 : 400,
-        border: `1.5px solid ${active ? '#2C3A6B' : '#e0dbd4'}`,
-        background: active ? '#2C3A6B' : '#fff',
-        color: active ? '#D4A843' : '#555',
-        cursor: 'pointer', transition: 'all 0.15s',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      <span style={{ fontSize: 14 }}>{icon}</span>
-      {label}
-      {count !== undefined && count > 0 && (
-        <span style={{
-          fontSize: 10, fontWeight: 600,
-          background: active ? 'rgba(212,168,67,0.2)' : '#f3f4f6',
-          color: active ? '#D4A843' : '#9ca3af',
-          padding: '1px 6px', borderRadius: 100,
-        }}>{count}</span>
-      )}
-    </button>
-  )
-}
-
-// ─── Section label ────────────────────────────────────────────────────────────
-function SectionLabel({ label, gold = false }: { label: string; gold?: boolean }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-      <span style={{
-        fontFamily: 'var(--font-mono, monospace)',
-        fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600,
-        color: gold ? '#D4A843' : '#9ca3af',
-      }}>{label}</span>
-      <div style={{ flex: 1, height: 1, background: gold ? 'rgba(212,168,67,0.2)' : '#e8e4de' }} />
-    </div>
-  )
-}
-
-// ─── Provider Card ────────────────────────────────────────────────────────────
-function ProviderCard({ provider: p, locale, isAr, tx, featured = false }: {
-  provider: any; locale: string; isAr: boolean; tx: typeof TX['en']; featured?: boolean
+// ── Provider Card — matches property/car card style ───────────────────────────
+function ProviderCard({ provider: p, index, locale, isAr, tx, featured = false }: {
+  provider: any; index: number; locale: string; isAr: boolean
+  tx: typeof TX['en']; featured?: boolean
 }) {
   const name    = (isAr ? p.business_name_ar : p.business_name) || p.business_name || ''
   const catName = isAr ? p.service_provider_categories?.name_ar : p.service_provider_categories?.name_en
   const icon    = p.service_provider_categories?.icon || '🏢'
   const reviews = p.google_reviews_cache
-  const area    = p.area ? (tx.areas[p.area as keyof typeof tx.areas] || p.area.replace('_', ' ')) : null
+  const area    = p.area ? (tx.areas[p.area as keyof typeof tx.areas] || p.area.replace(/_/g, ' ')) : null
 
   return (
-    <div
-      style={{
-        background: '#fff',
-        borderRadius: 16,
-        border: `1.5px solid ${featured ? 'rgba(212,168,67,0.5)' : '#e8e4de'}`,
-        overflow: 'hidden',
-        transition: 'transform 0.2s, box-shadow 0.2s',
-        display: 'flex', flexDirection: 'column',
-        cursor: 'pointer',
-      }}
-      onMouseEnter={e => {
-        const el = e.currentTarget as HTMLDivElement
-        el.style.transform = 'translateY(-3px)'
-        el.style.boxShadow = '0 12px 32px rgba(44,58,107,0.1)'
-      }}
-      onMouseLeave={e => {
-        const el = e.currentTarget as HTMLDivElement
-        el.style.transform = 'translateY(0)'
-        el.style.boxShadow = 'none'
-      }}
+    <article
+      className={`group cursor-pointer bg-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg relative
+        ${featured
+          ? 'border-2 border-[#D4A843]/40 hover:border-[#D4A843]'
+          : 'border border-[rgba(26,36,64,0.08)] hover:border-[#2A9D8F]'
+        }`}
       onClick={() => window.location.href = `/${locale}/services/${p.id}`}
     >
-      {/* ── Card Header ── */}
-      <div style={{
-        height: 88,
-        background: 'linear-gradient(135deg, #0e1428 0%, #2C3A6B 60%, #1a3a5c 100%)',
-        position: 'relative',
-        flexShrink: 0,
-      }}>
+      {/* ── Photo / logo area ── */}
+      <div className="relative h-48 overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1a2440 0%, #2C3A6B 100%)' }}>
+
+        {/* № badge */}
+        <div className="absolute top-4 left-4 z-10 text-xs tracking-wider text-white/70 bg-black/30 backdrop-blur-sm px-2 py-1 rounded"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          № {String(index + 1).padStart(2, '0')}
+        </div>
+
         {/* Featured badge */}
         {featured && (
-          <div style={{
-            position: 'absolute', top: 12,
-            [isAr ? 'left' : 'right']: 12,
-            background: '#D4A843', color: '#0e1428',
-            fontSize: 9, fontWeight: 800,
-            padding: '3px 10px', borderRadius: 100,
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-          }}>
+          <div className="absolute top-4 right-4 z-10 bg-[#D4A843] text-[#2C3A6B] text-[9px] font-bold px-2.5 py-1 rounded-full tracking-wider uppercase"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             ⭐ {tx.featured}
           </div>
         )}
 
-        {/* Category tag */}
-        <div style={{
-          position: 'absolute', top: 12,
-          [isAr ? 'right' : 'left']: 12,
-          background: 'rgba(255,255,255,0.08)',
-          color: 'rgba(201,206,221,0.8)',
-          fontSize: 10, fontWeight: 500,
-          padding: '3px 10px', borderRadius: 100,
-          border: '1px solid rgba(255,255,255,0.1)',
-          backdropFilter: 'blur(4px)',
-        }}>
-          {icon} {catName}
+        {/* Logo centered */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {p.logo_url ? (
+            <img
+              src={p.logo_url}
+              alt={name}
+              className="w-20 h-20 rounded-2xl object-cover border-4 border-white/20 group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-500">
+              {icon}
+            </div>
+          )}
         </div>
 
-        {/* Logo — overlaps bottom edge */}
-        <div style={{
-          position: 'absolute', bottom: -20,
-          [isAr ? 'right' : 'left']: 20,
-          width: 48, height: 48,
-          borderRadius: 12,
-          background: '#fff',
-          border: '2px solid #e8e4de',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 22, overflow: 'hidden',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-        }}>
-          {p.logo_url
-            ? <img src={p.logo_url} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10 }} />
-            : icon
-          }
+        {/* Category tag at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#0e1428]/80 to-transparent px-4 py-3">
+          <span className="text-[10px] tracking-[0.15em] text-[#D4A843] font-medium"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            {icon} {catName?.toUpperCase()}
+          </span>
         </div>
       </div>
 
-      {/* ── Card Body ── */}
-      <div style={{ padding: '28px 20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-
-        {/* Name */}
-        <h3 style={{
-          fontFamily: 'Cormorant Garamond, serif',
-          fontSize: 20, fontWeight: 600,
-          color: '#2C3A6B', lineHeight: 1.2,
-          marginBottom: 4,
-        }}>
+      {/* ── Body ── */}
+      <div className="p-5">
+        <h3 className="text-xl text-[#2C3A6B] mb-1 group-hover:text-[#2A9D8F] transition-colors leading-tight"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           {name}
         </h3>
 
         {/* Rating */}
         {reviews?.rating ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-            <div style={{ display: 'flex', gap: 2 }}>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex gap-0.5">
               {[1,2,3,4,5].map(i => (
-                <Star key={i} size={12}
+                <Star key={i} className="w-3 h-3"
                   fill={i <= Math.round(reviews.rating) ? '#D4A843' : 'none'}
                   color={i <= Math.round(reviews.rating) ? '#D4A843' : '#d1d5db'}
                 />
               ))}
             </div>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#2C3A6B' }}>{reviews.rating}</span>
-            <span style={{ fontSize: 12, color: '#9ca3af' }}>({reviews.total})</span>
-            <span style={{ fontSize: 10, color: '#d1d5db', marginLeft: 2 }}>Google</span>
+            <span className="text-sm font-bold text-[#2C3A6B]">{reviews.rating}</span>
+            <span className="text-xs text-gray-400">({reviews.total})</span>
           </div>
         ) : (
-          <div style={{ marginBottom: 10 }} />
+          <div className="mb-3" />
         )}
 
         {/* Area */}
         {area && (
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            fontSize: 12, color: '#6b7280', marginBottom: 16,
-          }}>
-            <MapPin size={12} color="#D4A843" />
+          <p className="text-xs text-gray-500 mb-4 flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-[#B8860B]" />
             {area}
-          </div>
+          </p>
         )}
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
         {/* Actions */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+        <div className="flex gap-2 pt-4 border-t border-gray-100">
           {p.whatsapp && (
             <a
               href={`https://wa.me/${p.whatsapp}`}
               target="_blank" rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              style={{
-                flex: 1,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                background: '#25D366', color: '#fff',
-                fontSize: 13, fontWeight: 600,
-                padding: '10px 14px', borderRadius: 10,
-                textDecoration: 'none', transition: 'opacity 0.15s',
-              }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.opacity = '0.9'}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.opacity = '1'}
+              className="flex-1 flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#22c55e] text-white text-xs font-semibold py-2.5 rounded-lg transition-colors"
             >
-              <MessageCircle size={14} />
-              {tx.whatsapp}
+              <MessageCircle size={13} />
+              {tx.wa}
             </a>
           )}
           <a
             href={`/${locale}/services/${p.id}`}
             onClick={e => e.stopPropagation()}
-            style={{
-              flex: p.whatsapp ? '0 0 auto' : 1,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-              background: 'transparent', color: '#2C3A6B',
-              fontSize: 13, fontWeight: 600,
-              padding: '10px 16px', borderRadius: 10,
-              border: '1.5px solid #e0dbd4',
-              textDecoration: 'none', transition: 'border-color 0.15s, color 0.15s',
-            }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#2C3A6B' }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#e0dbd4' }}
+            className={`flex items-center justify-center gap-1 text-[#2C3A6B] hover:text-[#2A9D8F] text-xs font-semibold py-2.5 rounded-lg border border-[rgba(26,36,64,0.12)] hover:border-[#2A9D8F] transition-all ${p.whatsapp ? 'px-4' : 'flex-1'}`}
           >
             {tx.view}
-            <ChevronRight size={14} />
+            <ChevronRight size={12} />
           </a>
         </div>
       </div>
-    </div>
+    </article>
   )
 }
