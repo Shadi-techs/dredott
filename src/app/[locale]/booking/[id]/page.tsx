@@ -77,7 +77,7 @@ export default function BookingPage({ params }: BookingPageProps) {
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {
-      router.push(`/${locale}/login?redirect=/booking/${id}`)
+      router.push(`/${locale}/login?redirect=/${locale}/booking/${id}`)
       return
     }
 
@@ -105,12 +105,6 @@ export default function BookingPage({ params }: BookingPageProps) {
 
       if (error || !data) {
         setError('Property not found')
-        setLoading(false)
-        return
-      }
-
-      if (!data.platform_managed) {
-        setError('This property is not available for online booking')
         setLoading(false)
         return
       }
@@ -426,7 +420,7 @@ export default function BookingPage({ params }: BookingPageProps) {
               <Elements stripe={stripePromise} options={{ clientSecret }}>
                 <PaymentForm
                   amount={total}
-                  currency="USD"
+                  currency="EGP"
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
                   locale={locale}
@@ -495,10 +489,10 @@ export default function BookingPage({ params }: BookingPageProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      ${property.price_per_night} × {nights} {isRtl ? 'ليالي' : nights === 1 ? 'night' : 'nights'}
+                      EGP {property.price_per_night.toLocaleString()} × {nights} {isRtl ? 'ليالي' : nights === 1 ? 'night' : 'nights'}
                     </span>
                     <span className="font-medium text-[var(--navy)]">
-                      ${property.price_per_night * nights}
+                      EGP {(property.price_per_night * nights).toLocaleString()}
                     </span>
                   </div>
 
@@ -506,11 +500,11 @@ export default function BookingPage({ params }: BookingPageProps) {
                     <span className="font-semibold text-[var(--navy)]">
                       {isRtl ? 'الإجمالي' : 'Total'}
                     </span>
-                    <span 
+                    <span
                       className="text-2xl font-bold text-[var(--gold)]"
                       style={{ fontFamily: 'var(--font-serif)' }}
                     >
-                      ${total}
+                      EGP {total.toLocaleString()}
                     </span>
                   </div>
                 </div>

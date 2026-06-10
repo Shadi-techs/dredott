@@ -37,11 +37,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Property not found' }, { status: 404 })
     }
 
-    if (!property.platform_managed) {
-      return NextResponse.json({ error: 'Property not available for booking' }, { status: 400 })
-    }
-
-    if (property.status !== 'available') {
+    if (!['available', 'active', 'live'].includes(property.status)) {
       return NextResponse.json({ error: 'Property not available' }, { status: 400 })
     }
 
@@ -101,8 +97,8 @@ export async function POST(request: NextRequest) {
 
     // 6. Create Stripe Payment Intent
     const paymentIntent = await getStripe().paymentIntents.create({
-      amount: Math.round(totalAmount * 100), // Convert to cents
-      currency: 'usd',
+      amount: Math.round(totalAmount * 100),
+      currency: 'egp',
       metadata: {
         property_id,
         guest_id,
@@ -127,7 +123,7 @@ export async function POST(request: NextRequest) {
         utilities_included: false,
         utilities_amount: 0,
         total_amount: totalAmount,
-        currency: 'USD',
+        currency: 'EGP',
         stripe_payment_intent_id: paymentIntent.id,
         payment_status: 'pending',
         status: 'pending',

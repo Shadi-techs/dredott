@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useParams } from 'next/navigation'
 import {
-  MapPin, Users, Bed, Maximize2,
+  MapPin, Users, Bed,
   Star, ArrowLeft, ChevronLeft,
   ChevronRight, X, MessageCircle, Lock, Check,
-  Wifi, Wind, Car, Waves, Shield, Coffee
+  Wifi, Wind, Car, Waves, Shield, Coffee, CalendarDays
 } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -29,7 +29,9 @@ const SELECT_COLS = 'id, slug, name, name_en, description, area, type, bedrooms,
 export default function PropertyDetailPage() {
   const router = useRouter()
   const params = useParams()
+  const locale = (params.locale as string) || 'en'
   const slug   = params.slug as string
+  const isAr   = locale === 'ar'
 
   const [property, setProperty]     = useState<any>(null)
   const [loading, setLoading]       = useState(true)
@@ -48,7 +50,7 @@ export default function PropertyDetailPage() {
       .from('properties')
       .select(SELECT_COLS)
       .eq('slug', slug)
-      .eq('status', 'available')
+      .in('status', ['available', 'active', 'live'])
       .maybeSingle()
 
     if (!data) {
@@ -56,7 +58,7 @@ export default function PropertyDetailPage() {
         .from('properties')
         .select(SELECT_COLS)
         .eq('id', slug)
-        .eq('status', 'available')
+        .in('status', ['available', 'active', 'live'])
         .maybeSingle()
       data = byId
     }
@@ -66,13 +68,21 @@ export default function PropertyDetailPage() {
     setLoading(false)
   }
 
-  const handleContactClick = () => {
+  const handleWhatsApp = () => {
     if (!user) {
-      router.push(`/en/login?redirect=/en/properties/${slug}&reason=contact`)
+      router.push(`/${locale}/login?redirect=/${locale}/properties/${slug}&reason=contact`)
       return
     }
     const msg = encodeURIComponent(`Hi, I'm interested in your property: ${property.name}`)
     window.open(`https://wa.me/?text=${msg}`, '_blank')
+  }
+
+  const handleBookNow = () => {
+    if (!user) {
+      router.push(`/${locale}/login?redirect=/${locale}/booking/${property.id}`)
+      return
+    }
+    router.push(`/${locale}/booking/${property.id}`)
   }
 
   const photos       = property?.photos?.filter(Boolean) || []
@@ -94,9 +104,11 @@ export default function PropertyDetailPage() {
       <Header />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70vh', gap: 16 }}>
         <p style={{ fontSize: 48 }}>🏠</p>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#2C3A6B' }}>Property not found</h2>
-        <button onClick={() => router.push('/en/properties')} style={{ padding: '10px 24px', background: '#2C3A6B', color: '#D4A843', borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-          Browse all stays
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#2C3A6B' }}>
+          {isAr ? 'العقار غير موجود' : 'Property not found'}
+        </h2>
+        <button onClick={() => router.push(`/${locale}/properties`)} style={{ padding: '10px 24px', background: '#2C3A6B', color: '#D4A843', borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+          {isAr ? 'تصفح كل الشقق' : 'Browse all stays'}
         </button>
       </div>
       <Footer />
@@ -131,7 +143,7 @@ export default function PropertyDetailPage() {
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '80px 24px 0' }}>
         <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#6b7280' }}>
-          <ArrowLeft size={16} /> Back to stays
+          <ArrowLeft size={16} /> {isAr ? 'عودة' : 'Back to stays'}
         </button>
       </div>
 
@@ -174,8 +186,8 @@ export default function PropertyDetailPage() {
           <div>
             <div style={{ display: 'flex', gap: 24, padding: 20, background: '#fff', borderRadius: 14, border: '1px solid rgba(0,0,0,0.06)', marginBottom: 24, flexWrap: 'wrap' }}>
               {[
-                { icon: Bed,   label: property.bedrooms === 0 ? 'Studio' : `${property.bedrooms} bedrooms` },
-                { icon: Users, label: `Up to ${property.max_guests} guests` },
+                { icon: Bed,   label: property.bedrooms === 0 ? (isAr ? 'استوديو' : 'Studio') : `${property.bedrooms} ${isAr ? 'غرف' : 'bedrooms'}` },
+                { icon: Users, label: isAr ? `حتى ${property.max_guests} ضيوف` : `Up to ${property.max_guests} guests` },
               ].map((s, i) => {
                 const Icon = s.icon
                 return (
@@ -188,22 +200,26 @@ export default function PropertyDetailPage() {
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 12 }}>About this stay</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 12 }}>
+                {isAr ? 'عن هذا العقار' : 'About this stay'}
+              </h2>
               <p style={{ fontSize: 15, color: '#4b5563', lineHeight: 1.8, whiteSpace: 'pre-line' }}>{property.description}</p>
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 14 }}>What's included</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 14 }}>
+                {isAr ? 'المرافق' : "What's included"}
+              </h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {[
-                  { key: 'wifi',         label: 'WiFi',     icon: Wifi },
-                  { key: 'ac',           label: 'AC',       icon: Wind },
-                  { key: 'pool_access',  label: 'Pool',     icon: Waves },
-                  { key: 'sea_view',     label: 'Sea view', icon: MapPin },
-                  { key: 'parking',      label: 'Parking',  icon: Car },
-                  { key: 'security_24h', label: 'Security', icon: Shield },
-                  { key: 'kitchen',      label: 'Kitchen',  icon: Coffee },
-                  { key: 'balcony',      label: 'Balcony',  icon: Check },
+                  { key: 'wifi',         label: isAr ? 'واي فاي' : 'WiFi',     icon: Wifi },
+                  { key: 'ac',           label: isAr ? 'تكييف' : 'AC',         icon: Wind },
+                  { key: 'pool_access',  label: isAr ? 'حمام سباحة' : 'Pool',  icon: Waves },
+                  { key: 'sea_view',     label: isAr ? 'إطلالة بحر' : 'Sea view', icon: MapPin },
+                  { key: 'parking',      label: isAr ? 'جراج' : 'Parking',     icon: Car },
+                  { key: 'security_24h', label: isAr ? 'أمن 24/7' : 'Security', icon: Shield },
+                  { key: 'kitchen',      label: isAr ? 'مطبخ' : 'Kitchen',     icon: Coffee },
+                  { key: 'balcony',      label: isAr ? 'بلكونة' : 'Balcony',   icon: Check },
                 ].filter(a => property[a.key]).map((a, i) => {
                   const Icon = a.icon
                   return (
@@ -219,7 +235,9 @@ export default function PropertyDetailPage() {
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 14 }}>Location</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2C3A6B', marginBottom: 14 }}>
+                {isAr ? 'الموقع' : 'Location'}
+              </h2>
               <div style={{ background: '#f3f4f6', borderRadius: 12, height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
                 <MapPin size={32} color="#D4A843" />
                 <p style={{ fontSize: 14, fontWeight: 500, color: '#6b7280' }}>{AREA_LABELS[property.area] || property.area}</p>
@@ -228,6 +246,7 @@ export default function PropertyDetailPage() {
             </div>
           </div>
 
+          {/* Booking Card */}
           <div>
             <div style={{ position: 'sticky', top: 80, background: '#fff', borderRadius: 16, border: '1px solid rgba(0,0,0,0.08)', padding: 24, boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
               <div style={{ marginBottom: 20 }}>
@@ -238,18 +257,18 @@ export default function PropertyDetailPage() {
                         <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 600, color: '#D4A843' }}>
                           EGP {property.price_per_night.toLocaleString()}
                         </span>
-                        <span style={{ fontSize: 13, color: '#9ca3af' }}>/night</span>
+                        <span style={{ fontSize: 13, color: '#9ca3af' }}>/{isAr ? 'ليلة' : 'night'}</span>
                       </div>
                     )}
-                    {property.price_per_week && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_week.toLocaleString()} / week</p>}
-                    {property.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_month.toLocaleString()} / month</p>}
+                    {property.price_per_week && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_week.toLocaleString()} / {isAr ? 'أسبوع' : 'week'}</p>}
+                    {property.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_month.toLocaleString()} / {isAr ? 'شهر' : 'month'}</p>}
                   </div>
                 ) : (
                   <div style={{ background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Lock size={18} color="#D4A843" />
                     <div>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: '#2C3A6B' }}>Login to see price</p>
-                      <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>Free registration required</p>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: '#2C3A6B' }}>{isAr ? 'سجّل الدخول لرؤية السعر' : 'Login to see price'}</p>
+                      <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{isAr ? 'التسجيل مجاني' : 'Free registration required'}</p>
                     </div>
                   </div>
                 )}
@@ -262,23 +281,37 @@ export default function PropertyDetailPage() {
                 </div>
               )}
 
-              <button onClick={handleContactClick} style={{
+              {/* Primary: Book Now */}
+              <button onClick={handleBookNow} style={{
                 width: '100%', padding: 14,
-                background: user ? '#25D366' : '#2C3A6B',
-                color: '#fff', borderRadius: 12, border: 'none', cursor: 'pointer',
+                background: '#2C3A6B',
+                color: '#D4A843', borderRadius: 12, border: 'none', cursor: 'pointer',
                 fontSize: 15, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                marginBottom: 12,
+                marginBottom: 10,
               }}>
-                {user
-                  ? <><MessageCircle size={18} /> Contact on WhatsApp</>
-                  : <><Lock size={16} /> Sign in to contact owner</>
-                }
+                <CalendarDays size={18} />
+                {isAr ? 'احجز الآن' : 'Book Now'}
               </button>
+
+              {/* Secondary: WhatsApp (only for logged-in users) */}
+              {user && (
+                <button onClick={handleWhatsApp} style={{
+                  width: '100%', padding: 12,
+                  background: 'transparent',
+                  color: '#25D366', borderRadius: 12, border: '1.5px solid #25D366', cursor: 'pointer',
+                  fontSize: 14, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  marginBottom: 10,
+                }}>
+                  <MessageCircle size={16} />
+                  {isAr ? 'تواصل عبر واتساب' : 'Contact on WhatsApp'}
+                </button>
+              )}
 
               {!user && (
                 <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', lineHeight: 1.5 }}>
-                  Create a free account to contact owners and see prices
+                  {isAr ? 'أنشئ حساباً مجانياً للتواصل والحجز' : 'Create a free account to book or contact owners'}
                 </p>
               )}
             </div>
