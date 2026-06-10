@@ -178,54 +178,67 @@ export default function OwnerLayout({
       </div>
 
       {/* Notifications Bell */}
-      <div style={{ padding: '0 12px', marginBottom: 4 }}>
+      <div style={{ padding: '0 12px 8px' }}>
         <Link href={`/${locale}/owner/notifications`} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 8, background: pathname === `/${locale}/owner/notifications` ? 'rgba(212,168,67,0.15)' : 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderRadius: 8, background: pathname === `/${locale}/owner/notifications` ? 'rgba(212,168,67,0.15)' : 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: pathname === `/${locale}/owner/notifications` ? '#D4A843' : 'rgba(201,206,221,0.85)', fontSize: 13, fontWeight: 500 }}>
               <Bell size={15} />
-              <span>{tx.notifications || 'Notifications'}</span>
+              <span>{tx.notifications}</span>
             </div>
-            {unreadCount > 0 && (
-              <span style={{ background: '#ef4444', color: '#fff', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, minWidth: 20, textAlign: 'center' }}>
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
-            )}
+            <span style={{
+              background: unreadCount > 0 ? '#ef4444' : 'rgba(201,206,221,0.2)',
+              color: unreadCount > 0 ? '#fff' : 'rgba(201,206,221,0.5)',
+              borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700,
+              minWidth: 22, textAlign: 'center', transition: 'all 0.2s',
+            }}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
           </div>
         </Link>
       </div>
 
-      {/* General Nav */}
-      <div style={{ padding: '0 12px', marginBottom: 20 }}>
-        <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginBottom: 8, paddingLeft: 8 }}>
-          {tx.general}
-        </div>
-        {navItems.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, background: isActive ? 'rgba(212,168,67,0.15)' : 'transparent', color: isActive ? '#D4A843' : 'rgba(201,206,221,0.7)', fontSize: 13, fontWeight: isActive ? 600 : 500, cursor: 'pointer', transition: 'all 0.15s', marginBottom: 2 }}>
-                <item.icon size={16} /><span>{item.label}</span>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+      {/* Scrollable Nav — General + Growth Tools together */}
+      <div style={{ flex: 1, overflowY: 'auto', position: 'relative', scrollbarWidth: 'thin', scrollbarColor: 'rgba(212,168,67,0.2) transparent' }}>
 
-      {/* Growth Tools */}
-      <div style={{ padding: '0 12px', flex: 1, overflowY: 'auto' }}>
-        <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginBottom: 8, paddingLeft: 8 }}>
-          {tx.growth}
+        {/* General Nav */}
+        <div style={{ padding: '0 12px 8px' }}>
+          <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.4)', marginBottom: 4, paddingLeft: 8 }}>
+            {tx.general}
+          </div>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderRadius: 8, background: isActive ? 'rgba(212,168,67,0.15)' : 'transparent', color: isActive ? '#D4A843' : 'rgba(201,206,221,0.7)', fontSize: 13, fontWeight: isActive ? 600 : 400, cursor: 'pointer', transition: 'all 0.15s', marginBottom: 1 }}>
+                  <item.icon size={15} /><span>{item.label}</span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
-        {growthTools.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, background: isActive ? 'rgba(212,168,67,0.15)' : 'transparent', color: isActive ? '#D4A843' : 'rgba(201,206,221,0.7)', fontSize: 13, fontWeight: isActive ? 600 : 500, cursor: 'pointer', transition: 'all 0.15s', marginBottom: 2 }}>
-                <item.icon size={16} /><span>{item.label}</span>
-              </div>
-            </Link>
-          )
-        })}
+
+        {/* Divider */}
+        <div style={{ margin: '4px 16px 8px', borderTop: '1px solid rgba(201,206,221,0.1)' }} />
+
+        {/* Growth Tools */}
+        <div style={{ padding: '0 12px 16px' }}>
+          <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.4)', marginBottom: 4, paddingLeft: 8 }}>
+            {tx.growth}
+          </div>
+          {growthTools.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderRadius: 8, background: isActive ? 'rgba(212,168,67,0.15)' : 'transparent', color: isActive ? '#D4A843' : 'rgba(201,206,221,0.7)', fontSize: 13, fontWeight: isActive ? 600 : 400, cursor: 'pointer', transition: 'all 0.15s', marginBottom: 1 }}>
+                  <item.icon size={15} /><span>{item.label}</span>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Fade — hints there is more content below */}
+        <div style={{ position: 'sticky', bottom: 0, left: 0, right: 0, height: 32, background: 'linear-gradient(to bottom, transparent, #0e1428)', pointerEvents: 'none' }} />
       </div>
 
       {/* Add Listing */}
