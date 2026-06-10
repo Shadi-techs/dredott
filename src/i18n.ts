@@ -2,7 +2,7 @@ import { defineRouting } from 'next-intl/routing'
 import { getRequestConfig } from 'next-intl/server'
 
 export const routing = defineRouting({
-  locales: ['en', 'ar', 'it', 'ru', 'de'],
+  locales: ['en', 'ar', 'it', 'ru', 'de', 'uk'],
   defaultLocale: 'en',
 })
 
@@ -16,6 +16,7 @@ export const localeNames = {
   it: { name: 'Italian', native: 'Italiano', flag: '🇮🇹' },
   ru: { name: 'Russian', native: 'Русский', flag: '🇷🇺' },
   de: { name: 'German', native: 'Deutsch', flag: '🇩🇪' },
+  uk: { name: 'Ukrainian', native: 'Українська', flag: '🇺🇦' },
 }
 
 export default getRequestConfig(async ({ requestLocale }) => {
