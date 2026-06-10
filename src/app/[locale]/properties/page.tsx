@@ -117,7 +117,7 @@ export default function PropertiesPage() {
       .select('id, slug, name, area, type, price_per_night, price_per_week, price_per_month, max_guests, bedrooms, photos, display_rating, price_hidden, wifi, ac, pool_access, sea_view, parking, security_24h, kitchen, payment_method, created_at')
       .eq('city_id', city.id)
       .eq('review_status', 'approved')
-      .eq('status', 'available')
+      .in('status', ['available', 'active', 'live'])
       .order('created_at', { ascending: false })
       .limit(100)
 
@@ -247,9 +247,17 @@ export default function PropertiesPage() {
           </button>
         </div>
 
-        {/* Quick filters */}
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px 12px', display: 'flex', gap: 8, overflowX: 'auto' }}>
-          {AMENITIES.slice(0, 4).map(a => (
+        {/* Quick filters + mobile sort */}
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px 12px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>
+          {isMobile && (
+            <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ padding: '5px 10px', background: '#f9fafb', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 20, fontSize: 12, color: '#555', cursor: 'pointer', outline: 'none', flexShrink: 0 }}>
+              <option value="rank">{tx.top_rated}</option>
+              <option value="price_asc">{tx.price_low_high}</option>
+              <option value="price_desc">{tx.price_high_low}</option>
+              <option value="newest">{tx.newest_first}</option>
+            </select>
+          )}
+          {AMENITIES.slice(0, isMobile ? 6 : 4).map(a => (
             <button key={a.col} onClick={() => toggleAmenity(a.col)} style={{ padding: '5px 14px', borderRadius: 20, fontSize: 12, background: amenities.includes(a.col) ? '#2C3A6B' : 'rgba(0,0,0,0.04)', color: amenities.includes(a.col) ? '#D4A843' : '#555', border: amenities.includes(a.col) ? '1px solid #2C3A6B' : '1px solid transparent', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
               {a.emoji} {a.labels[locale as keyof typeof a.labels] || a.labels.en}
             </button>
@@ -258,8 +266,8 @@ export default function PropertiesPage() {
 
         {/* Expanded filters */}
         {showFilters && (
-          <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', background: '#fff', padding: '20px 24px 24px' }}>
-            <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', background: '#fff', padding: isMobile ? '16px 16px 20px' : '20px 24px 24px', maxHeight: isMobile ? '70vh' : 'none', overflowY: isMobile ? 'auto' : 'visible' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 20 }}>
 
               {/* Dates */}
               <div>

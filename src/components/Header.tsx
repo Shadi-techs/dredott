@@ -10,14 +10,22 @@ const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-const DredottLogo = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 700, letterSpacing: '0.05em', lineHeight: 1 }}>
-      <span style={{ color: '#FAF9F6' }}>DRE</span><span style={{ color: '#D4A843' }}>DOTT</span>
+const DredottLogo = ({ locale }: { locale: string }) => {
+  const l = locale as keyof (typeof TAB_LABELS)['stays']
+  const tag = [
+    TAB_LABELS.stays[l]    || 'Stays',
+    TAB_LABELS.cars[l]     || 'Cars',
+    TAB_LABELS.services[l] || 'Services',
+  ].join(' · ').toUpperCase()
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 700, letterSpacing: '0.05em', lineHeight: 1 }}>
+        <span style={{ color: '#FAF9F6' }}>DRE</span><span style={{ color: '#D4A843' }}>DOTT</span>
+      </div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 7.5, letterSpacing: '0.18em', color: '#D4A843', opacity: 0.7 }}>{tag}</div>
     </div>
-    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, letterSpacing: '0.2em', color: '#D4A843', opacity: 0.7 }}>RED SEA · STAYS</div>
-  </div>
-)
+  )
+}
 
 const LANGUAGES = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
@@ -159,7 +167,7 @@ export default function Header() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
 
             {/* Logo */}
-            <Link href={`/${currentLocale}`} style={{ textDecoration: 'none', flexShrink: 0 }}><DredottLogo /></Link>
+            <Link href={`/${currentLocale}`} style={{ textDecoration: 'none', flexShrink: 0 }}><DredottLogo locale={currentLocale} /></Link>
 
             {/* Desktop Tabs */}
             {!isMobile && (

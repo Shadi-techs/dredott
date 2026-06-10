@@ -58,15 +58,17 @@ export default function AdminPendingPropertiesPage() {
   const handleApprove = async (propertyId: string) => {
     await supabase
       .from('properties')
-      .update({ status: 'active' })
+      .update({ review_status: 'approved', status: 'available' })
       .eq('id', propertyId);
-    // Send notification to owner
-    await supabase.from('notifications').insert({
-      user_id: (await supabase.from('properties').select('owner_user_id').eq('id', propertyId).single()).data?.owner_user_id,
-      type: 'property_approved',
-      title: locale === 'ar' ? 'تم قبول عقارك' : 'Property approved',
-      message: locale === 'ar' ? 'أصبح عقارك مرئياً للمستخدمين' : 'Your property is now visible to guests.',
-    });
+    const { data: prop } = await supabase.from('properties').select('owner_user_id').eq('id', propertyId).single()
+    if (prop?.owner_user_id) {
+      await supabase.from('notifications').insert({
+        user_id: prop.owner_user_id,
+        type: 'property_approved',
+        title: locale === 'ar' ? 'تم قبول عقارك' : 'Property approved',
+        message: locale === 'ar' ? 'أصبح عقارك مرئياً للمستخدمين' : 'Your property is now visible to guests.',
+      });
+    }
     fetchPendingProperties();
   };
 

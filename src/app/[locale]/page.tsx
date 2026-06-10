@@ -83,7 +83,7 @@ export default function HomePage() {
     const { data } = await supabase
       .from('properties')
       .select('*')
-      .eq('status', 'available')
+      .in('status', ['available', 'active', 'live'])
       .order('display_rating', { ascending: false })
       .limit(6)
     if (data) setFeaturedProperties(data)
@@ -103,7 +103,7 @@ export default function HomePage() {
       .select('id, name, name_en, brand, model, year, seats, transmission, price_per_day, price_hidden, internal_score, photos')
       .eq('city_id', city.id)
       .eq('review_status', 'approved')
-      .eq('status', 'available')
+      .in('status', ['available', 'active', 'live'])
       .order('internal_score', { ascending: false })
       .limit(6)
     if (data) setFeaturedCars(data)

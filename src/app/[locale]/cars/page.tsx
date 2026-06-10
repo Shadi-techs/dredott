@@ -80,7 +80,7 @@ export default function CarsPage() {
       .select('id, name, name_en, name_ar, brand, model, year, seats, transmission, fuel_type, price_per_day, price_per_week, price_hidden, internal_score, photos, km_limit, payment_method, listing_type')
       .eq('city_id', city.id)
       .eq('review_status', 'approved')
-      .eq('status', 'available')
+      .in('status', ['available', 'active', 'live'])
       .limit(100)
     setCars(data || [])
     setLoading(false)
