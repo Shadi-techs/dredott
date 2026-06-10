@@ -1,14 +1,10 @@
-// ============================================
-// Home Page — Dredott Stay
-// Path: src/app/[locale]/page.tsx
-// ============================================
-
 'use client'
 
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { MapPin, Star, Search, ChevronRight, Shield, Award, Clock, Heart, Car } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { HOME_TX } from '@/lib/translations/home'
 
 interface Property {
   id: string
@@ -44,7 +40,11 @@ const supabase = createBrowserClient(
 )
 
 export default function HomePage() {
-  const router = useRouter()
+  const router   = useRouter()
+  const pathname = usePathname()
+  const locale   = pathname.split('/')[1] || 'en'
+  const htx      = HOME_TX[locale as keyof typeof HOME_TX] || HOME_TX.en
+  const isRTL    = locale === 'ar'
 
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
   const [featuredCars, setFeaturedCars] = useState<FeaturedCar[]>([])
@@ -56,6 +56,8 @@ export default function HomePage() {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [soundOn, setSoundOn] = useState(false)
+
+  const go = (path: string) => router.push(`/${locale}${path}`)
 
   const toggleSound = () => {
     const audio = document.getElementById('sea-audio') as HTMLAudioElement
@@ -111,15 +113,22 @@ export default function HomePage() {
   const parallaxY = scrollY * 0.4
   const heroOpacity = Math.max(0, 1 - scrollY / 600)
 
+  const searchAndGo = () => {
+    const p = new URLSearchParams()
+    if (checkIn)  p.set('check_in',  checkIn)
+    if (checkOut) p.set('check_out', checkOut)
+    go(`/properties?${p.toString()}`)
+  }
+
   return (
-    <div className="min-h-screen bg-[#FAF9F6]">
+    <div className="min-h-screen bg-[#FAF9F6]" dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* ── Sticky Search Bar ── */}
       {showStickySearch && (
         <div style={{ position: 'fixed', top: 64, left: 0, right: 0, zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.08)', padding: '10px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
           <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', gap: 8, alignItems: 'center' }}>
             <select style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }}>
-              <option value="all">All areas</option>
+              <option value="all">{htx.area_all}</option>
               <option value="naama">Naama Bay</option>
               <option value="sharks">Sharks Bay</option>
               <option value="hadaba">Hadaba</option>
@@ -128,9 +137,9 @@ export default function HomePage() {
               style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }} />
             <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)} min={checkIn || new Date().toISOString().split('T')[0]}
               style={{ flex: 1, padding: '8px 12px', background: '#FAF9F6', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 13, color: '#2C3A6B', outline: 'none' }} />
-            <button onClick={() => { const p = new URLSearchParams(); if (checkIn) p.set('check_in', checkIn); if (checkOut) p.set('check_out', checkOut); router.push(`/en/properties?${p.toString()}`) }}
+            <button onClick={searchAndGo}
               style={{ padding: '8px 20px', background: '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              Search
+              {htx.search_btn}
             </button>
           </div>
         </div>
@@ -159,48 +168,48 @@ export default function HomePage() {
         <div className="relative z-10 max-w-6xl mx-auto px-8 text-center" style={{ opacity: heroOpacity }}>
           <div className="inline-flex items-center gap-3 text-[11px] tracking-[0.28em] text-[#D4A843] mb-7" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             <span className="w-1 h-1 rounded-full bg-[#D4A843]" />
-            SHARM EL SHEIKH · RED SEA · EGYPT
+            {htx.badge}
             <span className="w-1 h-1 rounded-full bg-[#D4A843]" />
           </div>
 
           <h1 className="text-6xl lg:text-8xl text-white leading-none mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Sharm El Sheikh,<br />
-            <em>your</em> <span>way.</span>
+            {htx.h1_line1}<br />
+            <em>{htx.h1_em}</em><span>{htx.h1_rest}</span>
           </h1>
 
           <p className="text-lg text-white/80 font-light leading-relaxed max-w-2xl mx-auto mb-10">
-            Hand-picked apartments and villas across the bay.<br />
-            Booked on WhatsApp. Met at the airport. Lived in like a local.
+            {htx.sub1}<br />
+            {htx.sub2}
           </p>
 
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 max-w-4xl mx-auto mb-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="relative">
-                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>WHERE</label>
+                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.where}</label>
                 <select className="w-full px-3 py-2 bg-[#FAF9F6] rounded-lg border border-transparent focus:border-[#D4A843] outline-none text-[#2C3A6B] text-sm" defaultValue="all">
-                  <option value="all">All areas</option>
+                  <option value="all">{htx.area_all}</option>
                   <option value="naama">Naama Bay</option>
                   <option value="sharks">Sharks Bay</option>
                   <option value="hadaba">Hadaba</option>
                 </select>
               </div>
               <div>
-                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>CHECK-IN</label>
-                <input type="date" className="w-full px-3 py-2 bg-[#FAF9F6] rounded-lg border border-transparent focus:border-[#D4A843] outline-none text-[#2C3A6B] text-sm" />
+                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.checkin}</label>
+                <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)} className="w-full px-3 py-2 bg-[#FAF9F6] rounded-lg border border-transparent focus:border-[#D4A843] outline-none text-[#2C3A6B] text-sm" />
               </div>
               <div>
-                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>CHECK-OUT</label>
-                <input type="date" className="w-full px-3 py-2 bg-[#FAF9F6] rounded-lg border border-transparent focus:border-[#D4A843] outline-none text-[#2C3A6B] text-sm" />
+                <label className="block text-[9px] tracking-[0.16em] text-[#6b7280] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.checkout}</label>
+                <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)} min={checkIn} className="w-full px-3 py-2 bg-[#FAF9F6] rounded-lg border border-transparent focus:border-[#D4A843] outline-none text-[#2C3A6B] text-sm" />
               </div>
-              <button onClick={() => { const p = new URLSearchParams(); if (checkIn) p.set('check_in', checkIn); if (checkOut) p.set('check_out', checkOut); router.push(`/en/properties?${p.toString()}`) }}
+              <button onClick={searchAndGo}
                 className="bg-[#2C3A6B] hover:bg-[#2A9D8F] text-[#D4A843] px-6 py-3 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center gap-2">
-                <Search size={14} />Search
+                <Search size={14} />{htx.search_btn}
               </button>
             </div>
           </div>
 
-          <a onClick={() => router.push('/en/properties')} className="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm cursor-pointer transition-colors">
-            Browse all 50+ properties<ChevronRight size={14} />
+          <a onClick={() => go('/properties')} className="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm cursor-pointer transition-colors">
+            {htx.browse_all}<ChevronRight size={14} />
           </a>
         </div>
 
@@ -229,17 +238,17 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-8">
           <div className="text-center mb-12">
             <div className="text-[11px] tracking-[0.24em] text-[#B8860B] mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              — WHAT ARE YOU LOOKING FOR?
+              {htx.what_looking}
             </div>
             <h2 className="text-4xl lg:text-5xl text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Stays &amp; cars, <em>in one place.</em>
+              {htx.stays_cars} <em>{htx.stays_cars_em}</em>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Properties Card */}
             <div
-              onClick={() => router.push('/en/properties')}
+              onClick={() => go('/properties')}
               className="group cursor-pointer relative rounded-2xl overflow-hidden h-72 flex items-end"
               style={{ background: 'linear-gradient(135deg, #1a2440 0%, #2C3A6B 100%)' }}
             >
@@ -248,21 +257,21 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0e1428]/80 via-[#0e1428]/30 to-transparent" />
               <div className="relative z-10 p-8 w-full">
                 <div className="text-[10px] tracking-[0.24em] text-[#D4A843] mb-2" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                  50+ LISTINGS
+                  {htx.stay_count}
                 </div>
                 <h3 className="text-3xl text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  Find a Stay
+                  {htx.find_stay}
                 </h3>
-                <p className="text-white/60 text-sm mb-4">Apartments &amp; villas across Sharm El Sheikh</p>
+                <p className="text-white/60 text-sm mb-4">{htx.stay_sub}</p>
                 <span className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium group-hover:gap-3 transition-all">
-                  Browse properties <ChevronRight size={14} />
+                  {htx.browse_props} <ChevronRight size={14} />
                 </span>
               </div>
             </div>
 
             {/* Cars Card */}
             <div
-              onClick={() => router.push('/en/cars')}
+              onClick={() => go('/cars')}
               className="group cursor-pointer relative rounded-2xl overflow-hidden h-72 flex items-end"
               style={{ background: 'linear-gradient(135deg, #1a3830 0%, #2A9D8F 100%)' }}
             >
@@ -271,14 +280,14 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e1a]/80 via-[#0a1e1a]/30 to-transparent" />
               <div className="relative z-10 p-8 w-full">
                 <div className="text-[10px] tracking-[0.24em] text-[#D4A843] mb-2" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                  RENTAL &amp; FOR SALE
+                  {htx.car_tag}
                 </div>
                 <h3 className="text-3xl text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  Rent a Car
+                  {htx.rent_car}
                 </h3>
-                <p className="text-white/60 text-sm mb-4">Daily &amp; weekly rentals, verified fleet</p>
+                <p className="text-white/60 text-sm mb-4">{htx.car_sub}</p>
                 <span className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium group-hover:gap-3 transition-all">
-                  Browse cars <ChevronRight size={14} />
+                  {htx.browse_cars} <ChevronRight size={14} />
                 </span>
               </div>
             </div>
@@ -292,15 +301,15 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-12">
             <div>
               <div className="text-[11px] tracking-[0.2em] text-[#B8860B] mb-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                — THE STAYS · NO. 02
+                {htx.section_stays}
               </div>
               <h2 className="text-5xl lg:text-6xl text-[#2C3A6B] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                Hand-picked across <em>the bay.</em>
+                {htx.hand_picked} <em>{htx.the_bay}</em>
               </h2>
-              <p className="text-gray-500 text-sm max-w-xl">Every listing inspected by our team. Sea views, beach access, real ratings.</p>
+              <p className="text-gray-500 text-sm max-w-xl">{htx.every_listing}</p>
             </div>
-            <a onClick={() => router.push('/en/properties')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
-              View all 50+ <ChevronRight size={14} />
+            <a onClick={() => go('/properties')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
+              {htx.view_all_props} <ChevronRight size={14} />
             </a>
           </div>
 
@@ -311,7 +320,7 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProperties.slice(0, 6).map((property, index) => (
-                <article key={property.id} onClick={() => router.push(`/en/properties/${property.slug}`)}
+                <article key={property.id} onClick={() => go(`/properties/${property.slug}`)}
                   className="group cursor-pointer bg-white rounded-xl border border-[rgba(26,36,64,0.08)] hover:border-[#D4A843] transition-all duration-300 overflow-hidden hover:shadow-lg relative">
                   <div className="absolute top-4 left-4 z-10 text-xs tracking-wider text-white/80 bg-black/30 backdrop-blur-sm px-2 py-1 rounded" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                     № {String(index + 1).padStart(2, '0')}
@@ -325,7 +334,7 @@ export default function HomePage() {
                       </div>
                     )}
                     {property.price_hidden && (
-                      <div className="absolute top-4 right-4 bg-[#B8860B] text-[#FFF8DC] px-3 py-1 rounded-full text-xs font-bold">🔒 Login to see price</div>
+                      <div className="absolute top-4 right-4 bg-[#B8860B] text-[#FFF8DC] px-3 py-1 rounded-full text-xs font-bold">🔒</div>
                     )}
                     {property.display_rating && (
                       <div className="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-full flex items-center gap-1 shadow">
@@ -343,11 +352,11 @@ export default function HomePage() {
                       {property.area.replace(/_/g, ' ')}
                     </p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-xs text-gray-500">{property.bedrooms} bed · {property.max_guests} guests</span>
+                      <span className="text-xs text-gray-500">{property.bedrooms} {property.bedrooms === 1 ? htx.bed : htx.beds} · {property.max_guests} {htx.guests}</span>
                       {!property.price_hidden && (
                         <div className="text-right">
                           <span className="text-xl font-bold text-[#B8860B]">${property.price_per_night}</span>
-                          <span className="text-xs text-gray-400 ml-1">/night</span>
+                          <span className="text-xs text-gray-400 ml-1">{htx.per_night}</span>
                         </div>
                       )}
                     </div>
@@ -358,8 +367,8 @@ export default function HomePage() {
           )}
 
           <div className="mt-10 text-center lg:hidden">
-            <button onClick={() => router.push('/en/properties')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
-              View all properties <ChevronRight size={14} />
+            <button onClick={() => go('/properties')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
+              {htx.view_all_props} <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -371,15 +380,15 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-12">
             <div>
               <div className="text-[11px] tracking-[0.2em] text-[#B8860B] mb-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                — THE FLEET · NO. 03
+                {htx.section_fleet}
               </div>
               <h2 className="text-5xl lg:text-6xl text-[#2C3A6B] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                Explore Sharm <em>on your terms.</em>
+                {htx.explore} <em>{htx.on_terms}</em>
               </h2>
-              <p className="text-gray-500 text-sm max-w-xl">Daily &amp; weekly rentals. Verified cars, transparent pricing, zero surprises.</p>
+              <p className="text-gray-500 text-sm max-w-xl">{htx.fleet_sub}</p>
             </div>
-            <a onClick={() => router.push('/en/cars')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
-              View all cars <ChevronRight size={14} />
+            <a onClick={() => go('/cars')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
+              {htx.view_all_cars} <ChevronRight size={14} />
             </a>
           </div>
 
@@ -388,16 +397,16 @@ export default function HomePage() {
               {[1, 2, 3].map(i => <div key={i} className="bg-gray-100 rounded-xl h-72 animate-pulse" />)}
             </div>
           ) : featuredCars.length === 0 ? (
-            <div onClick={() => router.push('/en/cars')}
+            <div onClick={() => go('/cars')}
               className="cursor-pointer border-2 border-dashed border-[#D4A843]/40 rounded-2xl py-16 flex flex-col items-center gap-4 hover:border-[#D4A843] transition-colors">
               <Car className="w-12 h-12 text-[#D4A843]/60" />
-              <p className="text-[#2C3A6B] font-medium" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22 }}>Browse our car fleet</p>
-              <span className="inline-flex items-center gap-1 text-[#2A9D8F] text-sm">View all cars <ChevronRight size={13} /></span>
+              <p className="text-[#2C3A6B] font-medium" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22 }}>{htx.browse_cars}</p>
+              <span className="inline-flex items-center gap-1 text-[#2A9D8F] text-sm">{htx.view_all_cars} <ChevronRight size={13} /></span>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredCars.map((car, index) => (
-                <article key={car.id} onClick={() => router.push('/en/cars')}
+                <article key={car.id} onClick={() => go('/cars')}
                   className="group cursor-pointer bg-white rounded-xl border border-[rgba(26,36,64,0.08)] hover:border-[#2A9D8F] transition-all duration-300 overflow-hidden hover:shadow-lg relative">
                   <div className="absolute top-4 left-4 z-10 text-xs tracking-wider text-white/80 bg-black/30 backdrop-blur-sm px-2 py-1 rounded" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                     № {String(index + 1).padStart(2, '0')}
@@ -411,7 +420,7 @@ export default function HomePage() {
                       </div>
                     )}
                     {car.price_hidden && (
-                      <div className="absolute top-4 right-4 bg-[#B8860B] text-[#FFF8DC] px-3 py-1 rounded-full text-xs font-bold">🔒 Login to see price</div>
+                      <div className="absolute top-4 right-4 bg-[#B8860B] text-[#FFF8DC] px-3 py-1 rounded-full text-xs font-bold">🔒</div>
                     )}
                   </div>
                   <div className="p-5">
@@ -419,10 +428,10 @@ export default function HomePage() {
                       {car.name_en || car.name}
                     </h3>
                     <p className="text-xs text-gray-500 mb-4">
-                      {car.brand} · {car.year} · {car.transmission} · {car.seats} seats
+                      {car.brand} · {car.year} · {car.transmission} · {car.seats} {htx.seats}
                     </p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-xs text-gray-400 uppercase tracking-wider" style={{ fontFamily: "'JetBrains Mono', monospace" }}>per day</span>
+                      <span className="text-xs text-gray-400 uppercase tracking-wider" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.per_day}</span>
                       {!car.price_hidden && (
                         <div className="text-right">
                           <span className="text-xl font-bold text-[#2A9D8F]">${car.price_per_day}</span>
@@ -436,8 +445,8 @@ export default function HomePage() {
           )}
 
           <div className="mt-10 text-center lg:hidden">
-            <button onClick={() => router.push('/en/cars')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
-              View all cars <ChevronRight size={14} />
+            <button onClick={() => go('/cars')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
+              {htx.view_all_cars} <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -450,17 +459,17 @@ export default function HomePage() {
             <div className="relative">
               <span className="absolute -top-8 -left-4 text-[120px] leading-none text-[#D4A843] opacity-20" style={{ fontFamily: "'Cormorant Garamond', serif" }}>"</span>
               <p className="text-2xl lg:text-3xl text-[#2C3A6B] leading-relaxed" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic' }}>
-                A small team, a curated list, and a single promise:<br />
-                you'll be looked after the way we'd look after a <em className="font-semibold">friend.</em>
+                {htx.quote}<br />
+                {htx.quote2} <em className="font-semibold">{htx.friend}</em>
               </p>
-              <div className="mt-6 text-sm tracking-[0.2em] text-[#B8860B]" style={{ fontFamily: "'JetBrains Mono', monospace" }}>— THE DREDOTT TEAM</div>
+              <div className="mt-6 text-sm tracking-[0.2em] text-[#B8860B]" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.the_team}</div>
             </div>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { num: '50+', label: 'Curated properties' },
-                { num: '4.9★', label: 'Average rating' },
-                { num: '1,200+', label: 'Happy guests' },
-                { num: '24/7', label: 'WhatsApp support' },
+                { num: '50+', label: htx.stat_props },
+                { num: '4.9★', label: htx.stat_rating },
+                { num: '1,200+', label: htx.stat_guests },
+                { num: '24/7', label: htx.stat_support },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="text-4xl font-bold text-[#2C3A6B] mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{stat.num}</div>
@@ -477,22 +486,20 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <div className="text-[11px] tracking-[0.2em] text-[#B8860B] mb-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              — THE DREDOTT WAY · NO. 04
+              {htx.section_why}
             </div>
             <h2 className="text-5xl lg:text-6xl text-[#2C3A6B] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Five-star care,<br /><em>without the lobby.</em>
+              {htx.five_star}<br /><em>{htx.no_lobby}</em>
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-sm">
-              We make your Sharm experience seamless from the moment you land to the morning you fly home.
-            </p>
+            <p className="text-gray-500 max-w-2xl mx-auto text-sm">{htx.why_sub}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: MapPin, title: 'Prime locations', desc: 'Naama Bay, Sharks Bay, Old Market, Hadaba — sea views and beach access in every neighbourhood.' },
-              { icon: Award, title: 'WhatsApp concierge', desc: 'A real person in your language confirms within minutes and stays one tap away through your stay.' },
-              { icon: Shield, title: 'Verified listings', desc: 'Every property and car is inspected, photographed, and managed end-to-end by the Dredott team.' },
-              { icon: Heart, title: 'Five languages', desc: 'English · Arabic · Italian · Russian · German. We match you with a host who speaks yours.' },
+              { icon: MapPin,  title: htx.loc_title,   desc: htx.loc_desc },
+              { icon: Award,  title: htx.wa_title,    desc: htx.wa_desc },
+              { icon: Shield, title: htx.verif_title, desc: htx.verif_desc },
+              { icon: Heart,  title: htx.lang_title,  desc: htx.lang_desc },
             ].map((item, i) => {
               const Icon = item.icon
               return (
@@ -521,22 +528,22 @@ export default function HomePage() {
 
         <div className="relative z-10 text-center px-8">
           <div className="text-[11px] tracking-[0.2em] text-[#D4A843] mb-6" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-            — FIN · CHAPTER NINE
+            {htx.final_tag}
           </div>
           <h2 className="text-5xl lg:text-6xl text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Your Sharm story<br /><em>starts here.</em>
+            {htx.your_story}<br /><em>{htx.starts_here}</em>
           </h2>
-          <p className="text-xl text-white/80 mb-10 max-w-xl mx-auto">Tell us your dates, we'll do the rest.</p>
+          <p className="text-xl text-white/80 mb-10 max-w-xl mx-auto">{htx.final_sub}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button onClick={() => router.push('/en/properties')} className="bg-white hover:bg-gray-100 text-[#2C3A6B] px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg">
-              Browse stays →
+            <button onClick={() => go('/properties')} className="bg-white hover:bg-gray-100 text-[#2C3A6B] px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg">
+              {htx.browse_stays_btn}
             </button>
             <a href="https://wa.me/201200481043" target="_blank"
               className="bg-[#D4A843] hover:bg-[#B8860B] text-white px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg flex items-center gap-2">
               <svg viewBox="0 0 24 24" width={18} height={18} fill="currentColor">
                 <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.74.46 3.45 1.32 4.94L2 22l5.27-1.38a9.94 9.94 0 004.77 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0012.04 2zm.01 2c2.11 0 4.09.82 5.58 2.31a7.85 7.85 0 012.31 5.6c0 4.36-3.55 7.91-7.91 7.91h-.01a7.93 7.93 0 01-4.04-1.11l-.29-.17-2.99.78.8-2.91-.19-.3a7.94 7.94 0 011.46-9.81A7.86 7.86 0 0112.05 4z" />
               </svg>
-              WhatsApp us
+              {htx.wa_us}
             </a>
           </div>
         </div>

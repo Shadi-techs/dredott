@@ -37,12 +37,12 @@ const TAB_LABELS: Record<string, Record<string, string>> = {
 }
 
 const TX: Record<string, any> = {
-  en: { signIn: 'Sign in', signOut: 'Sign out', listProperty: 'Join as Owner', dashboard: 'Dashboard', myAccount: 'My Account', myProfile: 'My Profile', myCv: 'My CV', switchToGuest: 'Browse as Guest', switchToProvider: '← Provider Mode' },
-  ar: { signIn: 'دخول', signOut: 'خروج', listProperty: 'انضم كمالك', dashboard: 'لوحة التحكم', myAccount: 'حسابي', myProfile: 'ملفي', myCv: 'سيرتي الذاتية', switchToGuest: 'تصفح كضيف', switchToProvider: '← وضع مزود الخدمة' },
-  ru: { signIn: 'Войти', signOut: 'Выйти', listProperty: 'Стать владельцем', dashboard: 'Панель', myAccount: 'Аккаунт', myProfile: 'Профиль', myCv: 'Моё CV', switchToGuest: 'Как гость', switchToProvider: '← Режим поставщика' },
-  uk: { signIn: 'Увійти', signOut: 'Вийти', listProperty: 'Стати власником', dashboard: 'Панель', myAccount: 'Акаунт', myProfile: 'Профіль', myCv: 'Моє CV', switchToGuest: 'Як гість', switchToProvider: '← Режим постачальника' },
-  de: { signIn: 'Anmelden', signOut: 'Abmelden', listProperty: 'Als Eigentümer beitreten', dashboard: 'Dashboard', myAccount: 'Konto', myProfile: 'Profil', myCv: 'Mein CV', switchToGuest: 'Als Gast', switchToProvider: '← Anbieter-Modus' },
-  it: { signIn: 'Accedi', signOut: 'Esci', listProperty: 'Unisciti come proprietario', dashboard: 'Dashboard', myAccount: 'Account', myProfile: 'Profilo', myCv: 'Il mio CV', switchToGuest: 'Naviga come ospite', switchToProvider: '← Modalità fornitore' },
+  en: { signIn: 'Sign in', signOut: 'Sign out', listProperty: 'Join as Owner', dashboard: 'Dashboard', myAccount: 'My Account', myProfile: 'My Profile', myCv: 'My CV', switchToGuest: 'Browse as Guest', switchToProvider: '← Provider Mode', guestMode: 'Guest Mode' },
+  ar: { signIn: 'دخول', signOut: 'خروج', listProperty: 'انضم كمالك', dashboard: 'لوحة التحكم', myAccount: 'حسابي', myProfile: 'ملفي', myCv: 'سيرتي الذاتية', switchToGuest: 'تصفح كضيف', switchToProvider: '← وضع مزود الخدمة', guestMode: 'وضع الضيف' },
+  ru: { signIn: 'Войти', signOut: 'Выйти', listProperty: 'Стать владельцем', dashboard: 'Панель', myAccount: 'Аккаунт', myProfile: 'Профиль', myCv: 'Моё CV', switchToGuest: 'Как гость', switchToProvider: '← Режим поставщика', guestMode: 'Режим гостя' },
+  uk: { signIn: 'Увійти', signOut: 'Вийти', listProperty: 'Стати власником', dashboard: 'Панель', myAccount: 'Акаунт', myProfile: 'Профіль', myCv: 'Моє CV', switchToGuest: 'Як гість', switchToProvider: '← Режим постачальника', guestMode: 'Режим гостя' },
+  de: { signIn: 'Anmelden', signOut: 'Abmelden', listProperty: 'Als Eigentümer beitreten', dashboard: 'Dashboard', myAccount: 'Konto', myProfile: 'Profil', myCv: 'Mein CV', switchToGuest: 'Als Gast', switchToProvider: '← Anbieter-Modus', guestMode: 'Gastmodus' },
+  it: { signIn: 'Accedi', signOut: 'Esci', listProperty: 'Unisciti come proprietario', dashboard: 'Dashboard', myAccount: 'Account', myProfile: 'Profilo', myCv: 'Il mio CV', switchToGuest: 'Naviga come ospite', switchToProvider: '← Modalità fornitore', guestMode: 'Modalità ospite' },
 }
 
 const ALL_TABS = [
@@ -197,7 +197,7 @@ export default function Header() {
                 <>
                   {isGuestMode && (
                     <span style={{ fontSize: 10, padding: '3px 10px', borderRadius: 100, background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-                      {isAr ? 'وضع الضيف' : 'Guest Mode'}
+                      {tx.guestMode}
                     </span>
                   )}
                   {isOwner && (

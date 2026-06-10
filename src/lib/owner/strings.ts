@@ -166,6 +166,30 @@ export interface T {
   variables: string
   preview: string
   edit: string
+
+  // Dashboard inline strings (previously isAr ternaries)
+  awaitingReview: string
+  pendingAdminReview: string
+  noArrivals: string
+  noActivity: string
+  noSuggestions: string
+  viewAllSuggestions: string
+  renewsOn: string
+  lifetimePlan: string
+  totalSlotsLbl: string
+  upgradeBtn: string
+  choosePkgSub: string
+  priceCol: string
+  viewsCol: string
+  bookingsCol: string
+  bookedActivity: string
+  requestActivity: string
+  highDemandReason: string
+  lowConversionReason: string
+  ownerRole: string
+  appearance: string
+  darkModeLabel: string
+  chooseLang: string
 }
 
 export const STRINGS: Record<Locale, T> = {
@@ -269,6 +293,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'Special offer', noTemplates: 'No templates yet', templateCreated: 'Template created',
     sendMessage: 'Send message', selectGuest: 'Select guest', variables: 'Variables',
     preview: 'Preview', edit: 'Edit',
+
+    // Dashboard inline strings
+    awaitingReview: 'awaiting review',
+    pendingAdminReview: 'Pending admin review',
+    noArrivals: 'No arrivals this week',
+    noActivity: 'No activity yet',
+    noSuggestions: 'No suggestions yet — add listings first',
+    viewAllSuggestions: 'View all suggestions →',
+    renewsOn: 'Renews',
+    lifetimePlan: 'Lifetime plan',
+    totalSlotsLbl: 'Total slots',
+    upgradeBtn: 'Upgrade',
+    choosePkgSub: 'Choose a package to start listing your properties and cars',
+    priceCol: 'Price',
+    viewsCol: 'Views',
+    bookingsCol: 'Bookings',
+    bookedActivity: '{gName} booked "{lName}"',
+    requestActivity: 'New booking request from {gName}',
+    highDemandReason: 'High demand — opportunity to increase',
+    lowConversionReason: 'Low conversion — reduce to improve bookings',
+    ownerRole: 'Property Owner',
+    appearance: 'Appearance',
+    darkModeLabel: 'Dark Mode',
+    chooseLang: 'Language',
   },
 
   // ========================================
@@ -371,6 +419,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'عرض خاص', noTemplates: 'لا توجد قوالب بعد', templateCreated: 'تم إنشاء القالب',
     sendMessage: 'إرسال رسالة', selectGuest: 'اختر ضيف', variables: 'المتغيرات',
     preview: 'معاينة', edit: 'تعديل',
+
+    // Dashboard inline strings
+    awaitingReview: 'قيد المراجعة',
+    pendingAdminReview: 'قيد المراجعة من الإدارة',
+    noArrivals: 'لا وصول قادم هذا الأسبوع',
+    noActivity: 'لا يوجد نشاط بعد',
+    noSuggestions: 'لا اقتراحات بعد — أضف عقاراتك أولاً',
+    viewAllSuggestions: 'عرض كل الاقتراحات ←',
+    renewsOn: 'ينتهي',
+    lifetimePlan: 'اشتراك دائم',
+    totalSlotsLbl: 'إجمالي الـ slots',
+    upgradeBtn: 'رقّي الباقة',
+    choosePkgSub: 'اختر باقة لبدء نشر عقاراتك وسياراتك',
+    priceCol: 'السعر',
+    viewsCol: 'المشاهدات',
+    bookingsCol: 'الحجوزات',
+    bookedActivity: '{gName} حجز "{lName}"',
+    requestActivity: 'طلب حجز جديد من {gName}',
+    highDemandReason: 'طلب مرتفع — فرصة لرفع السعر',
+    lowConversionReason: 'معدل تحويل منخفض — خفّض السعر لتحسين الحجوزات',
+    ownerRole: 'مالك عقار',
+    appearance: 'المظهر',
+    darkModeLabel: 'الوضع الداكن',
+    chooseLang: 'اللغة',
   },
 
   // ========================================
@@ -473,6 +545,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'Спецпредложение', noTemplates: 'Нет шаблонов', templateCreated: 'Шаблон создан',
     sendMessage: 'Отправить', selectGuest: 'Выбрать гостя', variables: 'Переменные',
     preview: 'Превью', edit: 'Изменить',
+
+    // Dashboard inline strings
+    awaitingReview: 'ожидает проверки',
+    pendingAdminReview: 'На проверке у администратора',
+    noArrivals: 'Заездов на этой неделе нет',
+    noActivity: 'Активности пока нет',
+    noSuggestions: 'Нет предложений — сначала добавьте объявления',
+    viewAllSuggestions: 'Все предложения →',
+    renewsOn: 'Продлевается',
+    lifetimePlan: 'Постоянный план',
+    totalSlotsLbl: 'Всего слотов',
+    upgradeBtn: 'Улучшить',
+    choosePkgSub: 'Выберите пакет, чтобы начать размещение',
+    priceCol: 'Цена',
+    viewsCol: 'Просмотры',
+    bookingsCol: 'Бронирования',
+    bookedActivity: '{gName} забронировал "{lName}"',
+    requestActivity: 'Новый запрос на бронирование от {gName}',
+    highDemandReason: 'Высокий спрос — возможность повысить цену',
+    lowConversionReason: 'Низкая конверсия — снизьте цену для улучшения бронирований',
+    ownerRole: 'Владелец недвижимости',
+    appearance: 'Внешний вид',
+    darkModeLabel: 'Тёмный режим',
+    chooseLang: 'Язык',
   },
 
   // ========================================
@@ -575,6 +671,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'Спецпропозиція', noTemplates: 'Немає шаблонів', templateCreated: 'Шаблон створено',
     sendMessage: 'Надіслати', selectGuest: 'Вибрати гостя', variables: 'Змінні',
     preview: 'Попередній перегляд', edit: 'Змінити',
+
+    // Dashboard inline strings
+    awaitingReview: 'очікує перевірки',
+    pendingAdminReview: 'На перевірці у адміністратора',
+    noArrivals: 'Заїздів цього тижня немає',
+    noActivity: 'Активності поки немає',
+    noSuggestions: 'Немає пропозицій — спочатку додайте оголошення',
+    viewAllSuggestions: 'Всі пропозиції →',
+    renewsOn: 'Продовжується',
+    lifetimePlan: 'Постійний план',
+    totalSlotsLbl: 'Всього слотів',
+    upgradeBtn: 'Покращити',
+    choosePkgSub: 'Виберіть пакет, щоб почати розміщення',
+    priceCol: 'Ціна',
+    viewsCol: 'Перегляди',
+    bookingsCol: 'Бронювання',
+    bookedActivity: '{gName} забронював "{lName}"',
+    requestActivity: 'Новий запит на бронювання від {gName}',
+    highDemandReason: 'Високий попит — можливість підвищити ціну',
+    lowConversionReason: 'Низька конверсія — знизьте ціну для покращення бронювань',
+    ownerRole: 'Власник нерухомості',
+    appearance: 'Зовнішній вигляд',
+    darkModeLabel: 'Темний режим',
+    chooseLang: 'Мова',
   },
 
   // ========================================
@@ -677,6 +797,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'Sonderangebot', noTemplates: 'Keine Vorlagen', templateCreated: 'Vorlage erstellt',
     sendMessage: 'Senden', selectGuest: 'Gast auswählen', variables: 'Variablen',
     preview: 'Vorschau', edit: 'Bearbeiten',
+
+    // Dashboard inline strings
+    awaitingReview: 'wartet auf Überprüfung',
+    pendingAdminReview: 'Ausstehende Admin-Überprüfung',
+    noArrivals: 'Keine Ankünfte diese Woche',
+    noActivity: 'Noch keine Aktivität',
+    noSuggestions: 'Noch keine Vorschläge — fügen Sie zuerst Inserate hinzu',
+    viewAllSuggestions: 'Alle Vorschläge →',
+    renewsOn: 'Verlängert sich',
+    lifetimePlan: 'Dauerhafter Plan',
+    totalSlotsLbl: 'Gesamte Slots',
+    upgradeBtn: 'Upgraden',
+    choosePkgSub: 'Wählen Sie ein Paket, um Ihre Inserate zu veröffentlichen',
+    priceCol: 'Preis',
+    viewsCol: 'Ansichten',
+    bookingsCol: 'Buchungen',
+    bookedActivity: '{gName} hat "{lName}" gebucht',
+    requestActivity: 'Neue Buchungsanfrage von {gName}',
+    highDemandReason: 'Hohe Nachfrage — Gelegenheit zur Preiserhöhung',
+    lowConversionReason: 'Niedrige Conversion — Preis senken für mehr Buchungen',
+    ownerRole: 'Immobilieneigentümer',
+    appearance: 'Erscheinungsbild',
+    darkModeLabel: 'Dunkler Modus',
+    chooseLang: 'Sprache',
   },
 
   // ========================================
@@ -779,6 +923,30 @@ export const STRINGS: Record<Locale, T> = {
     specialOffer: 'Offerta speciale', noTemplates: 'Nessun template', templateCreated: 'Template creato',
     sendMessage: 'Invia', selectGuest: 'Seleziona ospite', variables: 'Variabili',
     preview: 'Anteprima', edit: 'Modifica',
+
+    // Dashboard inline strings
+    awaitingReview: 'in attesa di revisione',
+    pendingAdminReview: 'Revisione admin in corso',
+    noArrivals: 'Nessun arrivo questa settimana',
+    noActivity: 'Nessuna attività ancora',
+    noSuggestions: 'Nessun suggerimento ancora — aggiungi prima degli annunci',
+    viewAllSuggestions: 'Vedi tutti i suggerimenti →',
+    renewsOn: 'Si rinnova',
+    lifetimePlan: 'Piano a vita',
+    totalSlotsLbl: 'Slot totali',
+    upgradeBtn: 'Aggiorna',
+    choosePkgSub: 'Scegli un pacchetto per iniziare a pubblicare i tuoi annunci',
+    priceCol: 'Prezzo',
+    viewsCol: 'Visualizzazioni',
+    bookingsCol: 'Prenotazioni',
+    bookedActivity: '{gName} ha prenotato "{lName}"',
+    requestActivity: 'Nuova richiesta di prenotazione da {gName}',
+    highDemandReason: 'Alta domanda — opportunità di aumentare il prezzo',
+    lowConversionReason: 'Bassa conversione — riduci il prezzo per migliorare le prenotazioni',
+    ownerRole: 'Proprietario immobiliare',
+    appearance: 'Aspetto',
+    darkModeLabel: 'Modalità scura',
+    chooseLang: 'Lingua',
   },
 }
 

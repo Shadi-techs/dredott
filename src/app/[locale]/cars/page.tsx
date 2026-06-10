@@ -139,7 +139,25 @@ export default function CarsPage() {
     <div style={{ minHeight: '100vh', background: '#FAF9F6', direction: isRTL ? 'rtl' : 'ltr' }}>
       <Header />
 
-      <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingTop: 70 }}>
+      {/* ── Hero Banner ── */}
+      <div style={{ position: 'relative', paddingTop: 64, overflow: 'hidden' }}>
+        <div style={{ background: 'linear-gradient(135deg, #0a1e1a 0%, #1a3830 50%, #0e1428 100%)', padding: '40px 24px 48px', position: 'relative' }}>
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1600&q=60')", backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, textAlign: isRTL ? 'right' : 'left' }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.26em', color: '#D4A843', marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>
+              {tx.hero_tag}
+            </div>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(32px, 5vw, 52px)', color: '#fff', margin: '0 0 10px', lineHeight: 1.1 }}>
+              {tx.hero_title}
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, letterSpacing: '0.12em', fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
+              {tx.hero_sub}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ position: 'sticky', top: 64, zIndex: 10, background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '10px 24px 0' }}>
           <CitySelector selectedCity={selectedCity} onChange={setSelectedCity} variant="pills" />
         </div>

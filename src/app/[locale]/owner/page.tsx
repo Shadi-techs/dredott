@@ -169,8 +169,8 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
       const lName = (b.properties as any)?.name || '—'
       const kind  = b.status === 'confirmed' ? 'booking' : 'message'
       const text  = b.status === 'confirmed'
-        ? (isAr ? `${gName} حجز "${lName}"` : `${gName} booked "${lName}"`)
-        : (isAr ? `طلب حجز جديد من ${gName}` : `New booking request from ${gName}`)
+        ? tx.bookedActivity.replace('{gName}', gName).replace('{lName}', lName)
+        : tx.requestActivity.replace('{gName}', gName)
       const when = new Date(b.check_in).toLocaleDateString(locale, { month: 'short', day: 'numeric' })
       return { id: b.id, kind, text, when }
     })
@@ -210,8 +210,8 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
         const suggested = Math.round(l.price * (1 + pct / 100))
         const lift  = `${pct > 0 ? '+' : ''}${pct}%`
         const reason = up
-          ? (isAr ? 'طلب مرتفع — فرصة لرفع السعر' : 'High demand — opportunity to increase')
-          : (isAr ? 'معدل تحويل منخفض — خفّض السعر لتحسين الحجوزات' : 'Low conversion — reduce to improve bookings')
+          ? tx.highDemandReason
+          : tx.lowConversionReason
         return { id: l.id, name: l.name, current: l.price, suggested, lift, reason, up }
       })
     setPriceTips(tips)
@@ -282,8 +282,8 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
               </div>
               <div style={{ fontSize: 11, color: 'rgba(201,206,221,0.6)', marginTop: 2 }}>
                 {subscription.expires_at
-                  ? `${isAr ? 'ينتهي' : 'Renews'} ${new Date(subscription.expires_at).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}`
-                  : (isAr ? 'اشتراك دائم' : 'Lifetime plan')}
+                  ? `${tx.renewsOn} ${new Date(subscription.expires_at).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}`
+                  : tx.lifetimePlan}
               </div>
             </div>
           </div>
@@ -293,7 +293,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
                 {subscription.total_slots || subscription.packages?.slots_count || '—'}
               </div>
               <div style={{ fontSize: 10, color: 'rgba(201,206,221,0.5)', fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                {isAr ? 'إجمالي الـ slots' : 'Total slots'}
+                {tx.totalSlotsLbl}
               </div>
             </div>
             <Link href={`/${locale}/owner/packages`} style={{
@@ -301,7 +301,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
               border: '1px solid rgba(212,168,67,0.4)', color: '#D4A843',
               fontSize: 12, fontWeight: 600, textDecoration: 'none',
             }}>
-              {isAr ? 'رقّي الباقة' : 'Upgrade'}
+              {tx.upgradeBtn}
             </Link>
           </div>
         </div>
@@ -314,7 +314,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ fontWeight: 600, fontSize: 15, color: t.text, marginBottom: 4 }}>{tx.noSub}</div>
               <div style={{ fontSize: 13, color: t.textMuted }}>
-                {isAr ? 'اختر باقة لبدء نشر عقاراتك وسياراتك' : 'Choose a package to start listing your properties and cars'}
+                {tx.choosePkgSub}
               </div>
             </div>
             <Link href={`/${locale}/owner/packages`} style={{ textDecoration: 'none' }}>
@@ -348,7 +348,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
           </div>
           {upcoming.length === 0 ? (
             <div style={{ padding: '32px 0', textAlign: 'center', color: t.textMuted, fontSize: 14 }}>
-              {isAr ? 'لا وصول قادم هذا الأسبوع' : 'No arrivals this week'}
+              {tx.noArrivals}
             </div>
           ) : upcoming.map((ev, i) => (
             <div key={ev.id} style={{ padding: '11px 0', borderTop: i === 0 ? 'none' : `1px solid ${t.borderSoft}`, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -416,7 +416,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
           </div>
           {activity.length === 0 ? (
             <div style={{ padding: '32px 0', textAlign: 'center', color: t.textMuted, fontSize: 14 }}>
-              {isAr ? 'لا يوجد نشاط بعد' : 'No activity yet'}
+              {tx.noActivity}
             </div>
           ) : activity.map((a, i) => {
             const iconColor = a.kind === 'booking' ? t.success : a.kind === 'review' ? t.accent : a.kind === 'payout' ? t.info ?? '#2A9D8F' : t.textMuted
@@ -442,7 +442,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
           </div>
           {priceTips.length === 0 ? (
             <div style={{ padding: '32px 0', textAlign: 'center', color: t.textMuted, fontSize: 13 }}>
-              {isAr ? 'لا اقتراحات بعد — أضف عقاراتك أولاً' : 'No suggestions yet — add listings first'}
+              {tx.noSuggestions}
             </div>
           ) : priceTips.map((tip, i) => (
             <div key={tip.id} style={{ padding: '12px 0', borderTop: i === 0 ? 'none' : `1px solid ${t.borderSoft}` }}>
@@ -462,7 +462,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
             </div>
           ))}
           <Link href={`/${locale}/owner/pricing`} style={{ display: 'block', marginTop: 14, textAlign: 'center', fontSize: 12, color: t.accent, textDecoration: 'none', fontWeight: 500 }}>
-            {isAr ? 'عرض كل الاقتراحات ←' : 'View all suggestions →'}
+            {tx.viewAllSuggestions}
           </Link>
         </Card>
       </div>
@@ -482,7 +482,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr>
-                  {[tx.allListings, tx.status, isAr ? 'السعر' : 'Price', isAr ? 'المشاهدات' : 'Views', isAr ? 'الحجوزات' : 'Bookings'].map((h) => (
+                  {[tx.allListings, tx.status, tx.priceCol, tx.viewsCol, tx.bookingsCol].map((h) => (
                     <th key={h} style={{ textAlign: isAr ? 'right' : 'left', padding: '8px 12px', fontSize: 10, fontFamily: 'var(--mono)', letterSpacing: '0.12em', textTransform: 'uppercase', color: t.textFaint, borderBottom: `1px solid ${t.border}`, whiteSpace: 'nowrap' }}>
                       {h}
                     </th>
@@ -529,7 +529,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
                 {tx.pendingItems}
               </div>
               <div style={{ fontSize: 14, color: t.textMuted }}>
-                {pendingItems.length} {isAr ? 'قيد المراجعة' : 'awaiting review'}
+                {pendingItems.length} {tx.awaitingReview}
               </div>
             </div>
             <Link href={`/${locale}/owner/listings`}><Button variant="quiet">{tx.viewAll}</Button></Link>
@@ -543,7 +543,7 @@ export default function OwnerDashboard({ params }: { params: Promise<{ locale: s
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 500, color: t.text }}>{item.name}</div>
                   <div style={{ fontSize: 11, color: t.textMuted, marginTop: 2 }}>
-                    {isAr ? 'قيد المراجعة من الإدارة' : 'Pending admin review'}
+                    {tx.pendingAdminReview}
                   </div>
                 </div>
                 <Badge tone="warning">{tx.pending}</Badge>

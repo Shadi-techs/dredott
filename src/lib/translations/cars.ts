@@ -1,5 +1,8 @@
 export const CARS_TX = {
   "en": {
+    "hero_tag": "— RED SEA WHEELS",
+    "hero_title": "Explore the coast.",
+    "hero_sub": "Daily rentals · Verified fleet · Transparent pricing",
     "title": "Find Your Perfect Car",
     "search_placeholder": "Search by make or model…",
     "filters": "Filters",
@@ -34,6 +37,9 @@ export const CARS_TX = {
     "km_day": "km/day"
   },
   "ar": {
+    "hero_tag": "— سيارات البحر الأحمر",
+    "hero_title": "استكشف الساحل.",
+    "hero_sub": "إيجار يومي · أسطول موثق · أسعار شفافة",
     "title": "ابحث عن سيارتك المثالية",
     "search_placeholder": "ابحث بالماركة أو الموديل…",
     "filters": "الفلاتر",
@@ -68,6 +74,9 @@ export const CARS_TX = {
     "km_day": "كم/يوم"
   },
   "ru": {
+    "hero_tag": "— АВТО У КРАСНОГО МОРЯ",
+    "hero_title": "Исследуйте побережье.",
+    "hero_sub": "Посуточная аренда · Проверенный парк · Прозрачные цены",
     "title": "Найдите идеальный автомобиль",
     "search_placeholder": "Поиск по марке или модели…",
     "filters": "Фильтры",
@@ -102,6 +111,9 @@ export const CARS_TX = {
     "km_day": "км/день"
   },
   "uk": {
+    "hero_tag": "— АВТО БІЛЯ ЧЕРВОНОГО МОРЯ",
+    "hero_title": "Досліджуйте узбережжя.",
+    "hero_sub": "Добова оренда · Перевірений парк · Прозорі ціни",
     "title": "Знайдіть ідеальний автомобіль",
     "search_placeholder": "Пошук за маркою або моделлю…",
     "filters": "Фільтри",
@@ -136,6 +148,9 @@ export const CARS_TX = {
     "km_day": "км/день"
   },
   "de": {
+    "hero_tag": "— RÄDER AM ROTEN MEER",
+    "hero_title": "Die Küste erkunden.",
+    "hero_sub": "Tagesmiete · Geprüfte Flotte · Transparente Preise",
     "title": "Finden Sie Ihr perfektes Auto",
     "search_placeholder": "Nach Marke oder Modell suchen…",
     "filters": "Filter",
@@ -170,6 +185,9 @@ export const CARS_TX = {
     "km_day": "km/Tag"
   },
   "it": {
+    "hero_tag": "— RUOTE SUL MAR ROSSO",
+    "hero_title": "Esplora la costa.",
+    "hero_sub": "Noleggio giornaliero · Flotta verificata · Prezzi trasparenti",
     "title": "Trova la tua auto perfetta",
     "search_placeholder": "Cerca per marca o modello…",
     "filters": "Filtri",

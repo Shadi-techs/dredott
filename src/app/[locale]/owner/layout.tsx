@@ -46,6 +46,14 @@ export default function OwnerLayout({
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  useEffect(() => {
+    const saved = localStorage.getItem('preferred_locale')
+    if (saved && saved !== locale) {
+      const newPath = pathname.replace(`/${locale}/`, `/${saved}/`)
+      router.replace(newPath)
+    }
+  }, [])
+
   useEffect(() => { void loadUser() }, [])
 
   const loadUser = async () => {
@@ -113,11 +121,11 @@ export default function OwnerLayout({
       {/* Logo */}
       <div style={{ padding: '20px 20px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href={`/${locale}/owner`} style={{ textDecoration: 'none' }}>
-          <div style={{ fontFamily: 'var(--serif)', fontSize: 20, fontWeight: 600, color: '#D4A843', letterSpacing: '0.05em' }}>
-            DREDOTT
+          <div style={{ fontFamily: 'var(--serif)', fontSize: 22, fontWeight: 600, letterSpacing: '0.06em', lineHeight: 1 }}>
+            <span style={{ color: '#FFFFFF' }}>DRE</span><span style={{ color: '#D4A843' }}>DOTT</span>
           </div>
-          <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginTop: 2 }}>
-            {tx.portal}
+          <div style={{ fontSize: 8, fontFamily: 'var(--mono)', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(212,168,67,0.55)', marginTop: 4 }}>
+            RED SEA · {tx.portal.toUpperCase()}
           </div>
         </Link>
         {isMobile && (
@@ -130,7 +138,7 @@ export default function OwnerLayout({
       {/* User Profile */}
       <div style={{ padding: '12px 16px', margin: '0 12px 16px', background: 'rgba(212,168,67,0.15)', borderRadius: 10, border: '1px solid rgba(212,168,67,0.3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#D4A843', color: '#2C3A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, fontFamily: 'var(--mono)', flexShrink: 0 }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#D4A843', color: '#0e1428', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, fontFamily: 'var(--mono)', flexShrink: 0 }}>
             {initials}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -138,7 +146,7 @@ export default function OwnerLayout({
               {fullName}
             </div>
             <div style={{ fontSize: 10, color: '#D4A843', fontFamily: 'var(--mono)', marginTop: 2 }}>
-              ✦ {locale === 'ar' ? 'مالك عقار' : 'Property Owner'}
+              ✦ {tx.ownerRole}
             </div>
           </div>
         </div>
@@ -146,7 +154,7 @@ export default function OwnerLayout({
         {/* Listings usage */}
         <div style={{ marginTop: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: 'rgba(201,206,221,0.6)', marginBottom: 4, fontFamily: 'var(--mono)' }}>
-            <span>{totalListings} {locale === 'ar' ? 'إعلان' : 'listings'}</span>
+            <span>{totalListings} {tx.listings.toLowerCase()}</span>
             <span>
               <Home size={8} style={{ verticalAlign: 'middle', marginRight: 2 }} />{propCount}
               {' · '}
@@ -162,7 +170,7 @@ export default function OwnerLayout({
       {/* General Nav */}
       <div style={{ padding: '0 12px', marginBottom: 20 }}>
         <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginBottom: 8, paddingLeft: 8 }}>
-          {locale === 'ar' ? 'عام' : 'General'}
+          {tx.general}
         </div>
         {navItems.map((item) => {
           const isActive = pathname === item.href
@@ -179,7 +187,7 @@ export default function OwnerLayout({
       {/* Growth Tools */}
       <div style={{ padding: '0 12px', flex: 1, overflowY: 'auto' }}>
         <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginBottom: 8, paddingLeft: 8 }}>
-          {locale === 'ar' ? 'أدوات النمو' : 'Growth tools'}
+          {tx.growth}
         </div>
         {growthTools.map((item) => {
           const isActive = pathname === item.href
@@ -217,11 +225,11 @@ export default function OwnerLayout({
   return (
     <OwnerThemeProvider>
       <PermissionsProvider>
-        <div style={{ display: 'flex', minHeight: '100vh', background: '#FAF9F6' }} dir={isAr ? 'rtl' : 'ltr'}>
+        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--owner-bg, #FAF9F6)' }} dir={isAr ? 'rtl' : 'ltr'}>
 
           {/* Desktop Sidebar */}
           {!isMobile && (
-            <aside style={{ width: SIDEBAR_WIDTH, background: '#2C3A6B', color: '#C9CEDD', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflow: 'hidden', [isAr ? 'right' : 'left']: 0, zIndex: 30 }}>
+            <aside style={{ width: SIDEBAR_WIDTH, background: '#0e1428', color: '#C9CEDD', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflow: 'hidden', [isAr ? 'right' : 'left']: 0, zIndex: 30 }}>
               <SidebarContent />
             </aside>
           )}
@@ -230,7 +238,7 @@ export default function OwnerLayout({
           {isMobile && sidebarOpen && (
             <>
               <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />
-              <aside style={{ width: SIDEBAR_WIDTH, background: '#2C3A6B', color: '#C9CEDD', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflow: 'hidden', [isAr ? 'right' : 'left']: 0, zIndex: 50 }}>
+              <aside style={{ width: SIDEBAR_WIDTH, background: '#0e1428', color: '#C9CEDD', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflow: 'hidden', [isAr ? 'right' : 'left']: 0, zIndex: 50 }}>
                 <SidebarContent />
               </aside>
             </>
@@ -240,8 +248,10 @@ export default function OwnerLayout({
           <main style={{ flex: 1, [isAr ? 'marginRight' : 'marginLeft']: isMobile ? 0 : SIDEBAR_WIDTH, minHeight: '100vh' }}>
             {/* Mobile Top Bar */}
             {isMobile && (
-              <div style={{ position: 'sticky', top: 0, zIndex: 20, background: '#2C3A6B', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: 18, fontWeight: 600, color: '#D4A843', letterSpacing: '0.05em' }}>DREDOTT</div>
+              <div style={{ position: 'sticky', top: 0, zIndex: 20, background: '#0e1428', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: 18, fontWeight: 600, letterSpacing: '0.06em' }}>
+                  <span style={{ color: '#FFFFFF' }}>DRE</span><span style={{ color: '#D4A843' }}>DOTT</span>
+                </div>
                 <button onClick={() => setSidebarOpen(true)} style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', borderRadius: 8, padding: '8px 10px', color: '#D4A843', cursor: 'pointer' }}>
                   <Menu size={18} />
                 </button>

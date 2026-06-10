@@ -1,5 +1,8 @@
 export const PROPERTIES_TX = {
   "en": {
+    "hero_tag": "— RED SEA STAYS",
+    "hero_title": "Stays by the coast.",
+    "hero_sub": "Sea views · Beach access · Curated stays",
     "title": "Find Your Perfect Stay",
     "search_placeholder": "Search by name, area…",
     "filters": "Filters",
@@ -35,6 +38,9 @@ export const PROPERTIES_TX = {
     "bank_transfer": "Bank transfer"
   },
   "ar": {
+    "hero_tag": "— إقامات البحر الأحمر",
+    "hero_title": "إقامات على الساحل.",
+    "hero_sub": "إطلالات بحرية · وصول للشاطئ · منتقاة بعناية",
     "title": "ابحث عن إقامتك المثالية",
     "search_placeholder": "ابحث بالاسم أو المنطقة…",
     "filters": "الفلاتر",
@@ -70,6 +76,9 @@ export const PROPERTIES_TX = {
     "bank_transfer": "تحويل بنكي"
   },
   "ru": {
+    "hero_tag": "— ЖИЛЬЁ У КРАСНОГО МОРЯ",
+    "hero_title": "Жильё у побережья.",
+    "hero_sub": "Виды на море · Выход к пляжу · Отборные варианты",
     "title": "Найдите идеальное жильё",
     "search_placeholder": "Поиск по названию или району…",
     "filters": "Фильтры",
@@ -105,6 +114,9 @@ export const PROPERTIES_TX = {
     "bank_transfer": "Банковский перевод"
   },
   "uk": {
+    "hero_tag": "— ЖИТЛО БІЛЯ ЧЕРВОНОГО МОРЯ",
+    "hero_title": "Житло біля узбережжя.",
+    "hero_sub": "Вид на море · Вихід до пляжу · Відібрані варіанти",
     "title": "Знайдіть ідеальне житло",
     "search_placeholder": "Пошук за назвою або районом…",
     "filters": "Фільтри",
@@ -140,6 +152,9 @@ export const PROPERTIES_TX = {
     "bank_transfer": "Банківський переказ"
   },
   "de": {
+    "hero_tag": "— UNTERKÜNFTE AM ROTEN MEER",
+    "hero_title": "Übernachten an der Küste.",
+    "hero_sub": "Meerblick · Strandzugang · Kuratierte Unterkünfte",
     "title": "Finden Sie Ihre perfekte Unterkunft",
     "search_placeholder": "Nach Name oder Gebiet suchen…",
     "filters": "Filter",
@@ -175,6 +190,9 @@ export const PROPERTIES_TX = {
     "bank_transfer": "Banküberweisung"
   },
   "it": {
+    "hero_tag": "— SOGGIORNI SUL MAR ROSSO",
+    "hero_title": "Soggiorni lungo la costa.",
+    "hero_sub": "Vista mare · Accesso spiaggia · Selezione curata",
     "title": "Trova il tuo soggiorno perfetto",
     "search_placeholder": "Cerca per nome o area…",
     "filters": "Filtri",
