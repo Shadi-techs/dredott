@@ -190,6 +190,7 @@ export interface T {
   appearance: string
   darkModeLabel: string
   chooseLang: string
+  notifications: string
 }
 
 export const STRINGS: Record<Locale, T> = {
@@ -317,6 +318,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'Appearance',
     darkModeLabel: 'Dark Mode',
     chooseLang: 'Language',
+    notifications: 'Notifications',
   },
 
   // ========================================
@@ -443,6 +445,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'المظهر',
     darkModeLabel: 'الوضع الداكن',
     chooseLang: 'اللغة',
+    notifications: 'الإشعارات',
   },
 
   // ========================================
@@ -569,6 +572,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'Внешний вид',
     darkModeLabel: 'Тёмный режим',
     chooseLang: 'Язык',
+    notifications: 'Уведомления',
   },
 
   // ========================================
@@ -695,6 +699,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'Зовнішній вигляд',
     darkModeLabel: 'Темний режим',
     chooseLang: 'Мова',
+    notifications: 'Сповіщення',
   },
 
   // ========================================
@@ -821,6 +826,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'Erscheinungsbild',
     darkModeLabel: 'Dunkler Modus',
     chooseLang: 'Sprache',
+    notifications: 'Benachrichtigungen',
   },
 
   // ========================================
@@ -947,6 +953,7 @@ export const STRINGS: Record<Locale, T> = {
     appearance: 'Aspetto',
     darkModeLabel: 'Modalità scura',
     chooseLang: 'Lingua',
+    notifications: 'Notifiche',
   },
 }
 

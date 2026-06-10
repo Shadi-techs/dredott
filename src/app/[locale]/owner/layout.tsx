@@ -8,7 +8,7 @@ import {
   LayoutDashboard, List, Calendar, Package, Settings,
   Users, Zap, BarChart2, DollarSign, TrendingUp,
   MessagesSquare, FileText, Link2, Plus, ExternalLink,
-  LogOut, Menu, X, Car, Home
+  LogOut, Menu, X, Car, Home, Bell
 } from 'lucide-react'
 
 import { OwnerThemeProvider } from '@/components/owner/ThemeProvider'
@@ -36,6 +36,7 @@ export default function OwnerLayout({
   const [profile, setProfile] = useState<any>(null)
   const [propCount, setPropCount] = useState(0)
   const [carCount, setCarCount] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -80,6 +81,13 @@ export default function OwnerLayout({
       .select('*', { count: 'exact', head: true })
       .eq('owner_id', session.user.id)
     setCarCount(cc || 0)
+
+    const { count: nc } = await supabase
+      .from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', session.user.id)
+      .eq('read', false)
+    setUnreadCount(nc || 0)
   }
 
   const handleSignOut = async () => {
@@ -169,6 +177,23 @@ export default function OwnerLayout({
         </div>
       </div>
 
+      {/* Notifications Bell */}
+      <div style={{ padding: '0 12px', marginBottom: 4 }}>
+        <Link href={`/${locale}/owner/notifications`} onClick={() => setSidebarOpen(false)} style={{ textDecoration: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 8, background: pathname === `/${locale}/owner/notifications` ? 'rgba(212,168,67,0.15)' : 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: pathname === `/${locale}/owner/notifications` ? '#D4A843' : 'rgba(201,206,221,0.85)', fontSize: 13, fontWeight: 500 }}>
+              <Bell size={15} />
+              <span>{tx.notifications || 'Notifications'}</span>
+            </div>
+            {unreadCount > 0 && (
+              <span style={{ background: '#ef4444', color: '#fff', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, minWidth: 20, textAlign: 'center' }}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </div>
+        </Link>
+      </div>
+
       {/* General Nav */}
       <div style={{ padding: '0 12px', marginBottom: 20 }}>
         <div style={{ fontSize: 9, fontFamily: 'var(--mono)', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,206,221,0.5)', marginBottom: 8, paddingLeft: 8 }}>
@@ -254,9 +279,19 @@ export default function OwnerLayout({
                 <div style={{ fontFamily: 'var(--serif)', fontSize: 18, fontWeight: 600, letterSpacing: '0.06em' }}>
                   <span style={{ color: '#FFFFFF' }}>DRE</span><span style={{ color: '#D4A843' }}>DOTT</span>
                 </div>
-                <button onClick={() => setSidebarOpen(true)} style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', borderRadius: 8, padding: '8px 10px', color: '#D4A843', cursor: 'pointer' }}>
-                  <Menu size={18} />
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Link href={`/${locale}/owner/notifications`} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', borderRadius: 8, padding: '8px 10px', color: '#D4A843' }}>
+                    <Bell size={18} />
+                    {unreadCount > 0 && (
+                      <span style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                  <button onClick={() => setSidebarOpen(true)} style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', borderRadius: 8, padding: '8px 10px', color: '#D4A843', cursor: 'pointer' }}>
+                    <Menu size={18} />
+                  </button>
+                </div>
               </div>
             )}
             {children}
