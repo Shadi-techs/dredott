@@ -97,7 +97,7 @@ export default function SettingsPage({
   const handleLangChange = (code: string) => {
     if (code === locale) return
     localStorage.setItem('preferred_locale', code)
-    router.push(`/${code}/owner/settings`)
+    window.location.href = `/${code}/owner/settings`
   }
 
   return (

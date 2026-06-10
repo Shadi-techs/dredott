@@ -47,10 +47,12 @@ export default function OwnerLayout({
   }, [])
 
   useEffect(() => {
+    const VALID = ['en', 'ar', 'ru', 'uk', 'de', 'it']
     const saved = localStorage.getItem('preferred_locale')
-    if (saved && saved !== locale) {
-      const newPath = pathname.replace(`/${locale}/`, `/${saved}/`)
-      router.replace(newPath)
+    if (saved && VALID.includes(saved) && saved !== locale) {
+      const current = window.location.pathname
+      const newPath = current.replace(new RegExp(`^/${locale}(/|$)`), `/${saved}$1`)
+      if (newPath !== current) window.location.href = newPath
     }
   }, [])
 
