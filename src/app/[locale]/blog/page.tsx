@@ -9,8 +9,7 @@
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import { usePageFlag } from '@/lib/hooks/usePageFlag'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,6 +32,8 @@ export default function BlogPage() {
   const [posts, setPosts]     = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
 
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_blog')
+
   useEffect(() => {
     supabase
       .from('blog_posts')
@@ -42,9 +43,25 @@ export default function BlogPage() {
       .then(({ data }) => { setPosts(data || []); setLoading(false) })
   }, [])
 
+  if (flagLoading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6' }}>
+      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  )
+
+  if (!pageEnabled) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6', gap: 16, textAlign: 'center', padding: 32 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: '#2C3A6B' }}>📝</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: '#2C3A6B', margin: 0 }}>Blog — Coming Soon</h1>
+      <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 400 }}>This section is currently unavailable. Please check back later or contact us on WhatsApp.</p>
+      <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} style={{ background: '#2A9D8F', color: '#fff', padding: '10px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>WhatsApp Us</a>
+    </div>
+  )
+
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
+
 
       {/* Hero */}
       <div style={{ background: '#0e1428', padding: '100px 24px 48px', textAlign: 'center' }}>
@@ -123,7 +140,6 @@ export default function BlogPage() {
         )}
       </div>
 
-      <Footer />
     </div>
   )
 }

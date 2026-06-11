@@ -24,7 +24,7 @@ export default function Footer() {
     supabase
       .from('platform_features')
       .select('enabled')
-      .eq('feature_key', 'jobs_page_enabled')
+      .eq('feature_key', 'module_jobs')
       .maybeSingle()
       .then(({ data }) => setJobsEnabled(data?.enabled ?? false))
   }, [])

@@ -54,10 +54,10 @@ const TX: Record<string, any> = {
 }
 
 const ALL_TABS = [
-  { flag: 'nav_stays',    key: 'stays',    path: '/properties' },
-  { flag: 'nav_cars',     key: 'cars',     path: '/cars'       },
-  { flag: 'nav_blog',     key: 'blog',     path: '/blog'       },
-  { flag: 'nav_services', key: 'services', path: '/services'   },
+  { flag: 'module_properties', key: 'stays',    path: '/properties' },
+  { flag: 'module_cars',       key: 'cars',     path: '/cars'       },
+  { flag: 'module_blog',       key: 'blog',     path: '/blog'       },
+  { flag: 'module_services',   key: 'services', path: '/services'   },
 ]
 
 export default function Header() {
@@ -108,12 +108,16 @@ export default function Header() {
   }
 
   const loadFlags = async () => {
-    const { data } = await supabase.from('feature_flags').select('key, enabled')
-    if (data) {
-      const map: Record<string, boolean> = {}
-      data.forEach(f => { map[f.key] = f.enabled })
-      setFlags(map)
-    }
+    const keys = ALL_TABS.map(t => t.flag)
+    const { data } = await supabase
+      .from('platform_features')
+      .select('feature_key, enabled')
+      .in('feature_key', keys)
+    const map: Record<string, boolean> = {}
+    // Default all to true; override with DB values
+    keys.forEach(k => { map[k] = true })
+    data?.forEach(f => { map[f.feature_key] = f.enabled })
+    setFlags(map)
   }
 
   const switchLanguage = (code: string) => {

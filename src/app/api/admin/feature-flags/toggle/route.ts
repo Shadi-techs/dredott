@@ -41,40 +41,50 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'feature_key is required' }, { status: 400 })
     }
 
-    // ── 4. جيب الحالة الحالية ──
+    // ── 4. جيب الحالة الحالية (أو أنشئها لو مش موجودة) ──
     const { data: feature } = await getSupabaseAdmin()
       .from('platform_features')
       .select('id, enabled')
       .eq('feature_key', feature_key)
-      .single()
+      .maybeSingle()
+
+    const prevEnabled  = feature?.enabled ?? true   // default: enabled
+    const newEnabled   = !prevEnabled
+
+    let featureId = feature?.id
 
     if (!feature) {
-      return NextResponse.json({ error: 'Feature not found' }, { status: 404 })
+      // Upsert — create the flag for the first time
+      const module = feature_key.startsWith('module_') ? feature_key.replace('module_', '') : 'general'
+      const { data: inserted } = await getSupabaseAdmin()
+        .from('platform_features')
+        .insert({
+          feature_key,
+          module,
+          enabled:     newEnabled,
+          description: `Module: ${module}`,
+          updated_by:  payload.sub,
+          updated_at:  new Date().toISOString(),
+        })
+        .select('id')
+        .single()
+      featureId = inserted?.id
+    } else {
+      // Update existing
+      const { error: updateError } = await getSupabaseAdmin()
+        .from('platform_features')
+        .update({ enabled: newEnabled, updated_by: payload.sub, updated_at: new Date().toISOString() })
+        .eq('feature_key', feature_key)
+      if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
     }
 
-    // ── 5. Toggle ──
-    const newEnabled = !feature.enabled
-
-    const { error: updateError } = await getSupabaseAdmin()
-      .from('platform_features')
-      .update({
-        enabled:    newEnabled,
-        updated_by: payload.sub,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('feature_key', feature_key)
-
-    if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 })
-    }
-
-    // ── 6. سجّل في activity_feed ──
+    // ── 5. سجّل في activity_feed ──
     await getSupabaseAdmin().from('admin_activity_feed').insert({
       admin_id:     payload.sub,
       action:       'toggle_feature',
       entity_type:  'feature_flag',
-      entity_id:    feature.id,
-      before_state: { enabled: feature.enabled },
+      entity_id:    featureId,
+      before_state: { enabled: prevEnabled },
       after_state:  { enabled: newEnabled },
     })
 

@@ -132,6 +132,17 @@ export default function AddCarPage() {
       })
 
       if (error) throw error
+
+      await supabase.from('admin_notifications').insert({
+        type: 'car_pending',
+        category: 'listing',
+        title: 'New Car Pending Review',
+        body: `"${carName}" submitted and waiting for approval.`,
+        link: '/admin/cars/pending',
+        priority: 'normal',
+        read: false,
+      })
+
       setSubmitted(true)
     } catch (err: any) {
       setErrors({ submit: err.message })

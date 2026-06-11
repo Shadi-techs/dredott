@@ -25,9 +25,12 @@ const TARGETS = [
 ]
 
 const PLACEMENTS = [
-  { id: 'banner',    label: 'Top Banner',       desc: 'Full-width bar above content' },
-  { id: 'card',      label: 'Inline Card',       desc: 'Inside listing detail pages' },
-  { id: 'dashboard', label: 'Owner Dashboard',   desc: 'Shown in owner portal' },
+  { id: 'banner',           label: 'Top Banner',          desc: 'Full-width bar above content' },
+  { id: 'card',             label: 'Inline Card',          desc: 'Inside listing detail pages' },
+  { id: 'dashboard',        label: 'Owner Dashboard',      desc: 'Shown in owner portal' },
+  { id: 'hero_properties',  label: '🏠 Hero — Properties', desc: 'Background image on the Properties listing page' },
+  { id: 'hero_cars',        label: '🚗 Hero — Cars',       desc: 'Background image on the Cars listing page' },
+  { id: 'hero_services',    label: '🛠 Hero — Services',   desc: 'Background image on the Services listing page' },
 ]
 
 interface Ad {
@@ -208,9 +211,18 @@ export default function AdsManagerPage() {
 
               {/* Image URL */}
               <div>
-                <label style={lbl}>Image URL (optional)</label>
+                <label style={lbl}>
+                  {form.placement.startsWith('hero_')
+                    ? '🖼 Hero Background Image URL (required for hero placements)'
+                    : 'Image URL (optional)'}
+                </label>
                 <input value={form.image_url} onChange={e => F('image_url', e.target.value)}
                   placeholder="https://..." style={inp} />
+                {form.placement.startsWith('hero_') && (
+                  <p style={{ fontSize: 11, color: '#7a8aaa', marginTop: 4 }}>
+                    This image will replace the default background on the page hero section. Set an end date below to revert to the default image automatically.
+                  </p>
+                )}
               </div>
 
               {/* Colors */}

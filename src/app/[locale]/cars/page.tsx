@@ -9,10 +9,10 @@ import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { Search, SlidersHorizontal, X, Star, Lock } from 'lucide-react'
 import Link from 'next/link'
-import Header from '@/components/Header'
 import CitySelector from '@/components/CitySelector'
 import { CARS_TX } from '@/lib/translations/cars'
 import { usePageFlag } from '@/lib/hooks/usePageFlag'
+import HeroAdBackground from '@/components/HeroAdBackground'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,7 +42,7 @@ export default function CarsPage() {
   const isRTL = locale === 'ar'
   const router = useRouter()
 
-  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('cars_page_accessible')
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_cars')
 
   const [cars, setCars] = useState<Car[]>([])
   const [loading, setLoading] = useState(true)
@@ -137,12 +137,10 @@ export default function CarsPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6', direction: isRTL ? 'rtl' : 'ltr' }}>
-      <Header />
-
       {/* ── Hero Banner ── */}
       <div style={{ position: 'relative', paddingTop: 64, overflow: 'hidden' }}>
         <div style={{ background: 'linear-gradient(135deg, #0a1e1a 0%, #1a3830 50%, #0e1428 100%)', padding: '40px 24px 48px', position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1600&q=60')", backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <HeroAdBackground page="cars" defaultImage="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1600&q=60" opacity={0.12} />
           <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, textAlign: isRTL ? 'right' : 'left' }}>
             <div style={{ fontSize: 10, letterSpacing: '0.26em', color: '#D4A843', marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>
               {tx.hero_tag}

@@ -65,8 +65,8 @@ export default function AdminNotificationsPage({ params }: { params: Promise<{ l
   }
 
   const signalLayoutRefresh = () => {
-    // Triggers the layout's storage listener to refresh the badge count
     localStorage.setItem('admin_notif_read', Date.now().toString())
+    window.dispatchEvent(new Event('admin_notif_refresh'))
   }
 
   const markRead = async (id: string) => {

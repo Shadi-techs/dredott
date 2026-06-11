@@ -36,22 +36,38 @@ export default function AdminPendingPropertiesPage() {
   const fetchPendingProperties = async () => {
     const { data, error } = await supabase
       .from('properties')
-      .select('*, owner:owner_user_id (email, raw_user_meta_data->full_name)')
-      .eq('status', 'pending_review')
+      .select('*')
+      .eq('review_status', 'pending_review')
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error(error);
-    } else {
-      const formatted = data.map((p: any) => ({
-        ...p,
-        owner: {
-          email: p.owner?.email,
-          full_name: p.owner?.raw_user_meta_data?.full_name || 'Unknown',
-        },
-      }));
-      setProperties(formatted);
+      setLoading(false);
+      return;
     }
+
+    const ownerIds = (data || []).map((p: any) => p.owner_id).filter(Boolean)
+    let profileMap: Record<string, { email: string; full_name: string }> = {}
+
+    if (ownerIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, email, first_name, last_name')
+        .in('id', ownerIds)
+      ;(profiles || []).forEach((pr: any) => {
+        profileMap[pr.id] = {
+          email: pr.email || '',
+          full_name: [pr.first_name, pr.last_name].filter(Boolean).join(' ') || 'Unknown',
+        }
+      })
+    }
+
+    const formatted = (data || []).map((p: any) => ({
+      ...p,
+      name: p.name || p.title || '(no name)',
+      owner: profileMap[p.owner_id] || { email: '—', full_name: 'Unknown' },
+    }));
+    setProperties(formatted);
     setLoading(false);
   };
 
@@ -60,10 +76,10 @@ export default function AdminPendingPropertiesPage() {
       .from('properties')
       .update({ review_status: 'approved', status: 'available' })
       .eq('id', propertyId);
-    const { data: prop } = await supabase.from('properties').select('owner_user_id').eq('id', propertyId).single()
-    if (prop?.owner_user_id) {
+    const { data: prop } = await supabase.from('properties').select('owner_id').eq('id', propertyId).single()
+    if (prop?.owner_id) {
       await supabase.from('notifications').insert({
-        user_id: prop.owner_user_id,
+        user_id: prop.owner_id,
         type: 'property_approved',
         title: locale === 'ar' ? 'تم قبول عقارك' : 'Property approved',
         message: locale === 'ar' ? 'أصبح عقارك مرئياً للمستخدمين' : 'Your property is now visible to guests.',
@@ -75,7 +91,7 @@ export default function AdminPendingPropertiesPage() {
   const handleReject = async (propertyId: string, feedback: string) => {
     await supabase
       .from('properties')
-      .update({ status: 'rejected', review_feedback: feedback })
+      .update({ review_status: 'rejected', status: 'rejected', review_feedback: feedback })
       .eq('id', propertyId);
     fetchPendingProperties();
   };

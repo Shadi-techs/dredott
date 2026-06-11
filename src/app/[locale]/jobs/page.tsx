@@ -9,7 +9,7 @@ const JOB_TYPES  = ['full_time', 'part_time', 'freelance']
 export default function JobsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   const isAr = locale === 'ar'
-  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('jobs_page_enabled')
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_jobs')
   const [jobs, setJobs]     = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState('')

@@ -12,10 +12,10 @@ import {
   MapPin, Star, Wifi, Wind,
   Car, Waves, Shield, Coffee, Eye, Calendar
 } from 'lucide-react'
-import Header from '@/components/Header'
 import CitySelector from '@/components/CitySelector'
 import { PROPERTIES_TX } from '@/lib/translations/properties'
 import { usePageFlag } from '@/lib/hooks/usePageFlag'
+import HeroAdBackground from '@/components/HeroAdBackground'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -67,7 +67,7 @@ export default function PropertiesPage() {
   const checkInParam = searchParams.get('check_in') || ''
   const checkOutParam = searchParams.get('check_out') || ''
 
-  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('properties_page_accessible')
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_properties')
 
   const [properties, setProperties] = useState<Property[]>([])
   const [areas, setAreas] = useState<{ slug: string; name_en: string; name_ar?: string }[]>([])
@@ -198,12 +198,10 @@ export default function PropertiesPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6', direction: isRTL ? 'rtl' : 'ltr' }}>
-      <Header />
-
       {/* ── Hero Banner ── */}
       <div style={{ position: 'relative', paddingTop: 64, overflow: 'hidden' }}>
         <div style={{ background: 'linear-gradient(135deg, #0e1428 0%, #1a2440 50%, #0d2b26 100%)', padding: '40px 24px 48px', position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=60')", backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <HeroAdBackground page="properties" defaultImage="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=60" opacity={0.12} />
           <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, textAlign: isRTL ? 'right' : 'left' }}>
             <div style={{ fontSize: 10, letterSpacing: '0.26em', color: '#D4A843', marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>
               {tx.hero_tag}

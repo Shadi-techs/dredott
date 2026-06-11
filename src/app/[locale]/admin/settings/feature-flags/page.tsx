@@ -1,277 +1,252 @@
 'use client'
-// ============================================
-// Admin Feature Flags Page
-// Path: src/app/[locale]/admin/settings/feature-flags/page.tsx
-//
-// ✅ بتستخدم platform_features (مش feature_flags القديم)
-// ✅ Toggle عن طريق API route
-// ✅ super_admin فقط
-// ============================================
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import {
-  Shield, AlertCircle, CheckCircle, Info,
-  ToggleLeft, ToggleRight, RefreshCw
-} from 'lucide-react'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { useAdminDark } from '@/contexts/AdminDarkContext'
+import { Shield, AlertCircle, RefreshCw, Eye, EyeOff, Info } from 'lucide-react'
 
-interface PlatformFeature {
-  id: string
-  feature_key: string
-  module: string
-  enabled: boolean
-  description: string
-  description_ar: string
-  updated_at: string
-}
+// ── The 5 site modules ─────────────────────────────────────────────────────────
+const MODULES = [
+  {
+    key:         'module_properties',
+    label:       'Properties',
+    labelAr:     'العقارات',
+    icon:        '🏠',
+    color:       '#60a5fa',
+    desc:        'Listings, search, detail pages, booking flow',
+    descAr:      'الإيجارات والحجوزات وصفحات التفاصيل',
+  },
+  {
+    key:         'module_cars',
+    label:       'Cars',
+    labelAr:     'السيارات',
+    icon:        '🚗',
+    color:       '#2A9D8F',
+    desc:        'Car listings, rental search, detail pages',
+    descAr:      'إيجار السيارات وصفحات التفاصيل',
+  },
+  {
+    key:         'module_services',
+    label:       'Services',
+    labelAr:     'الخدمات',
+    icon:        '🛠',
+    color:       '#f97316',
+    desc:        'Service providers directory & profiles',
+    descAr:      'دليل مزودي الخدمات وملفاتهم',
+  },
+  {
+    key:         'module_blog',
+    label:       'Blog',
+    labelAr:     'المدونة',
+    icon:        '📝',
+    color:       '#a78bfa',
+    desc:        'Articles, tips, editorial content',
+    descAr:      'المقالات والمحتوى التحريري',
+  },
+  {
+    key:         'module_jobs',
+    label:       'Jobs',
+    labelAr:     'الوظائف',
+    icon:        '💼',
+    color:       '#D4A843',
+    desc:        'Job board, CV submission, hiring',
+    descAr:      'لوحة الوظائف وإرسال السير الذاتية',
+  },
+]
 
-const MODULE_COLORS: Record<string, string> = {
-  properties: '#60a5fa',
-  cars:       '#2A9D8F',
-  blog:       '#a78bfa',
-  bookings:   '#4ade80',
-  jobs:       '#f97316',
-  general:    '#D4A843',
-}
-
-const MODULE_LABELS: Record<string, string> = {
-  properties: 'Properties',
-  cars:       'Cars',
-  blog:       'Blog',
-  bookings:   'Bookings',
-  jobs:       'Jobs',
-  general:    'General',
+interface ModuleState {
+  key:     string
+  enabled: boolean | null   // null = loading
+  saving:  boolean
 }
 
 export default function AdminFeatureFlagsPage() {
-  const supabase = createClient()
+  const { dark } = useAdminDark()
 
-  const [features, setFeatures]     = useState<PlatformFeature[]>([])
-  const [loading, setLoading]       = useState(true)
-  const [toggling, setToggling]     = useState<string | null>(null)
-  const [error, setError]           = useState('')
-  const [successKey, setSuccessKey] = useState<string | null>(null)
+  const [states,       setStates]       = useState<ModuleState[]>(MODULES.map(m => ({ key: m.key, enabled: null, saving: false })))
+  const [loading,      setLoading]      = useState(true)
+  const [error,        setError]        = useState('')
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [lastChanged,  setLastChanged]  = useState<string | null>(null)
 
-  // ── Check role from JWT ──
   useEffect(() => {
-    async function checkRole() {
+    async function init() {
       const res = await fetch('/api/admin/verify')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.admin?.role === 'super_admin') {
-          setIsSuperAdmin(true)
-          fetchFeatures()
-        } else {
-          setError('Super Admin access required')
-          setLoading(false)
-        }
-      } else {
-        setError('Unauthorized')
-        setLoading(false)
-      }
+      if (!res.ok) { setError('Unauthorized'); setLoading(false); return }
+      const data = await res.json()
+      if (data.admin?.role !== 'super_admin') { setError('Super Admin access required'); setLoading(false); return }
+      setIsSuperAdmin(true)
+      await fetchAll()
     }
-    checkRole()
+    init()
   }, [])
 
-  async function fetchFeatures() {
+  async function fetchAll() {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('platform_features')
-      .select('*')
-      .order('module')
-      .order('feature_key')
-
-    if (data) setFeatures(data)
-    else if (error) setError('Failed to load features')
+    const res  = await fetch('/api/admin/feature-flags/list')
+    if (!res.ok) { setError('Failed to load'); setLoading(false); return }
+    const data = await res.json()  // { flags: { key: enabled } }
+    setStates(MODULES.map(m => ({ key: m.key, enabled: data.flags[m.key] ?? true, saving: false })))
     setLoading(false)
   }
 
-  async function handleToggle(feature: PlatformFeature) {
-    if (!isSuperAdmin || toggling) return
-    setToggling(feature.feature_key)
-    setError('')
+  async function handleToggle(moduleKey: string) {
+    if (!isSuperAdmin) return
+    setStates(prev => prev.map(s => s.key === moduleKey ? { ...s, saving: true } : s))
 
-    try {
-      const res = await fetch('/api/admin/feature-flags/toggle', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ feature_key: feature.feature_key }),
-      })
+    const res  = await fetch('/api/admin/feature-flags/toggle', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ feature_key: moduleKey }),
+    })
+    const data = await res.json()
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error || 'Failed to toggle feature')
-        return
-      }
-
-      // حدّث الـ state محلياً
-      setFeatures(prev => prev.map(f =>
-        f.feature_key === feature.feature_key
-          ? { ...f, enabled: data.enabled, updated_at: new Date().toISOString() }
-          : f
-      ))
-
-      // Flash success
-      setSuccessKey(feature.feature_key)
-      setTimeout(() => setSuccessKey(null), 2000)
-
-    } catch (err) {
-      setError('Failed to toggle feature')
-    } finally {
-      setToggling(null)
+    if (!res.ok) {
+      setError(data.error || 'Toggle failed')
+      setStates(prev => prev.map(s => s.key === moduleKey ? { ...s, saving: false } : s))
+      return
     }
+
+    setStates(prev => prev.map(s => s.key === moduleKey ? { ...s, enabled: data.enabled, saving: false } : s))
+    setLastChanged(moduleKey)
+    setTimeout(() => setLastChanged(null), 2500)
   }
 
-  // ── Group by module ──
-  const grouped = features.reduce((acc, feature) => {
-    if (!acc[feature.module]) acc[feature.module] = []
-    acc[feature.module].push(feature)
-    return acc
-  }, {} as Record<string, PlatformFeature[]>)
+  // ── styles ─────────────────────────────────────────────────────────────────
+  const bg     = dark ? '#080d1a' : '#F0F2F7'
+  const card   = dark ? '#121929' : '#fff'
+  const border = dark ? 'rgba(255,255,255,0.07)' : 'rgba(26,34,64,0.08)'
+  const text   = dark ? '#e2e8f0' : '#1a2240'
+  const muted  = dark ? '#94a3b8' : '#6B7280'
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F0F2F7] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4A843]" />
-      </div>
-    )
-  }
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: bg }}>
+      <div style={{ width: 40, height: 40, border: '3px solid rgba(212,168,67,0.2)', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  )
 
   return (
-    <div className="min-h-screen bg-[#F0F2F7] p-6">
-      <div className="max-w-4xl mx-auto">
+    <div style={{ minHeight: '100vh', background: bg, padding: 24 }}>
+      <div style={{ maxWidth: 720, margin: '0 auto' }}>
 
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-[#D4A843]/10 border border-[#D4A843]/30 rounded-lg flex items-center justify-center">
-            <Shield className="w-6 h-6 text-[#D4A843]" />
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Shield size={18} color="#D4A843" />
+            </div>
+            <div>
+              <p style={{ fontSize: 10, color: '#D4A843', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.25em', margin: 0 }}>SUPER ADMIN · MASTER CONTROL</p>
+              <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: text, margin: 0, fontWeight: 400 }}>Site Sections</h1>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-[#D4A843] tracking-widest uppercase font-mono">Super Admin · Master Control</p>
-            <h1 className="text-3xl font-bold text-[#1a2240] font-['Cormorant_Garamond']">
-              Feature Flags
-            </h1>
-          </div>
+          <p style={{ fontSize: 13, color: muted }}>
+            أوقف أي قسم كامل من الموقع بضغطة واحدة — البيانات تبقى سليمة ومش بتتمسح
+          </p>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="mb-6 p-4 bg-[#f87171]/10 border border-[#f87171]/30 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#f87171] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#f87171]">{error}</p>
+          <div style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20 }}>
+            <AlertCircle size={16} color="#f87171" />
+            <p style={{ fontSize: 13, color: '#f87171', margin: 0 }}>{error}</p>
           </div>
         )}
 
-        {/* Features grouped by module */}
-        <div className="space-y-6">
-          {Object.entries(grouped).map(([module, moduleFeatures]) => {
-            const color = MODULE_COLORS[module] || '#D4A843'
+        {/* Module cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28 }}>
+          {MODULES.map(mod => {
+            const state   = states.find(s => s.key === mod.key)
+            const enabled = state?.enabled
+            const saving  = state?.saving ?? false
+            const changed = lastChanged === mod.key
 
             return (
-              <div key={module} className="bg-white rounded-lg border border-[#1a2240]/10 overflow-hidden">
-
-                {/* Module header */}
-                <div className="px-5 py-3 border-b border-[#1a2240]/10 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="text-xs font-semibold tracking-widest uppercase font-mono"
-                    style={{ color }}>
-                    {MODULE_LABELS[module] || module}
-                  </span>
-                  <span className="text-xs text-[#6B7280] ml-1">
-                    ({moduleFeatures.filter(f => f.enabled).length}/{moduleFeatures.length} enabled)
-                  </span>
+              <div
+                key={mod.key}
+                style={{
+                  background: card,
+                  border: `1px solid ${enabled === false ? 'rgba(248,113,113,0.3)' : enabled === true ? `${mod.color}22` : border}`,
+                  borderRadius: 16,
+                  padding: '20px 24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 18,
+                  transition: 'border-color 0.2s, opacity 0.2s',
+                  opacity: enabled === false ? 0.75 : 1,
+                }}
+              >
+                {/* Icon */}
+                <div style={{ width: 52, height: 52, borderRadius: 16, background: enabled === false ? 'rgba(248,113,113,0.08)' : `${mod.color}15`, border: `1px solid ${enabled === false ? 'rgba(248,113,113,0.2)' : `${mod.color}30`}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>
+                  {mod.icon}
                 </div>
 
-                {/* Features */}
-                <div className="divide-y divide-white/5">
-                  {moduleFeatures.map((feature) => {
-                    const isToggling = toggling === feature.feature_key
-                    const isSuccess  = successKey === feature.feature_key
-
-                    return (
-                      <div key={feature.feature_key}
-                        className="px-5 py-4 flex items-center justify-between gap-4">
-
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-medium text-[#1a2240]">
-                              {feature.description || feature.feature_key}
-                            </span>
-                            {isSuccess && (
-                              <CheckCircle className="w-4 h-4 text-[#4ade80]" />
-                            )}
-                          </div>
-                          {feature.description_ar && (
-                            <p className="text-xs text-[#6B7280] text-right">{feature.description_ar}</p>
-                          )}
-                          <p className="text-xs text-[#6B7280] font-mono mt-1">{feature.feature_key}</p>
-                          {feature.updated_at && (
-                            <p className="text-xs text-[#6B7280]/50 mt-0.5">
-                              Last updated: {new Date(feature.updated_at).toLocaleString()}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Toggle */}
-                        <button
-                          onClick={() => handleToggle(feature)}
-                          disabled={!isSuperAdmin || !!toggling}
-                          className={`relative w-16 h-8 rounded-full transition-all duration-300 flex-shrink-0 disabled:cursor-not-allowed ${
-                            feature.enabled
-                              ? 'bg-[#4ade80]/30 border border-[#4ade80]/50'
-                              : 'bg-[#F0F2F7] border border-white/20'
-                          }`}
-                        >
-                          {isToggling ? (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <RefreshCw className="w-4 h-4 text-[#D4A843] animate-spin" />
-                            </div>
-                          ) : (
-                            <div className={`absolute top-1 w-6 h-6 rounded-full shadow transition-all duration-300 flex items-center justify-center ${
-                              feature.enabled
-                                ? 'left-9 bg-[#4ade80]'
-                                : 'left-1 bg-[#7a8aaa]'
-                            }`}>
-                              {feature.enabled
-                                ? <ToggleRight className="w-4 h-4 text-[#F0F2F7]" />
-                                : <ToggleLeft className="w-4 h-4 text-[#F0F2F7]" />
-                              }
-                            </div>
-                          )}
-                        </button>
-
-                        {/* Status label */}
-                        <span className={`text-xs font-mono w-16 text-right flex-shrink-0 ${
-                          feature.enabled ? 'text-[#4ade80]' : 'text-[#6B7280]'
-                        }`}>
-                          {feature.enabled ? 'ENABLED' : 'DISABLED'}
-                        </span>
-                      </div>
-                    )
-                  })}
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 3 }}>
+                    <span style={{ fontSize: 16, fontWeight: 600, color: text }}>{mod.label}</span>
+                    <span style={{ fontSize: 13, color: muted }}>·</span>
+                    <span style={{ fontSize: 13, color: muted }}>{mod.labelAr}</span>
+                    {changed && (
+                      <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.15em', color: '#4ade80', background: 'rgba(74,222,128,0.1)', padding: '2px 8px', borderRadius: 20 }}>SAVED</span>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 12, color: muted, margin: 0 }}>{mod.desc} · {mod.descAr}</p>
+                  <p style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', color: enabled === false ? '#f87171' : enabled === true ? '#4ade80' : muted, margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {enabled === null ? '...' : enabled ? <><Eye size={11} /> VISIBLE ON SITE</> : <><EyeOff size={11} /> HIDDEN FROM SITE</>}
+                  </p>
                 </div>
+
+                {/* Big toggle */}
+                <button
+                  onClick={() => handleToggle(mod.key)}
+                  disabled={!isSuperAdmin || saving || enabled === null}
+                  style={{
+                    width: 64, height: 34, borderRadius: 17, border: 'none', cursor: isSuperAdmin ? 'pointer' : 'not-allowed', position: 'relative', flexShrink: 0,
+                    background: enabled ? `${mod.color}40` : 'rgba(248,113,113,0.2)',
+                    transition: 'background 0.25s',
+                  }}
+                >
+                  {saving ? (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <RefreshCw size={14} color="#D4A843" style={{ animation: 'spin 0.8s linear infinite' }} />
+                    </div>
+                  ) : (
+                    <div style={{
+                      position: 'absolute', top: 4, width: 26, height: 26, borderRadius: '50%',
+                      background: enabled ? mod.color : '#f87171',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                      left: enabled ? 34 : 4,
+                      transition: 'left 0.25s, background 0.25s',
+                    }} />
+                  )}
+                </button>
               </div>
             )
           })}
         </div>
 
-        {/* Help */}
-        <div className="mt-8 p-5 bg-white border border-[#D4A843]/20 rounded-lg">
-          <h4 className="text-sm font-semibold text-[#D4A843] mb-3 flex items-center gap-2">
-            <Info className="w-4 h-4" /> How Feature Flags Work
+        {/* Info footer */}
+        <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 14, padding: '16px 20px' }}>
+          <h4 style={{ fontSize: 12, color: '#D4A843', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Info size={13} /> كيف يعمل النظام
           </h4>
-          <ul className="text-sm text-[#6B7280] space-y-1.5">
-            <li><span className="text-[#4ade80]">ENABLED</span> — الـ feature ظاهرة على الموقع وشغالة</li>
-            <li><span className="text-[#f87171]">DISABLED</span> — الـ feature مخفية والـ routes بترجع 404</li>
-            <li>البيانات في الـ DB مش بتتمسح — بس بتتخبى</li>
-            <li>التغييرات فورية — مش محتاج save</li>
-            <li>كل تغيير بيتسجل في الـ Activity Log</li>
-          </ul>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {[
+              ['VISIBLE', '#4ade80', 'القسم ظاهر للزوار، الـ nav tab شغال، الصفحات accessible'],
+              ['HIDDEN',  '#f87171', 'القسم مختفي من الـ nav، الصفحة بتعرض "Coming Soon"، البيانات سليمة'],
+            ].map(([label, color, desc]) => (
+              <div key={label} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: color as string, background: `${color}15`, padding: '2px 7px', borderRadius: 10, flexShrink: 0 }}>{label}</span>
+                <span style={{ fontSize: 12, color: muted }}>{desc}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
       </div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }

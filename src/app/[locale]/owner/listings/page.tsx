@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import {
-  Plus, Clock, CheckCircle, XCircle, MessageSquare, Eye, EyeOff,
-  Home, Car, AlertCircle, RotateCcw, Trash2
+  Plus, Clock, CheckCircle, XCircle, Eye, EyeOff,
+  Home, Car, AlertCircle, RotateCcw, Trash2, Pencil
 } from 'lucide-react'
 import { toast } from '@/components/owner/Toast'
 
@@ -41,10 +41,13 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any; b
 export default function OwnerListingsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
   const filter = searchParams.get('filter') || 'all'
-  
+
   const [listings, setListings] = useState<any[]>([])
-  const [subscription, setSubscription] = useState<any>(null)
+  const [slotsUsed, setSlotsUsed] = useState<number | null>(null)
+  const [slotsTotal, setSlotsTotal] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -60,12 +63,15 @@ export default function OwnerListingsPage() {
         return
       }
 
-      // Get subscription
-      const { data: sub } = await supabase
-        .rpc('get_user_active_subscription', { p_user_id: user.id })
-        .single()
-      
-      setSubscription(sub)
+      // Count slots directly — don't rely on RPC that may not exist
+      const { count: propCount } = await supabase
+        .from('properties').select('id', { count: 'exact', head: true })
+        .eq('owner_id', user.id)
+      const { count: carCount } = await supabase
+        .from('cars').select('id', { count: 'exact', head: true })
+        .eq('owner_id', user.id)
+      setSlotsUsed((propCount || 0) + (carCount || 0))
+      setSlotsTotal(null) // unlimited by default; subscription system is optional
 
       // Get properties
       const { data: props } = await supabase
@@ -156,28 +162,24 @@ export default function OwnerListingsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-bold text-[#2C3A6B] mb-2"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
               My Listings
             </h1>
             <p className="text-sm text-gray-500">
-              {subscription 
-                ? `${subscription.used_slots}/${subscription.total_slots} slots used`
-                : 'Loading...'}
+              {slotsUsed !== null ? `${slotsUsed} listing${slotsUsed !== 1 ? 's' : ''} total` : ''}
             </p>
           </div>
-          
-          {subscription && subscription.remaining_slots > 0 && (
-            <button
-              onClick={() => router.push('/en/owner/listings/new')}
-              className="flex items-center gap-2 px-5 py-3 bg-[#2C3A6B] hover:bg-[#243058] text-white rounded-xl font-semibold transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              Add Listing
-            </button>
-          )}
+
+          <button
+            onClick={() => router.push(`/${locale}/owner/listings/new`)}
+            className="flex items-center gap-2 px-5 py-3 bg-[#2C3A6B] hover:bg-[#243058] text-white rounded-xl font-semibold transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            Add Listing
+          </button>
         </div>
 
         {/* Filters */}
@@ -230,15 +232,13 @@ export default function OwnerListingsPage() {
                 ? 'No listings yet' 
                 : `No ${filter.replace('-', ' ')} listings`}
             </p>
-            {subscription && subscription.remaining_slots > 0 && (
-              <button
-                onClick={() => router.push('/en/owner/listings/new')}
-                className="px-6 py-3 bg-[#2C3A6B] text-white rounded-xl font-semibold inline-flex items-center gap-2"
-              >
+            <button
+              onClick={() => router.push(`/${locale}/owner/listings/new`)}
+              className="px-6 py-3 bg-[#2C3A6B] text-white rounded-xl font-semibold inline-flex items-center gap-2"
+            >
                 <Plus className="w-4 h-4" />
                 Add your first listing
-              </button>
-            )}
+            </button>
           </div>
         ) : (
           <div className="space-y-4">
@@ -246,6 +246,7 @@ export default function OwnerListingsPage() {
               <ListingCard
                 key={`${listing.type}-${listing.id}`}
                 listing={listing}
+                locale={locale}
                 onToggleHide={toggleHide}
                 onDelete={deleteListing}
                 isDeleting={deletingId === listing.id}
@@ -259,7 +260,7 @@ export default function OwnerListingsPage() {
 }
 
 // Listing Card Component
-function ListingCard({ listing, onToggleHide, onDelete, isDeleting }: any) {
+function ListingCard({ listing, locale, onToggleHide, onDelete, isDeleting }: any) {
   const router = useRouter()
   const statusConf = STATUS_CONFIG[listing.review_status] || STATUS_CONFIG.pending_review
   const StatusIcon = statusConf.icon
@@ -369,10 +370,19 @@ function ListingCard({ listing, onToggleHide, onDelete, isDeleting }: any) {
 
       {/* Actions */}
       <div className="border-t border-gray-100 px-4 py-3 bg-gray-50 flex items-center gap-2 flex-wrap">
+        {/* Edit Button */}
+        <button
+          onClick={() => router.push(`/${locale}/owner/${listing.type === 'car' ? 'cars' : 'properties'}/${listing.id}/edit`)}
+          className="flex items-center gap-1.5 px-3 py-2 bg-[#2C3A6B] hover:bg-[#1e2a4f] text-white text-xs font-semibold rounded-lg transition-colors"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+          Edit
+        </button>
+
         {/* Resubmit Button */}
         {needsChanges && (
           <button
-            onClick={() => router.push(`/en/owner/listings/${listing.id}/resubmit`)}
+            onClick={() => router.push(`/${locale}/owner/listings/${listing.id}/resubmit`)}
             className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />

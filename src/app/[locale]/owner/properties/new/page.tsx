@@ -227,6 +227,17 @@ export default function AddPropertyPage() {
       })
 
       if (error) throw error
+
+      await supabase.from('admin_notifications').insert({
+        type: 'property_pending',
+        category: 'listing',
+        title: 'New Property Pending Review',
+        body: `"${form.title}" submitted and waiting for approval.`,
+        link: '/admin/properties/pending',
+        priority: 'normal',
+        read: false,
+      })
+
       setSubmitted(true)
     } catch (err: any) {
       setErrors({ submit: err.message })

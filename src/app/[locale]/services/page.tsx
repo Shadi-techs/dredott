@@ -2,8 +2,8 @@
 
 import { useState, useEffect, use } from 'react'
 import { Search, MapPin, Star, MessageCircle, ChevronRight, X } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import HeroAdBackground from '@/components/HeroAdBackground'
+import { usePageFlag } from '@/lib/hooks/usePageFlag'
 
 // ── i18n ─────────────────────────────────────────────────────────────────────
 const TX: Record<string, {
@@ -108,6 +108,8 @@ export default function ServicesPage({ params }: { params: Promise<{ locale: str
   const tx   = TX[locale] || TX.en
   const isRTL = locale === 'ar'
 
+  const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_services')
+
   const [categories, setCategories]     = useState<any[]>([])
   const [providers, setProviders]       = useState<any[]>([])
   const [loading, setLoading]           = useState(true)
@@ -150,14 +152,28 @@ export default function ServicesPage({ params }: { params: Promise<{ locale: str
   const featuredList = filtered.filter(p => p.featured)
   const regularList  = filtered.filter(p => !p.featured)
 
+  if (flagLoading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6' }}>
+      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  )
+
+  if (!pageEnabled) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6', gap: 16, textAlign: 'center', padding: 32 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: '#2C3A6B' }}>🛠</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: '#2C3A6B', margin: 0 }}>Services — Coming Soon</h1>
+      <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 400 }}>This section is currently unavailable. Please check back later or contact us on WhatsApp.</p>
+      <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} style={{ background: '#2A9D8F', color: '#fff', padding: '10px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>WhatsApp Us</a>
+    </div>
+  )
+
   return (
     <div style={{ background: '#FAF9F6', minHeight: '100vh' }} dir={isRTL ? 'rtl' : 'ltr'}>
-      <Header />
-
       {/* ── Hero — same structure as properties/cars ────────────────────── */}
       <div style={{ position: 'relative', paddingTop: 64, overflow: 'hidden' }}>
         <div style={{ background: 'linear-gradient(135deg, #0e1428 0%, #1a2c50 50%, #0d2b26 100%)', padding: '44px 24px 52px', position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=60')", backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1 }} />
+          <HeroAdBackground page="services" defaultImage="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=60" opacity={0.1} />
           <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, textAlign: isRTL ? 'right' : 'left' }}>
             <div style={{ fontSize: 10, letterSpacing: '0.26em', color: '#D4A843', marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>
               {tx.hero_tag}
@@ -257,7 +273,6 @@ export default function ServicesPage({ params }: { params: Promise<{ locale: str
         )}
       </div>
 
-      <Footer />
       <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}`}</style>
     </div>
   )

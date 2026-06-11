@@ -234,8 +234,13 @@
     background: var(--gold-warm);
   }
   ::selection {
-    background: var(--gold-soft);
-    color: var(--navy);
+    background: var(--gold);
+    color: #ffffff;
+  }
+  input::selection,
+  textarea::selection {
+    background: #2C3A6B;
+    color: #ffffff;
   }
 }
 
@@ -317,4 +322,28 @@ body:has([data-admin]) {
   background: #F4F6FB;
   min-height: 100%;
   color: #1e2d4f;
+}
+
+/* ── Admin dark mode: cascade from [data-dark="true"] wrapper ── */
+[data-dark="true"] .admin-content .bg-\[\#F0F2F7\],
+[data-dark="true"] .admin-content .bg-\[\#F4F6FA\],
+[data-dark="true"] .admin-content .bg-\[\#F4F6FB\],
+[data-dark="true"] .admin-content .min-h-screen {
+  background-color: #080d1a !important;
+}
+[data-dark="true"] .admin-content .bg-white {
+  background-color: #121929 !important;
+}
+[data-dark="true"] .admin-content .text-\[\#1a2240\] {
+  color: #e2e8f0 !important;
+}
+[data-dark="true"] .admin-content .text-\[\#6B7280\] {
+  color: #94a3b8 !important;
+}
+[data-dark="true"] .admin-content .border-white\/8,
+[data-dark="true"] .admin-content .border-\[\#1a2240\]\/10 {
+  border-color: rgba(255,255,255,0.07) !important;
+}
+[data-dark="true"] .admin-content .divide-white\/5 > * + * {
+  border-color: rgba(255,255,255,0.05) !important;
 }

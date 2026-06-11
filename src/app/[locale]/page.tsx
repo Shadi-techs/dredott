@@ -83,6 +83,7 @@ export default function HomePage() {
     const { data } = await supabase
       .from('properties')
       .select('*')
+      .eq('review_status', 'approved')
       .in('status', ['available', 'active', 'live'])
       .order('display_rating', { ascending: false })
       .limit(6)
