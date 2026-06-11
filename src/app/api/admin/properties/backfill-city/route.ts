@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       .from('properties')
       .select('id, name, title, slug, city_id, city')
       .is('city_id', null)
-      .in('review_status', ['approved', 'available'])
+      .eq('review_status', 'approved')
 
     if (!props || props.length === 0) {
       return NextResponse.json({ fixed: 0, message: 'No properties need fixing' })

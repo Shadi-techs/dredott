@@ -87,6 +87,8 @@ export default function AdminPropertiesPage() {
       }
     } catch (err) { console.error(err) }
     setLoading(false)
+    // silently backfill any approved properties missing city_id
+    fetch('/api/admin/properties/backfill-city', { method: 'POST' }).catch(() => {})
   }
 
   const handleFixCity = async () => {
