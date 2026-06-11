@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Search, Eye, Clock, Moon, Sun, RefreshCw, Settings, ChevronRight, Wrench } from 'lucide-react'
+import { Search, Eye, Clock, RefreshCw, Settings, ChevronRight, Wrench } from 'lucide-react'
 import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle'
+import { useAdminDark } from '@/contexts/AdminDarkContext'
 
 const TX = {
   en: {
@@ -38,7 +39,7 @@ export default function AdminPropertiesPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
-  const [dark, setDark] = useState(false)
+  const { dark } = useAdminDark()
   const [isMobile, setIsMobile] = useState(false)
   const [fixing, setFixing] = useState(false)
   const [fixResult, setFixResult] = useState<string | null>(null)
@@ -137,9 +138,6 @@ export default function AdminPropertiesPage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <SiteVisibilityToggle moduleKey="module_properties" dark={dark} />
-          <button onClick={() => setDark(!dark)} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
-            {dark ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
           <button onClick={fetchAll} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
             <RefreshCw size={15} />
           </button>

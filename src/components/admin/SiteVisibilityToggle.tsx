@@ -8,9 +8,9 @@ interface Props {
 }
 
 export default function SiteVisibilityToggle({ moduleKey, dark = false }: Props) {
-  const [enabled,   setEnabled]   = useState<boolean | null>(null)
-  const [saving,    setSaving]    = useState(false)
-  const [canToggle, setCanToggle] = useState(false)
+  const [enabled, setEnabled] = useState<boolean | null>(null)
+  const [saving,  setSaving]  = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean | null>(null)
 
   useEffect(() => {
     async function init() {
@@ -18,20 +18,25 @@ export default function SiteVisibilityToggle({ moduleKey, dark = false }: Props)
         fetch('/api/admin/feature-flags/list'),
         fetch('/api/admin/verify'),
       ])
+      if (adminRes.ok) {
+        const d = await adminRes.json()
+        setIsSuperAdmin(d.admin?.role === 'super_admin')
+      } else {
+        setIsSuperAdmin(false)
+      }
       if (flagsRes.ok) {
         const d = await flagsRes.json()
         setEnabled(d.flags[moduleKey] ?? true)
-      }
-      if (adminRes.ok) {
-        const d = await adminRes.json()
-        setCanToggle(d.admin?.role === 'super_admin')
       }
     }
     init()
   }, [moduleKey])
 
+  // Only render for super admins — completely hidden for regular admins
+  if (isSuperAdmin === null || !isSuperAdmin || enabled === null) return null
+
   const handleToggle = async () => {
-    if (!canToggle || saving || enabled === null) return
+    if (saving) return
     setSaving(true)
     const res = await fetch('/api/admin/feature-flags/toggle', {
       method: 'POST',
@@ -45,22 +50,18 @@ export default function SiteVisibilityToggle({ moduleKey, dark = false }: Props)
     setSaving(false)
   }
 
-  if (enabled === null) return null
-
   return (
     <button
       onClick={handleToggle}
-      disabled={!canToggle || saving}
-      title={canToggle
-        ? (enabled ? 'Click to hide from site' : 'Click to show on site')
-        : 'Super admin only — go to Settings → Site Sections'}
+      disabled={saving}
+      title={enabled ? 'Click to hide from site' : 'Click to show on site'}
       style={{
         display: 'flex', alignItems: 'center', gap: 6,
         padding: '7px 13px',
         background: enabled ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)',
         border: `1px solid ${enabled ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)'}`,
         borderRadius: 20,
-        cursor: canToggle ? 'pointer' : 'default',
+        cursor: 'pointer',
         color: enabled ? '#4ade80' : '#f87171',
         fontSize: 11, fontWeight: 600,
         fontFamily: "'JetBrains Mono', monospace",

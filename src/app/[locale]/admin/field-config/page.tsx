@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter, usePathname } from 'next/navigation'
-import { Settings, Car, Home, ToggleLeft, ToggleRight, Save, Bell, ChevronDown, ChevronUp, Moon, Sun } from 'lucide-react'
+import { Settings, Car, Home, ToggleLeft, ToggleRight, Save, Bell, ChevronDown, ChevronUp } from 'lucide-react'
+import { useAdminDark } from '@/contexts/AdminDarkContext'
 
 const SECTIONS = [
   { key: 'cars',       label_en: 'Cars',       label_ar: 'السيارات', icon: '🚗' },
@@ -34,7 +35,7 @@ export default function FieldConfigPage() {
   const [activeSection, setActiveSection] = useState(urlSection || 'cars')
   const singleSection = !!urlSection
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ fields: true, payment: true })
-  const [dark, setDark] = useState(false)
+  const { dark } = useAdminDark()
   const [saved, setSaved] = useState(false)
 
   const colors = {
@@ -132,9 +133,6 @@ export default function FieldConfigPage() {
           </h1>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={() => setDark(!dark)} style={{ padding: '8px 12px', background: dark ? '#1a2240' : '#f3f4f6', border: `1px solid ${colors.border}`, borderRadius: 8, cursor: 'pointer', color: colors.text, display: 'flex', alignItems: 'center', gap: 6 }}>
-            {dark ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
           <button onClick={saveAll} disabled={saving} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', background: saved ? '#2A9D8F' : colors.gold, border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#0e1428' }}>
             <Save size={14} />
             {saving ? (isAr ? 'جاري الحفظ...' : 'Saving...') : saved ? (isAr ? 'تم الحفظ ✓' : 'Saved ✓') : (isAr ? 'حفظ التغييرات' : 'Save Changes')}

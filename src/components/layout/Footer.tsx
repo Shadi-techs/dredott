@@ -19,14 +19,19 @@ export default function Footer() {
   const locale = useLocale() as Locale
   const year = new Date().getFullYear()
   const [jobsEnabled, setJobsEnabled] = useState(false)
+  const [blogEnabled, setBlogEnabled] = useState(false)
 
   useEffect(() => {
     supabase
       .from('platform_features')
-      .select('enabled')
-      .eq('feature_key', 'module_jobs')
-      .maybeSingle()
-      .then(({ data }) => setJobsEnabled(data?.enabled ?? false))
+      .select('feature_key, enabled')
+      .in('feature_key', ['module_jobs', 'module_blog'])
+      .then(({ data }) => {
+        data?.forEach(f => {
+          if (f.feature_key === 'module_jobs') setJobsEnabled(f.enabled ?? false)
+          if (f.feature_key === 'module_blog') setBlogEnabled(f.enabled ?? false)
+        })
+      })
   }, [])
 
   return (
@@ -57,6 +62,11 @@ export default function Footer() {
           <Link href={`/${locale}/contact`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">
             Contact
           </Link>
+          {blogEnabled && (
+            <Link href={`/${locale}/blog`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">
+              Blog
+            </Link>
+          )}
           {jobsEnabled && (
             <Link href={`/${locale}/jobs`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">
               Jobs
