@@ -115,7 +115,7 @@ export default function PropertiesPage() {
     const { data } = await supabase
       .from('properties')
       .select('id, slug, name, area, type, price_per_night, price_per_week, price_per_month, max_guests, bedrooms, photos, display_rating, price_hidden, wifi, ac, pool_access, sea_view, parking, security_24h, kitchen, payment_method, created_at')
-      .eq('city_id', city.id)
+      .or(`city_id.eq.${city.id},city_id.is.null`)
       .eq('review_status', 'approved')
       .in('status', ['available', 'active', 'live'])
       .order('created_at', { ascending: false })

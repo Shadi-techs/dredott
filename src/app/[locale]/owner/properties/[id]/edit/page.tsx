@@ -6,30 +6,30 @@ import { useRouter } from 'next/navigation'
 import {
   Building2, MapPin, DollarSign, Image, CheckCircle,
   ChevronRight, ChevronLeft, AlertCircle, Loader2, ArrowLeft,
+  Calendar, Zap, Eye, EyeOff,
 } from 'lucide-react'
 import PhotoUpload from '@/components/owner/PhotoUpload'
 
+// IDs match exact DB column names
 const AMENITIES_LIST = [
-  { id: 'wifi',          label: 'WiFi',              emoji: '📶' },
-  { id: 'ac',            label: 'Air Conditioning',  emoji: '❄️' },
-  { id: 'pool',          label: 'Swimming Pool',     emoji: '🏊' },
-  { id: 'parking',       label: 'Parking',           emoji: '🅿️' },
-  { id: 'security',      label: 'Security / Guard',  emoji: '🛡️' },
-  { id: 'sea_view',      label: 'Sea View',          emoji: '🌊' },
-  { id: 'balcony',       label: 'Balcony / Terrace', emoji: '🌅' },
-  { id: 'elevator',      label: 'Elevator',          emoji: '🛗' },
-  { id: 'gym',           label: 'Gym',               emoji: '💪' },
-  { id: 'kitchen',       label: 'Full Kitchen',      emoji: '🍳' },
-  { id: 'washer',        label: 'Washing Machine',   emoji: '🫧' },
-  { id: 'dishwasher',    label: 'Dishwasher',        emoji: '🍽️' },
-  { id: 'tv',            label: 'Smart TV',          emoji: '📺' },
-  { id: 'water_heater',  label: 'Water Heater',      emoji: '🚿' },
-  { id: 'bathtub',       label: 'Bathtub',           emoji: '🛁' },
-  { id: 'breakfast',     label: 'Breakfast Included',emoji: '☕' },
-  { id: 'cleaning',      label: 'Cleaning Service',  emoji: '🧹' },
-  { id: 'crib',          label: 'Baby Crib',         emoji: '👶' },
-  { id: 'pets_allowed',  label: 'Pets Allowed',      emoji: '🐾' },
-  { id: 'smoking_allowed', label: 'Smoking Allowed', emoji: '🚬' },
+  { id: 'wifi',              label: 'WiFi',              emoji: '📶' },
+  { id: 'ac',                label: 'Air Conditioning',  emoji: '❄️' },
+  { id: 'pool_access',       label: 'Swimming Pool',     emoji: '🏊' },
+  { id: 'parking',           label: 'Parking',           emoji: '🅿️' },
+  { id: 'security_24h',      label: 'Security 24h',      emoji: '🛡️' },
+  { id: 'sea_view',          label: 'Sea View',          emoji: '🌊' },
+  { id: 'balcony',           label: 'Balcony / Terrace', emoji: '🌅' },
+  { id: 'beach_access',      label: 'Beach Access',      emoji: '🏖️' },
+  { id: 'elevator',          label: 'Elevator',          emoji: '🛗' },
+  { id: 'gym_access',        label: 'Gym',               emoji: '💪' },
+  { id: 'kitchen',           label: 'Full Kitchen',      emoji: '🍳' },
+  { id: 'washing_machine',   label: 'Washing Machine',   emoji: '🫧' },
+  { id: 'tv',                label: 'Smart TV',          emoji: '📺' },
+  { id: 'daily_cleaning',    label: 'Daily Cleaning',    emoji: '🧹' },
+  { id: 'baby_cot',          label: 'Baby Cot',          emoji: '👶' },
+  { id: 'bbq_area',          label: 'BBQ Area',          emoji: '🔥' },
+  { id: 'kid_friendly',      label: 'Kid Friendly',      emoji: '🧒' },
+  { id: 'airport_transfer',  label: 'Airport Transfer',  emoji: '✈️' },
 ]
 
 const AREAS = [
@@ -41,6 +41,7 @@ const AREAS = [
   { id: 'um_el_sid',  label: 'Um El Sid' },
   { id: 'el_salam',   label: 'El Salam' },
   { id: 'old_market', label: 'Old Market' },
+  { id: 'ras_um_sid', label: 'Ras Um Sid' },
 ]
 
 const PROPERTY_TYPES = ['Apartment', 'Villa', 'Studio', 'Chalet', 'Penthouse', 'Duplex']
@@ -54,15 +55,26 @@ const STEPS = [
 ]
 
 interface FormData {
+  name: string; description: string
   area: string; compound_id: string; building_number: string
   street_name: string; lat: string; lng: string; km_from_sea: string
-  title: string; description: string
-  property_type: string; bedrooms: number; bathrooms: number
-  max_guests: number
+  property_type: string; bedrooms: number; bathrooms: number; max_guests: number
   amenities: Record<string, boolean>
-  price_per_night: number; price_per_week: number
-  price_per_month: number; price_hidden: boolean
-  photos: string[]
+  price_per_night: number; price_per_week: number; price_per_month: number
+  price_hidden: boolean; photos: string[]
+}
+
+function buildAmenityMap(data: any): Record<string, boolean> {
+  const map: Record<string, boolean> = {}
+  for (const a of AMENITIES_LIST) {
+    // Prefer amenities JSONB, fall back to individual boolean column
+    if (data.amenities && typeof data.amenities === 'object') {
+      map[a.id] = data.amenities[a.id] ?? data[a.id] ?? false
+    } else {
+      map[a.id] = data[a.id] ?? false
+    }
+  }
+  return map
 }
 
 export default function EditPropertyPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
@@ -76,22 +88,20 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
   const [saved, setSaved]       = useState(false)
   const [notFound, setNotFound] = useState(false)
   const [errors, setErrors]     = useState<Record<string, string>>({})
-  const [originalTitle, setOriginalTitle] = useState('')
+  const [originalName, setOriginalName] = useState('')
+  const [currentStatus, setCurrentStatus] = useState('')
 
   const [form, setForm] = useState<FormData>({
+    name: '', description: '',
     area: '', compound_id: '', building_number: '', street_name: '',
     lat: '', lng: '', km_from_sea: '',
-    title: '', description: '',
-    property_type: 'Apartment', bedrooms: 1, bathrooms: 1,
-    max_guests: 2,
+    property_type: 'Apartment', bedrooms: 1, bathrooms: 1, max_guests: 2,
     amenities: {},
     price_per_night: 0, price_per_week: 0, price_per_month: 0,
     price_hidden: true, photos: [],
   })
 
-  useEffect(() => {
-    loadProperty()
-  }, [id])
+  useEffect(() => { loadProperty() }, [id])
 
   const loadProperty = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -106,29 +116,32 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
 
     if (error || !data) { setNotFound(true); setLoading(false); return }
 
-    setOriginalTitle(data.title || data.name || '')
+    const displayName = data.name || data.title || ''
+    setOriginalName(displayName)
+    setCurrentStatus(data.review_status || '')
+
     setForm({
-      area:           data.area || '',
-      compound_id:    data.compound_id || '',
+      name:            displayName,
+      description:     data.description || '',
+      area:            data.area || '',
+      compound_id:     data.compound_id || '',
       building_number: data.building_number || '',
-      street_name:    data.street_name || '',
-      lat:            data.lat != null ? String(data.lat) : '',
-      lng:            data.lng != null ? String(data.lng) : '',
-      km_from_sea:    data.km_from_sea != null ? String(data.km_from_sea) : '',
-      title:          data.title || data.name || '',
-      description:    data.description || '',
-      property_type:  data.type
+      street_name:     data.street_name || '',
+      lat:             data.lat != null ? String(data.lat) : '',
+      lng:             data.lng != null ? String(data.lng) : '',
+      km_from_sea:     data.km_from_sea != null ? String(data.km_from_sea) : '',
+      property_type:   data.type
         ? data.type.charAt(0).toUpperCase() + data.type.slice(1)
         : 'Apartment',
-      bedrooms:       data.bedrooms || 1,
-      bathrooms:      data.bathrooms || 1,
-      max_guests:     data.max_guests || 2,
-      amenities:      (data.amenities as Record<string, boolean>) || {},
-      price_per_night:  data.price_per_night || 0,
-      price_per_week:   data.price_per_week || 0,
-      price_per_month:  data.price_per_month || 0,
-      price_hidden:     data.price_hidden ?? true,
-      photos:           data.photos || [],
+      bedrooms:        data.bedrooms || 1,
+      bathrooms:       data.bathrooms || 1,
+      max_guests:      data.max_guests || 2,
+      amenities:       buildAmenityMap(data),
+      price_per_night: data.price_per_night || 0,
+      price_per_week:  data.price_per_week || 0,
+      price_per_month: data.price_per_month || 0,
+      price_hidden:    data.price_hidden ?? true,
+      photos:          data.photos || [],
     })
     setLoading(false)
   }
@@ -148,12 +161,14 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
   const validate = (s: number): boolean => {
     const errs: Record<string, string> = {}
     if (s === 2) {
-      if (!form.title.trim()) errs.title = 'Title is required'
+      if (!form.name.trim()) errs.name = 'Property name is required'
       if (!form.description.trim()) errs.description = 'Description is required'
-      if (form.description.split(' ').length < 10) errs.description = 'Description must be at least 10 words'
+      if (form.description.trim().split(/\s+/).length < 10)
+        errs.description = 'Description must be at least 10 words'
     }
     if (s === 4) {
-      if (!form.price_per_night && !form.price_per_month) errs.price = 'Enter at least one price'
+      if (!form.price_per_night && !form.price_per_month)
+        errs.price = 'Enter at least one price'
     }
     if (s === 5) {
       if (form.photos.length < 1) errs.photos = 'Please add at least 1 photo'
@@ -169,11 +184,16 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
     if (!validate(5)) return
     setSaving(true)
     try {
+      // Build individual boolean columns from amenities map
+      const amenityColumns: Record<string, boolean> = {}
+      for (const a of AMENITIES_LIST) {
+        amenityColumns[a.id] = form.amenities[a.id] ?? false
+      }
+
       const { error } = await supabase
         .from('properties')
         .update({
-          title:           form.title,
-          name:            form.title,
+          name:            form.name,
           description:     form.description,
           area:            form.area || null,
           compound_id:     form.compound_id || null,
@@ -186,29 +206,32 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           bedrooms:        form.bedrooms,
           bathrooms:       form.bathrooms,
           max_guests:      form.max_guests,
-          amenities:       form.amenities,
+          // Write to JSONB amenities column (used by property cards/display)
+          amenities:       amenityColumns,
+          // Write individual boolean columns (used by stays filter)
+          ...amenityColumns,
           price_per_night: form.price_per_night || null,
           price_per_week:  form.price_per_week || null,
           price_per_month: form.price_per_month || null,
           price_hidden:    form.price_hidden,
           photos:          form.photos,
-          review_status:   'pending_review',
-          status:          'unavailable',
           updated_at:      new Date().toISOString(),
+          // Do NOT reset review_status — property stays visible after edit
         })
         .eq('id', id)
 
       if (error) throw error
 
+      // Notify admin that property was updated (no re-review needed)
       await supabase.from('admin_notifications').insert({
         type: 'property_updated',
         category: 'listing',
-        title: 'Property Updated — Pending Re-Review',
-        body: `"${form.title}" was edited by the owner and needs re-approval.`,
-        link: '/admin/properties/pending',
-        priority: 'normal',
+        title: 'Property Updated',
+        body: `"${form.name}" was updated by the owner.`,
+        link: `/admin/properties/${id}`,
+        priority: 'low',
         read: false,
-      })
+      }).then(() => {}) // non-blocking, ignore errors
 
       setSaved(true)
     } catch (err: any) {
@@ -248,10 +271,10 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           Changes Saved!
         </h1>
         <p className="text-gray-600 mb-2">
-          <strong>"{form.title}"</strong> has been updated and sent for review.
+          <strong>"{form.name}"</strong> has been updated successfully.
         </p>
         <p className="text-sm text-gray-500 mb-8">
-          Our team will review your changes within <strong>48 hours</strong>.
+          Your listing remains visible to guests while admin reviews the changes.
         </p>
         <div className="flex gap-3">
           <button onClick={() => router.push(`/${locale}/owner/listings`)}
@@ -270,23 +293,57 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
   const inputCls = `w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#2C3A6B] bg-white transition-colors`
   const labelCls = `block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide`
 
+  const statusColor =
+    currentStatus === 'approved' ? 'text-green-600 bg-green-50 border-green-200' :
+    currentStatus === 'pending_review' ? 'text-amber-600 bg-amber-50 border-amber-200' :
+    'text-gray-500 bg-gray-50 border-gray-200'
+  const statusLabel =
+    currentStatus === 'approved' ? '✓ Live' :
+    currentStatus === 'pending_review' ? '⏳ Pending Review' :
+    currentStatus || 'Draft'
+
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <button onClick={() => router.push(`/${locale}/owner/listings`)}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#2C3A6B] transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </button>
-          <div>
-            <h1 className="text-lg font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Edit Property
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center justify-between mb-3">
+            <button onClick={() => router.push(`/${locale}/owner/listings`)}
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#2C3A6B] transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Back to Listings
+            </button>
+            <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${statusColor}`}>
+              {statusLabel}
+            </span>
+          </div>
+
+          {originalName && (
+            <h1 className="text-lg font-bold text-[#2C3A6B] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              {originalName}
             </h1>
-            {originalTitle && (
-              <p className="text-xs text-gray-500">{originalTitle}</p>
-            )}
+          )}
+
+          {/* Quick action shortcuts */}
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => router.push(`/${locale}/owner/properties/${id}/calendar`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#EEF2FF] text-[#2C3A6B] text-xs font-semibold hover:bg-[#E0E7FF] transition-colors"
+            >
+              <Calendar className="w-3.5 h-3.5" /> Calendar & Availability
+            </button>
+            <button
+              onClick={() => router.push(`/${locale}/owner/flash-deals`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FEF9EC] text-[#B8860B] text-xs font-semibold hover:bg-[#FEF3C7] transition-colors"
+            >
+              <Zap className="w-3.5 h-3.5" /> Flash Deals
+            </button>
+            <button
+              onClick={() => router.push(`/${locale}/stays/${id}`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F0FDF4] text-[#16A34A] text-xs font-semibold hover:bg-[#DCFCE7] transition-colors"
+            >
+              <Eye className="w-3.5 h-3.5" /> Preview Listing
+            </button>
           </div>
         </div>
       </div>
@@ -301,11 +358,11 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
             return (
               <div key={s.id} className="flex items-center flex-1">
                 <button
-                  onClick={() => isDone && setStep(s.id)}
+                  onClick={() => setStep(s.id)}
                   className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors flex-1 justify-center ${
                     isActive ? 'bg-[#2C3A6B] text-white' :
-                    isDone ? 'bg-green-50 text-green-600 cursor-pointer' :
-                    'text-gray-400'
+                    isDone ? 'bg-green-50 text-green-600' :
+                    'text-gray-400 hover:text-gray-600'
                   }`}
                 >
                   {isDone ? <CheckCircle className="w-3.5 h-3.5" /> : <Icon className="w-3.5 h-3.5" />}
@@ -321,19 +378,16 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
       {/* Form */}
       <div className="max-w-2xl mx-auto px-6 py-8">
 
-        {/* Step 1 — Location */}
+        {/* ── Step 1: Location ── */}
         {step === 1 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Location
-            </h2>
+            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Location</h2>
             <div>
               <label className={labelCls}>Area</label>
               <select value={form.area} onChange={e => set('area', e.target.value)} className={inputCls}>
                 <option value="">Select area...</option>
                 {AREAS.map(a => <option key={a.id} value={a.id}>{a.label}</option>)}
               </select>
-              {errors.area && <p className="text-xs text-red-500 mt-1">{errors.area}</p>}
             </div>
             <div>
               <label className={labelCls}>Building Number / Address</label>
@@ -343,7 +397,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
             <div>
               <label className={labelCls}>Street Name</label>
               <input value={form.street_name} onChange={e => set('street_name', e.target.value)}
-                placeholder="Street name (optional)" className={inputCls} />
+                placeholder="Optional" className={inputCls} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -365,22 +419,20 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           </div>
         )}
 
-        {/* Step 2 — Details */}
+        {/* ── Step 2: Details ── */}
         {step === 2 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Property Details
-            </h2>
+            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Property Details</h2>
             <div>
-              <label className={labelCls}>Title *</label>
-              <input value={form.title} onChange={e => set('title', e.target.value)}
+              <label className={labelCls}>Property Name *</label>
+              <input value={form.name} onChange={e => set('name', e.target.value)}
                 placeholder="e.g. Spacious sea-view apartment in Naama Bay" className={inputCls} />
-              {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
+              {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
             </div>
             <div>
               <label className={labelCls}>Description *</label>
               <textarea value={form.description} onChange={e => set('description', e.target.value)}
-                rows={5} placeholder="Describe your property..." className={inputCls} />
+                rows={5} placeholder="Describe your property in detail..." className={inputCls} />
               {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
             </div>
             <div>
@@ -409,12 +461,10 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           </div>
         )}
 
-        {/* Step 3 — Amenities */}
+        {/* ── Step 3: Amenities ── */}
         {step === 3 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Amenities
-            </h2>
+            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Amenities</h2>
             <div className="grid grid-cols-2 gap-2">
               {AMENITIES_LIST.map(a => (
                 <button key={a.id} type="button"
@@ -432,12 +482,10 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           </div>
         )}
 
-        {/* Step 4 — Pricing */}
+        {/* ── Step 4: Pricing ── */}
         {step === 4 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Pricing (EGP)
-            </h2>
+            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Pricing (EGP)</h2>
             <div>
               <label className={labelCls}>Price per Night</label>
               <input type="number" min={0} value={form.price_per_night || ''}
@@ -457,21 +505,25 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
                 placeholder="0" className={inputCls} />
             </div>
             {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-colors">
               <input type="checkbox" checked={form.price_hidden}
                 onChange={e => set('price_hidden', e.target.checked)}
-                className="w-4 h-4 rounded" />
-              <span className="text-sm text-gray-700">Hide price (show "Price on Request")</span>
+                className="w-4 h-4 rounded accent-[#2C3A6B]" />
+              <div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <EyeOff className="w-4 h-4" />
+                  Hide price (show "Price on Request")
+                </div>
+                <p className="text-xs text-gray-400 mt-0.5">Guests will need to contact you for pricing</p>
+              </div>
             </label>
           </div>
         )}
 
-        {/* Step 5 — Photos */}
+        {/* ── Step 5: Photos ── */}
         {step === 5 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Photos
-            </h2>
+            <h2 className="text-xl font-bold text-[#2C3A6B]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Photos</h2>
             <PhotoUpload photos={form.photos} onChange={photos => set('photos', photos)} />
             {errors.photos && <p className="text-xs text-red-500">{errors.photos}</p>}
             {errors.submit && (
@@ -480,11 +532,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
                 <p className="text-sm text-red-700">{errors.submit}</p>
               </div>
             )}
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-              <p className="text-xs text-amber-700">
-                <strong>Note:</strong> Saving changes will send your listing back for review. It will be hidden until our team approves it (usually within 48 hours).
-              </p>
-            </div>
           </div>
         )}
 
@@ -493,26 +540,23 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           {step > 1 ? (
             <button onClick={prevStep}
               className="flex items-center gap-2 px-5 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-[#2C3A6B] transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-              Back
+              <ChevronLeft className="w-4 h-4" /> Back
             </button>
           ) : (
             <button onClick={() => router.push(`/${locale}/owner/listings`)}
               className="flex items-center gap-2 px-5 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-[#2C3A6B] transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              Cancel
+              <ArrowLeft className="w-4 h-4" /> Cancel
             </button>
           )}
 
           {step < 5 ? (
             <button onClick={nextStep}
               className="flex items-center gap-2 px-6 py-3 bg-[#2C3A6B] text-white rounded-xl text-sm font-semibold hover:bg-[#1e2a4f] transition-colors">
-              Next
-              <ChevronRight className="w-4 h-4" />
+              Next <ChevronRight className="w-4 h-4" />
             </button>
           ) : (
             <button onClick={handleSave} disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-[#D4A843] text-white rounded-xl text-sm font-semibold hover:bg-[#b8922e] disabled:opacity-60 transition-colors">
+              className="flex items-center gap-2 px-6 py-3 bg-[#D4A843] text-[#0e1428] rounded-xl text-sm font-semibold hover:bg-[#c49938] disabled:opacity-60 transition-colors">
               {saving ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
               ) : (
@@ -521,6 +565,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
             </button>
           )}
         </div>
+
       </div>
     </div>
   )
