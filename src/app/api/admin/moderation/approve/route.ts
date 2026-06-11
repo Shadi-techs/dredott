@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     // ── 4. جيب البيانات الحالية ──
     const { data: current } = await getSupabaseAdmin()
       .from(table)
-      .select('id, review_status, owner_id, name')
+      .select('id, review_status, owner_id, name, title, slug, city_id, city')
       .eq('id', entity_id)
       .single()
 
@@ -60,13 +60,35 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 5. حدّث الحالة لـ approved ──
+    const updatePayload: Record<string, unknown> = {
+      review_status: 'approved',
+      status: 'available',
+      updated_at: new Date().toISOString(),
+    }
+
+    // Fix missing name/slug/city_id for properties added via owner portal
+    if (entity_type === 'property') {
+      const displayName = current.name || current.title || ''
+      if (!current.name && displayName) updatePayload.name = displayName
+      if (!current.slug && displayName) {
+        const base = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'stay'
+        updatePayload.slug = `${base}-${entity_id.slice(0, 6)}`
+      }
+      if (!current.city_id) {
+        const cityText: string = (current.city || '').toLowerCase()
+        const citySlug = cityText.includes('sharm') ? 'sharm'
+          : cityText.includes('hurghada') ? 'hurghada'
+          : cityText.includes('dahab') ? 'dahab'
+          : 'sharm'
+        const { data: cityRow } = await getSupabaseAdmin()
+          .from('cities').select('id').eq('slug', citySlug).single()
+        if (cityRow) updatePayload.city_id = cityRow.id
+      }
+    }
+
     const { error: updateError } = await getSupabaseAdmin()
       .from(table)
-      .update({
-        review_status: 'approved',
-        status: 'available',
-        updated_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq('id', entity_id)
 
     if (updateError) {

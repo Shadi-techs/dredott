@@ -199,6 +199,7 @@ export default function AddPropertyPage() {
       const { error } = await supabase.from('properties').insert({
         owner_id:             user.id,
         title:                form.title,
+        name:                 form.title,
         description:          form.description,
         ai_description_draft: form.ai_description_draft || null,
         ai_description_used:  form.description === form.ai_description_draft,
