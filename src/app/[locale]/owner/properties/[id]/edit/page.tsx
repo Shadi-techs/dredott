@@ -58,7 +58,7 @@ interface FormData {
   street_name: string; lat: string; lng: string; km_from_sea: string
   title: string; description: string
   property_type: string; bedrooms: number; bathrooms: number
-  max_guests: number; floor_area: number
+  max_guests: number
   amenities: Record<string, boolean>
   price_per_night: number; price_per_week: number
   price_per_month: number; price_hidden: boolean
@@ -83,7 +83,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
     lat: '', lng: '', km_from_sea: '',
     title: '', description: '',
     property_type: 'Apartment', bedrooms: 1, bathrooms: 1,
-    max_guests: 2, floor_area: 0,
+    max_guests: 2,
     amenities: {},
     price_per_night: 0, price_per_week: 0, price_per_month: 0,
     price_hidden: true, photos: [],
@@ -123,7 +123,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
       bedrooms:       data.bedrooms || 1,
       bathrooms:      data.bathrooms || 1,
       max_guests:     data.max_guests || 2,
-      floor_area:     data.floor_area || 0,
       amenities:      (data.amenities as Record<string, boolean>) || {},
       price_per_night:  data.price_per_night || 0,
       price_per_week:   data.price_per_week || 0,
@@ -187,7 +186,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
           bedrooms:        form.bedrooms,
           bathrooms:       form.bathrooms,
           max_guests:      form.max_guests,
-          floor_area:      form.floor_area || null,
           amenities:       form.amenities,
           price_per_night: form.price_per_night || null,
           price_per_week:  form.price_per_week || null,
@@ -407,11 +405,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ locale:
                 <input type="number" min={1} max={30} value={form.max_guests}
                   onChange={e => set('max_guests', parseInt(e.target.value) || 1)} className={inputCls} />
               </div>
-            </div>
-            <div>
-              <label className={labelCls}>Floor Area (m²)</label>
-              <input type="number" min={0} value={form.floor_area}
-                onChange={e => set('floor_area', parseInt(e.target.value) || 0)} className={inputCls} />
             </div>
           </div>
         )}

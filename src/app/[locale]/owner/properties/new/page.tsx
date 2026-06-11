@@ -74,7 +74,7 @@ interface FormData {
   lat: string; lng: string; km_from_sea: string
   title: string; description: string; ai_description_draft: string
   property_type: string; bedrooms: number; bathrooms: number
-  max_guests: number; floor_area: number
+  max_guests: number
   amenities: Record<string, boolean>
   price_per_night: number; price_per_week: number
   price_per_month: number; price_hidden: boolean
@@ -97,7 +97,7 @@ export default function AddPropertyPage() {
     suggest_compound: '', lat: '', lng: '', km_from_sea: '',
     title: '', description: '', ai_description_draft: '',
     property_type: 'Apartment', bedrooms: 1, bathrooms: 1,
-    max_guests: 2, floor_area: 0,
+    max_guests: 2,
     amenities: {},
     price_per_night: 0, price_per_week: 0, price_per_month: 0,
     price_hidden: true, photos: [],
@@ -132,7 +132,7 @@ export default function AddPropertyPage() {
         body: JSON.stringify({
           property_type: form.property_type, area: form.area,
           bedrooms: form.bedrooms, bathrooms: form.bathrooms,
-          max_guests: form.max_guests, floor_area: form.floor_area,
+          max_guests: form.max_guests,
           title: form.title, amenities: form.amenities,
           km_from_sea: form.km_from_sea,
         }),
@@ -213,7 +213,6 @@ export default function AddPropertyPage() {
         bedrooms:             form.bedrooms,
         bathrooms:            form.bathrooms,
         max_guests:           form.max_guests,
-        floor_area:           form.floor_area || null,
         amenities:            form.amenities,
         price_per_night:      form.price_per_night || null,
         price_per_week:       form.price_per_week || null,
@@ -474,7 +473,6 @@ export default function AddPropertyPage() {
                   { label: 'Bedrooms', field: 'bedrooms' as const, min: 0, max: 20 },
                   { label: 'Bathrooms', field: 'bathrooms' as const, min: 1, max: 10 },
                   { label: 'Max Guests', field: 'max_guests' as const, min: 1, max: 30 },
-                  { label: 'Area (m²)', field: 'floor_area' as const, min: 0, max: 2000 },
                 ].map(({ label, field, min, max }) => (
                   <div key={field}>
                     <label className="block text-xs text-gray-500 mb-1">{label}</label>
