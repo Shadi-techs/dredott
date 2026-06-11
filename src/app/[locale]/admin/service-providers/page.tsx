@@ -14,6 +14,7 @@ import {
   ShieldCheck, Crown, Search, RefreshCw,
   ChevronDown, AlertCircle, BarChart2,
 } from 'lucide-react'
+import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -178,7 +179,8 @@ export default function AdminServiceProvidersPage() {
             Providers Management
           </h1>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <SiteVisibilityToggle moduleKey="module_services" />
           {seedMsg && (
             <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: seedMsg.startsWith('✓') ? '#4ade80' : '#f87171' }}>
               {seedMsg}

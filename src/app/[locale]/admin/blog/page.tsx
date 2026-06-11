@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Edit2, Trash2, Eye, EyeOff, Loader2, Globe } from 'lucide-react'
 import { useAdminDark } from '@/contexts/AdminDarkContext'
+import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle'
 
 interface Post {
   id: string; slug: string; category: string; is_published: boolean
@@ -64,7 +65,8 @@ export default function AdminBlogListPage({ params }: { params: Promise<{ locale
             <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 30, color: text, fontWeight: 400, margin: '0 0 4px' }}>Blog</h1>
             <p style={{ fontSize: 12, color: sub, fontFamily: "'JetBrains Mono',monospace" }}>{posts.length} posts</p>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <SiteVisibilityToggle moduleKey="module_blog" dark={dark} />
             <a href={`/${locale}/blog`} target="_blank" rel="noopener"
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px', background: 'transparent', border: `1px solid ${border}`, borderRadius: 9, color: sub, fontSize: 13, textDecoration: 'none' }}>
               <Globe size={14} /> View Blog

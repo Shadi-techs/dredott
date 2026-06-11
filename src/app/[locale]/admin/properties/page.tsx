@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Search, Eye, Clock, Moon, Sun, RefreshCw, Settings, ChevronRight } from 'lucide-react'
+import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle'
 
 const TX = {
   en: {
@@ -120,7 +121,8 @@ export default function AdminPropertiesPage() {
           <h1 style={{ fontSize: 24, fontWeight: 700, color: c.text, margin: 0 }}>{tx.title}</h1>
           <p style={{ fontSize: 13, color: c.sub, margin: '4px 0 0' }}>{tx.subtitle}</p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <SiteVisibilityToggle moduleKey="module_properties" dark={dark} />
           <button onClick={() => setDark(!dark)} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
             {dark ? <Sun size={15} /> : <Moon size={15} />}
           </button>

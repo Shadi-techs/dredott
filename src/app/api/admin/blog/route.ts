@@ -23,8 +23,21 @@ export async function GET(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  const page  = parseInt(searchParams.get('page') || '1')
-  const limit = parseInt(searchParams.get('limit') || '50')
+  const id = searchParams.get('id')
+
+  // Single post — full fields, used by editor
+  if (id) {
+    const { data, error } = await getSupabaseAdmin()
+      .from('blog_posts')
+      .select('*')
+      .eq('id', id)
+      .single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ post: data })
+  }
+
+  const page   = parseInt(searchParams.get('page')  || '1')
+  const limit  = parseInt(searchParams.get('limit') || '50')
   const offset = (page - 1) * limit
 
   const { data, count, error } = await getSupabaseAdmin()

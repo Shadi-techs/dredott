@@ -65,16 +65,10 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ loca
   }, [id])
 
   const loadPost = async () => {
-    const res = await fetch(`/api/admin/blog?limit=1&id=${id}`)
+    const res = await fetch(`/api/admin/blog?id=${id}`)
     if (res.ok) {
       const data = await res.json()
-      // Fetch the full post by getting all and filtering
-      const res2 = await fetch('/api/admin/blog?limit=200')
-      if (res2.ok) {
-        const data2 = await res2.json()
-        const post = (data2.posts || []).find((p: any) => p.id === id)
-        if (post) populateForm(post)
-      }
+      if (data.post) populateForm(data.post)
     }
     setLoading(false)
   }
