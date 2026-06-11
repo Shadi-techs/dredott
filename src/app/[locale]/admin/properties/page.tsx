@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Search, Eye, Clock, Moon, Sun, RefreshCw, Settings, ChevronRight } from 'lucide-react'
+import { Search, Eye, Clock, Moon, Sun, RefreshCw, Settings, ChevronRight, Wrench } from 'lucide-react'
 import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle'
 
 const TX = {
@@ -40,6 +40,8 @@ export default function AdminPropertiesPage() {
   const [filter, setFilter] = useState('all')
   const [dark, setDark] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [fixing, setFixing] = useState(false)
+  const [fixResult, setFixResult] = useState<string | null>(null)
 
   const c = {
     bg: dark ? '#080d1a' : '#F4F6FA',
@@ -87,6 +89,16 @@ export default function AdminPropertiesPage() {
     setLoading(false)
   }
 
+  const handleFixCity = async () => {
+    setFixing(true); setFixResult(null)
+    try {
+      const res = await fetch('/api/admin/properties/backfill-city', { method: 'POST' })
+      const data = await res.json()
+      setFixResult(data.fixed > 0 ? `Fixed ${data.fixed} properties` : 'All good — nothing to fix')
+    } catch { setFixResult('Error') }
+    finally { setFixing(false); fetchAll() }
+  }
+
   const filtered = properties.filter(p =>
     p.name?.toLowerCase().includes(search.toLowerCase()) ||
     p.area?.toLowerCase().includes(search.toLowerCase()) ||
@@ -129,6 +141,10 @@ export default function AdminPropertiesPage() {
           <button onClick={fetchAll} style={{ padding: '8px 12px', background: c.card2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: 'pointer', color: c.text, display: 'flex', alignItems: 'center' }}>
             <RefreshCw size={15} />
           </button>
+          <button onClick={handleFixCity} disabled={fixing} title="Fix approved properties missing city/name/slug" style={{ padding: '8px 12px', background: fixing ? c.card2 : 'rgba(251,191,36,0.1)', border: `1px solid ${fixing ? c.border : 'rgba(251,191,36,0.3)'}`, borderRadius: 8, cursor: fixing ? 'default' : 'pointer', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, opacity: fixing ? 0.6 : 1 }}>
+            <Wrench size={14} /> {fixing ? '…' : 'Fix'}
+          </button>
+          {fixResult && <span style={{ fontSize: 12, color: '#4ade80', fontFamily: 'monospace' }}>{fixResult}</span>}
           <button onClick={() => router.push(`/${locale}/admin/review`)} style={{ padding: '8px 16px', background: c.gold, border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#0e1428', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Clock size={14} /> {stats.pending > 0 ? `${stats.pending} ${tx.pending}` : tx.pending}
           </button>
