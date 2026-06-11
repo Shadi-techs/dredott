@@ -1,0 +1,62 @@
+# DREDOTT — Your Dot on the Red Sea
+
+DREDOTT is an online marketplace for holiday stays, car rentals, and local services in Sharm El Sheikh, Egypt.
+
+## What We Do
+
+- **Stays**: Apartments, villas, chalets, studios, and penthouse rentals in Sharm El Sheikh. Direct booking from verified local owners — no hotel markups, no middlemen.
+- **Cars**: Self-drive car rentals from verified local car owners. All vehicle types from economy to luxury SUVs. Prices in Egyptian Pounds (EGP).
+- **Services**: Directory of local service providers — cleaning, maintenance, concierge, transport, and more.
+
+## Location
+
+Sharm El Sheikh, South Sinai Governorate, Egypt.
+Covers all major areas: Naama Bay, Sharks Bay, Hadaba, Montazah, Nabq Bay, Um El Sid, El Salam, Old Market.
+
+## Languages Supported
+
+English (en), Arabic (ar), Russian (ru), Ukrainian (uk), German (de), Italian (it)
+
+## Main URL
+
+https://dredott.com
+
+## Key Pages
+
+- https://dredott.com/en — Home page (English)
+- https://dredott.com/ar — Home page (Arabic, RTL)
+- https://dredott.com/en/properties — Browse holiday apartments and villas
+- https://dredott.com/en/cars — Browse cars for rent
+- https://dredott.com/en/blog — Travel guides and tips about Sharm El Sheikh
+- https://dredott.com/en/services — Local service providers
+
+## Blog Topics
+
+The DREDOTT blog covers:
+- Best areas to stay in Sharm El Sheikh
+- Car rental guides and tips
+- Top activities and things to do
+- Family holiday recommendations
+- First-time visitor guides
+- Seasonal travel advice
+
+## Contact
+
+WhatsApp is the primary contact method between guests and property/car owners.
+Admin: Shady Abdelsalam (shady.abdulsalam@gmail.com)
+
+## Currency
+
+All prices listed in Egyptian Pounds (EGP).
+
+## About the Platform
+
+DREDOTT is a locally-operated platform built specifically for Sharm El Sheikh. It bridges the gap between international tourists and local property/car owners, enabling direct booking without resort markups. The platform is particularly useful for:
+- Long-stay travellers (monthly rentals)
+- Families needing space (apartments with kitchens)
+- Groups who want private accommodation
+- Budget travellers looking for better value than hotels
+
+## Sitemap
+
+https://dredott.com/sitemap.xml

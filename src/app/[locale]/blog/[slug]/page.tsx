@@ -1,152 +1,107 @@
-// ============================================
-// Blog Post Detail Page
-// Path: src/app/[locale]/blog/[slug]/page.tsx
-// ============================================
+import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import BlogPostClient from './BlogPostClient'
 
-'use client'
+const BASE_URL = 'https://dredott.com'
+const LOCALES  = ['en', 'ar', 'ru', 'uk', 'de', 'it']
 
-import { useEffect, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
-import { useRouter, useParams, usePathname } from 'next/navigation'
-import { ArrowLeft, Clock, Calendar } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+async function getPost(slug: string) {
+  const { data } = await getSupabaseAdmin()
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('is_published', true)
+    .single()
+  return data
+}
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string; slug: string }> }
+): Promise<Metadata> {
+  const { locale, slug } = await params
+  const post = await getPost(slug)
+  if (!post) return { title: 'Not Found' }
 
-export default function BlogPostPage() {
-  const router   = useRouter()
-  const params   = useParams()
-  const pathname = usePathname()
-  const slug     = params.slug as string
-  const locale   = pathname.split('/')[1] || 'en'
+  const title       = post[`meta_title_${locale}`]       || post[`title_${locale}`]       || post.title_en       || ''
+  const description = post[`meta_description_${locale}`] || post[`excerpt_${locale}`]      || post.excerpt_en      || ''
+  const image       = post.cover_image || `${BASE_URL}/og-default.jpg`
 
-  const [post, setPost]       = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const alternates: Record<string, string> = {}
+  for (const l of LOCALES) alternates[l] = `${BASE_URL}/${l}/blog/${slug}`
 
-  useEffect(() => {
-    supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('slug', slug)
-      .eq('status', 'published')
-      .single()
-      .then(({ data }) => { setPost(data); setLoading(false) })
-  }, [slug])
+  return {
+    title,
+    description,
+    alternates: { canonical: `${BASE_URL}/${locale}/blog/${slug}`, languages: alternates },
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/${locale}/blog/${slug}`,
+      siteName: 'DREDOTT',
+      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      type: 'article',
+      publishedTime: post.published_at,
+      authors: [post.author || 'DREDOTT Team'],
+      tags: post.tags || [],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
+  }
+}
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6' }}>
-      <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-    </div>
-  )
+export default async function BlogPostPage(
+  { params }: { params: Promise<{ locale: string; slug: string }> }
+) {
+  const { locale, slug } = await params
+  const post = await getPost(slug)
+  if (!post) notFound()
 
-  if (!post) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF9F6', flexDirection: 'column', gap: 16 }}>
-      <p style={{ fontSize: 48 }}>📖</p>
-      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#2C3A6B' }}>Post not found</h2>
-      <button onClick={() => router.push(`/${locale}/blog`)} style={{ padding: '10px 24px', background: '#2C3A6B', color: '#D4A843', borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-        Back to Blog
-      </button>
-    </div>
-  )
+  const title   = post[`title_${locale}`]   || post.title_en   || ''
+  const content = post[`content_${locale}`] || post.content_en || ''
+  const excerpt = post[`excerpt_${locale}`] || post.excerpt_en || ''
 
-  const isAr    = locale === 'ar'
-  const title   = isAr && post.title_ar   ? post.title_ar   : post.title
-  const content = isAr && post.content_ar ? post.content_ar : post.content
+  // Fetch related posts (same category, different slug)
+  const { data: related } = await getSupabaseAdmin()
+    .from('blog_posts')
+    .select('id,slug,category,cover_image,reading_time,title_en,title_ar,title_ru,title_uk,title_de,title_it,excerpt_en')
+    .eq('is_published', true)
+    .eq('category', post.category)
+    .neq('slug', slug)
+    .limit(3)
+
+  // JSON-LD structured data
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: excerpt,
+    image: post.cover_image || `${BASE_URL}/og-default.jpg`,
+    datePublished: post.published_at,
+    dateModified: post.updated_at || post.published_at,
+    author: { '@type': 'Organization', name: post.author || 'DREDOTT Team', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'DREDOTT', url: BASE_URL, logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${BASE_URL}/${locale}/blog/${slug}` },
+    inLanguage: locale,
+  }
+
+  // hreflang link tags
+  const hreflangLinks = LOCALES.map(l => ({ rel: 'alternate', hrefLang: l, href: `${BASE_URL}/${l}/blog/${slug}` }))
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
-
-      {/* Cover image */}
-      {post.cover_image && (
-        <div style={{ height: 420, overflow: 'hidden', marginTop: 0 }}>
-          <img src={post.cover_image} alt={title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
-      )}
-
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 24px 80px' }}>
-
-        {/* Back */}
-        <button onClick={() => router.push(`/${locale}/blog`)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#6b7280', marginBottom: 28 }}>
-          <ArrowLeft size={16} /> Back to Blog
-        </button>
-
-        {/* Category */}
-        {post.category && (
-          <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.25em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 14 }}>
-            — {post.category}
-          </p>
-        )}
-
-        {/* Title */}
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 44, fontWeight: 400, color: '#2C3A6B',
-          lineHeight: 1.15, marginBottom: 20,
-          direction: isAr ? 'rtl' : 'ltr',
-        }}>
-          {title}
-        </h1>
-
-        {/* Meta */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 36, paddingBottom: 28, borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
-          {post.published_at && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#9ca3af' }}>
-              <Calendar size={14} />
-              {new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-            </div>
-          )}
-          {post.read_time && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#9ca3af' }}>
-              <Clock size={14} />
-              {post.read_time} min read
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div
-          style={{
-            fontSize: 16, lineHeight: 1.85, color: '#374151',
-            direction: isAr ? 'rtl' : 'ltr',
-          }}
-          dangerouslySetInnerHTML={{ __html: content || '' }}
-        />
-
-        {/* CTA */}
-        <div style={{
-          marginTop: 48, padding: 28,
-          background: '#0e1428', borderRadius: 16,
-          border: '1px solid rgba(212,168,67,0.2)',
-          textAlign: 'center',
-        }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: '#FBF0D0', marginBottom: 8 }}>
-            Ready to visit Sharm?
-          </p>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 20 }}>
-            Browse our curated stays and cars.
-          </p>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => router.push(`/${locale}/properties`)} style={{
-              padding: '10px 22px', background: '#D4A843', color: '#0e1428',
-              borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13,
-            }}>Browse Stays</button>
-            <button onClick={() => router.push(`/${locale}/cars`)} style={{
-              padding: '10px 22px', background: 'rgba(255,255,255,0.08)', color: '#FBF0D0',
-              borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontSize: 13,
-            }}>Browse Cars</button>
-          </div>
-        </div>
-      </div>
-
-      <Footer />
-    </div>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {hreflangLinks.map(link => (
+        <link key={link.hrefLang} rel={link.rel} hrefLang={link.hrefLang} href={link.href} />
+      ))}
+      <BlogPostClient
+        post={post}
+        locale={locale}
+        title={title}
+        content={content}
+        excerpt={excerpt}
+        related={related || []}
+        slug={slug}
+      />
+    </>
   )
 }
