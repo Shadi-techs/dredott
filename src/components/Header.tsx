@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ChevronDown, LayoutDashboard, Bell, LogOut, User, Briefcase, RefreshCw } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
+import { useCurrency, type Currency } from '@/contexts/CurrencyContext'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -60,18 +61,27 @@ const ALL_TABS = [
   { flag: 'module_services',   key: 'services', path: '/services'   },
 ]
 
+const CURRENCIES: { code: Currency; symbol: string; label: string }[] = [
+  { code: 'EGP', symbol: 'EGP', label: 'Egyptian Pound' },
+  { code: 'USD', symbol: '$',   label: 'US Dollar' },
+  { code: 'EUR', symbol: '€',   label: 'Euro' },
+]
+
 export default function Header() {
-  const [scrolled,   setScrolled]   = useState(false)
-  const [langOpen,   setLangOpen]   = useState(false)
-  const [userOpen,   setUserOpen]   = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [user,       setUser]       = useState<any>(null)
-  const [profile,    setProfile]    = useState<any>(null)
-  const [userRole,   setUserRole]   = useState('')
-  const [flags,      setFlags]      = useState<Record<string, boolean>>({})
-  const [unread,     setUnread]     = useState(0)
-  const [switching,  setSwitching]  = useState(false)
-  const [isMobile,   setIsMobile]   = useState(false)
+  const [scrolled,      setScrolled]      = useState(false)
+  const [langOpen,      setLangOpen]      = useState(false)
+  const [currencyOpen,  setCurrencyOpen]  = useState(false)
+  const [userOpen,      setUserOpen]      = useState(false)
+  const [mobileOpen,    setMobileOpen]    = useState(false)
+  const [user,          setUser]          = useState<any>(null)
+  const [profile,       setProfile]       = useState<any>(null)
+  const [userRole,      setUserRole]      = useState('')
+  const [flags,         setFlags]         = useState<Record<string, boolean>>({})
+  const [unread,        setUnread]        = useState(0)
+  const [switching,     setSwitching]     = useState(false)
+  const [isMobile,      setIsMobile]      = useState(false)
+
+  const { currency, setCurrency } = useCurrency()
 
   const pathname      = usePathname()
   const router        = useRouter()
@@ -145,7 +155,7 @@ export default function Header() {
     if (!newActiveRole) router.push(`/${currentLocale}/provider`)
   }
 
-  const closeAll = () => { setLangOpen(false); setMobileOpen(false); setUserOpen(false) }
+  const closeAll = () => { setLangOpen(false); setCurrencyOpen(false); setMobileOpen(false); setUserOpen(false) }
 
   const isOwner        = userRole === 'property_owner'
   const isProvider     = profile?.role === 'service_provider'
@@ -186,6 +196,29 @@ export default function Header() {
 
             {/* Right Side */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+
+              {/* Currency Selector */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => { setCurrencyOpen(o => !o); setLangOpen(false); setUserOpen(false) }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,168,67,0.3)', borderRadius: 8, padding: '6px 10px', color: '#D4A843', fontSize: 11, fontFamily: "'JetBrains Mono', monospace", cursor: 'pointer', letterSpacing: '0.1em' }}
+                >
+                  <span>{CURRENCIES.find(c => c.code === currency)?.symbol}</span>
+                  {!isMobile && <span>{currency}</span>}
+                  {!isMobile && <ChevronDown size={10} />}
+                </button>
+                {currencyOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 8px)', [isAr ? 'left' : 'right']: 0, background: '#1a2240', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 12, overflow: 'hidden', minWidth: 160, boxShadow: '0 20px 40px rgba(0,0,0,0.4)', zIndex: 100 }}>
+                    {CURRENCIES.map(c => (
+                      <button key={c.code} onClick={() => { setCurrency(c.code); setCurrencyOpen(false) }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '10px 16px', background: currency === c.code ? 'rgba(212,168,67,0.1)' : 'transparent', color: currency === c.code ? '#D4A843' : 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.04)', textAlign: isAr ? 'right' : 'left' as const }}>
+                        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, minWidth: 36 }}>{c.symbol}</span>
+                        <span>{c.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Language Switcher — يظهر دايماً */}
               <div style={{ position: 'relative' }}>

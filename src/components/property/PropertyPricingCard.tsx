@@ -5,10 +5,10 @@
 // duration selector (night to 6 months)
 // ============================================
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
-import { formatPrice, fetchExchangeRates, type Currency } from '@/lib/utils/currency'
+import { useCurrency, type Currency } from '@/contexts/CurrencyContext'
 import type { Property } from '@/types'
 
 type Duration = 'nightly' | 'weekly' | 'monthly' | '3months' | '6months'
@@ -28,21 +28,15 @@ interface PropertyPricingCardProps {
 
 export default function PropertyPricingCard({ property, locale }: PropertyPricingCardProps) {
   const router = useRouter()
-  const [currency, setCurrency] = useState<Currency>('USD')
+  const { currency, setCurrency, displayPrice } = useCurrency()
   const [withUtilities, setWithUtilities] = useState(true)
   const [duration, setDuration] = useState<Duration>('nightly')
-  const [rates, setRates] = useState({ USD: 1, EUR: 0.92, EGP: 48.5 })
 
-  // Fetch live rates on mount
-  useEffect(() => {
-    fetchExchangeRates().then(setRates)
-  }, [])
-
-  // Get base price for selected duration
+  // Get base price (in EGP — as stored in DB)
   const getBasePrice = (): number => {
     switch (duration) {
       case 'nightly': return property.price_per_night
-      case 'weekly': return property.price_per_week || property.price_per_night * 7
+      case 'weekly':  return property.price_per_week  || property.price_per_night * 7
       case 'monthly': return property.price_per_month || property.price_per_night * 30
       case '3months': return property.price_per_3months || property.price_per_night * 90
       case '6months': return property.price_per_6months || property.price_per_night * 180
@@ -52,17 +46,14 @@ export default function PropertyPricingCard({ property, locale }: PropertyPricin
 
   const getNights = () => DURATIONS.find((d) => d.key === duration)?.nights || 1
 
-  const basePrice = getBasePrice()
-  const utilitiesAmount = withUtilities
-    ? (property.utilities_per_month / 30) * getNights()
-    : 0
-  const totalAmount = basePrice + utilitiesAmount
+  const basePrice      = getBasePrice()
+  const utilitiesEGP   = withUtilities ? (property.utilities_per_month / 30) * getNights() : 0
+  const totalEGP       = basePrice + utilitiesEGP
 
-  // Convert to selected currency
-  const displayBase = formatPrice(Math.round(basePrice * rates[currency]), currency)
-  const displayUtil = formatPrice(Math.round(utilitiesAmount * rates[currency]), currency)
-  const displayTotal = formatPrice(Math.round(totalAmount * rates[currency]), currency)
-  const displayNightly = formatPrice(Math.round(property.price_per_night * rates[currency]), currency)
+  const displayBase    = displayPrice(basePrice)
+  const displayUtil    = displayPrice(utilitiesEGP)
+  const displayTotal   = displayPrice(totalEGP)
+  const displayNightly = displayPrice(property.price_per_night)
 
   const handleBook = () => {
     router.push(
@@ -125,11 +116,11 @@ export default function PropertyPricingCard({ property, locale }: PropertyPricin
           </div>
         </div>
 
-        {/* Currency toggle */}
+        {/* Currency toggle — synced with global header selector */}
         <div className="mb-4">
           <div className="text-[10px] text-[#A0A8B4] tracking-widest mb-2">CURRENCY</div>
           <div className="flex gap-1.5">
-            {(['USD', 'EUR', 'EGP'] as Currency[]).map((c) => (
+            {(['EGP', 'USD', 'EUR'] as Currency[]).map((c) => (
               <button
                 key={c}
                 onClick={() => setCurrency(c)}

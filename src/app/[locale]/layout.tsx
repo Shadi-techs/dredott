@@ -11,6 +11,7 @@ import { notFound } from 'next/navigation'
 import { routing, isRTL, type Locale } from '@/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { CurrencyProvider } from '@/contexts/CurrencyContext'
 import '../globals.css'
 
 export default async function LocaleLayout({
@@ -39,9 +40,11 @@ export default async function LocaleLayout({
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          <CurrencyProvider>
+            <Header />
+            {children}
+            <Footer />
+          </CurrencyProvider>
         </NextIntlClientProvider>
       </body>
     </html>

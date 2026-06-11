@@ -9,13 +9,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 import { Eye, MapPin } from 'lucide-react'
-import { formatPrice, type Currency } from '@/lib/utils/currency'
+import { useCurrency } from '@/contexts/CurrencyContext'
 import type { Property } from '@/types'
 
 interface PropertyCardProps {
   property: Property
   view?: 'grid' | 'list'
-  currency?: Currency
+  currency?: string
 }
 
 // Area labels
@@ -41,13 +41,13 @@ function getPropertyBadge(property: Property): { label: string; color: string } 
 export default function PropertyCard({
   property,
   view = 'grid',
-  currency = 'USD',
 }: PropertyCardProps) {
   const locale = useLocale()
   const t = useTranslations('property')
   const badge = getPropertyBadge(property)
+  const { displayPrice } = useCurrency()
 
-  const price = formatPrice(property.price_per_night, currency)
+  const price = displayPrice(property.price_per_night)
   const areaLabel = AREA_LABELS[property.area] || property.area
 
   if (view === 'list') {

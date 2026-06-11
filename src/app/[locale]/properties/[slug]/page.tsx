@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useParams } from 'next/navigation'
+import { useCurrency } from '@/contexts/CurrencyContext'
 import {
   MapPin, Users, Bed,
   Star, ArrowLeft, ChevronLeft,
@@ -32,6 +33,7 @@ export default function PropertyDetailPage() {
   const locale = (params.locale as string) || 'en'
   const slug   = params.slug as string
   const isAr   = locale === 'ar'
+  const { displayPrice } = useCurrency()
 
   const [property, setProperty]     = useState<any>(null)
   const [loading, setLoading]       = useState(true)
@@ -255,13 +257,13 @@ export default function PropertyDetailPage() {
                     {property.price_per_night && (
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
                         <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 600, color: '#D4A843' }}>
-                          EGP {property.price_per_night.toLocaleString()}
+                          {displayPrice(property.price_per_night)}
                         </span>
                         <span style={{ fontSize: 13, color: '#9ca3af' }}>/{isAr ? 'ليلة' : 'night'}</span>
                       </div>
                     )}
-                    {property.price_per_week && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_week.toLocaleString()} / {isAr ? 'أسبوع' : 'week'}</p>}
-                    {property.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {property.price_per_month.toLocaleString()} / {isAr ? 'شهر' : 'month'}</p>}
+                    {property.price_per_week  && <p style={{ fontSize: 13, color: '#6b7280' }}>{displayPrice(property.price_per_week)} / {isAr ? 'أسبوع' : 'week'}</p>}
+                    {property.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>{displayPrice(property.price_per_month)} / {isAr ? 'شهر' : 'month'}</p>}
                   </div>
                 ) : (
                   <div style={{ background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 10 }}>

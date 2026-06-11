@@ -5,6 +5,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { MapPin, Star, Search, ChevronRight, Shield, Award, Clock, Heart, Car } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { HOME_TX } from '@/lib/translations/home'
+import { useCurrency } from '@/contexts/CurrencyContext'
 
 interface Property {
   id: string
@@ -42,6 +43,7 @@ const supabase = createBrowserClient(
 export default function HomePage() {
   const router   = useRouter()
   const pathname = usePathname()
+  const { displayPrice } = useCurrency()
   const locale   = pathname.split('/')[1] || 'en'
   const htx      = HOME_TX[locale as keyof typeof HOME_TX] || HOME_TX.en
   const isRTL    = locale === 'ar'
@@ -356,7 +358,7 @@ export default function HomePage() {
                       <span className="text-xs text-gray-500">{property.bedrooms} {property.bedrooms === 1 ? htx.bed : htx.beds} · {property.max_guests} {htx.guests}</span>
                       {!property.price_hidden && (
                         <div className="text-right">
-                          <span className="text-xl font-bold text-[#B8860B]">${property.price_per_night}</span>
+                          <span className="text-xl font-bold text-[#B8860B]">{displayPrice(property.price_per_night)}</span>
                           <span className="text-xs text-gray-400 ml-1">{htx.per_night}</span>
                         </div>
                       )}
@@ -435,7 +437,7 @@ export default function HomePage() {
                       <span className="text-xs text-gray-400 uppercase tracking-wider" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{htx.per_day}</span>
                       {!car.price_hidden && (
                         <div className="text-right">
-                          <span className="text-xl font-bold text-[#2A9D8F]">${car.price_per_day}</span>
+                          <span className="text-xl font-bold text-[#2A9D8F]">{displayPrice(car.price_per_day)}</span>
                         </div>
                       )}
                     </div>

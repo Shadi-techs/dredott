@@ -13,6 +13,7 @@ import CitySelector from '@/components/CitySelector'
 import { CARS_TX } from '@/lib/translations/cars'
 import { usePageFlag } from '@/lib/hooks/usePageFlag'
 import HeroAdBackground from '@/components/HeroAdBackground'
+import { useCurrency } from '@/contexts/CurrencyContext'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,6 +44,7 @@ export default function CarsPage() {
   const router = useRouter()
 
   const { enabled: pageEnabled, loading: flagLoading } = usePageFlag('module_cars')
+  const { displayPrice } = useCurrency()
 
   const [cars, setCars] = useState<Car[]>([])
   const [loading, setLoading] = useState(true)
@@ -315,7 +317,7 @@ export default function CarsPage() {
                     <p style={{ fontSize: 12, color: '#D4A843', fontWeight: 500 }}>{tx.login_price}</p>
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 600, color: '#D4A843' }}>EGP {car.price_per_day?.toLocaleString()}</span>
+                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 600, color: '#D4A843' }}>{displayPrice(car.price_per_day)}</span>
                       <span style={{ fontSize: 12, color: '#9ca3af' }}>{tx.per_day}</span>
                     </div>
                   )}

@@ -17,6 +17,7 @@ import {
 import { useTrackView } from '@/lib/hooks/useTrackView'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { useCurrency } from '@/contexts/CurrencyContext'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,6 +30,7 @@ export default function CarDetailPage() {
   const locale = (params.locale as string) || 'en'
   const id     = params.id as string
   const isAr   = locale === 'ar'
+  const { displayPrice } = useCurrency()
 
   const [car, setCar]                 = useState<any>(null)
   const [owner, setOwner]             = useState<any>(null)
@@ -232,13 +234,13 @@ export default function CarDetailPage() {
                     {car.price_per_day && (
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
                         <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 600, color: '#D4A843' }}>
-                          EGP {car.price_per_day.toLocaleString()}
+                          {displayPrice(car.price_per_day)}
                         </span>
                         <span style={{ fontSize: 13, color: '#9ca3af' }}>/{isAr ? 'يوم' : 'day'}</span>
                       </div>
                     )}
-                    {car.price_per_week && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {car.price_per_week.toLocaleString()} / {isAr ? 'أسبوع' : 'week'}</p>}
-                    {car.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>EGP {car.price_per_month.toLocaleString()} / {isAr ? 'شهر' : 'month'}</p>}
+                    {car.price_per_week  && <p style={{ fontSize: 13, color: '#6b7280' }}>{displayPrice(car.price_per_week)} / {isAr ? 'أسبوع' : 'week'}</p>}
+                    {car.price_per_month && <p style={{ fontSize: 13, color: '#6b7280' }}>{displayPrice(car.price_per_month)} / {isAr ? 'شهر' : 'month'}</p>}
                   </div>
                 ) : (
                   <div style={{ background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.2)', borderRadius: 10, padding: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
