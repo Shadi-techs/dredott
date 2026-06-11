@@ -64,7 +64,7 @@ export default function NotFound() {
           }}>
             Go home
           </Link>
-          <Link href="/en/properties" style={{
+          <Link href="/en/stays" style={{
             padding: '12px 28px',
             background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(212,168,67,0.2)',

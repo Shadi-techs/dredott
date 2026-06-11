@@ -225,7 +225,7 @@ export default function BookingPage({ params }: BookingPageProps) {
           </h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link
-            href={`/${locale}/properties`}
+            href={`/${locale}/stays`}
             className="inline-flex items-center gap-2 text-[var(--teal)] hover:text-[var(--navy)] font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -247,7 +247,7 @@ export default function BookingPage({ params }: BookingPageProps) {
         
         {/* Back Button */}
         <Link
-          href={`/${locale}/properties/${id}`}
+          href={`/${locale}/stays/${id}`}
           className="inline-flex items-center gap-2 text-[var(--teal)] hover:text-[var(--navy)] font-medium mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

@@ -55,7 +55,7 @@ const TX: Record<string, any> = {
 }
 
 const ALL_TABS = [
-  { flag: 'module_properties', key: 'stays',    path: '/properties' },
+  { flag: 'module_properties', key: 'stays',    path: '/stays' },
   { flag: 'module_cars',       key: 'cars',     path: '/cars'       },
   { flag: 'module_blog',       key: 'blog',     path: '/blog'       },
   { flag: 'module_services',   key: 'services', path: '/services'   },

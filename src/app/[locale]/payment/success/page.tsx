@@ -43,7 +43,7 @@ export default function PaymentSuccessPage() {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            router.push(`/${locale}/properties/claim?subscription_id=${subscriptionId}`);
+            router.push(`/${locale}/stays/claim?subscription_id=${subscriptionId}`);
             return 0;
           }
           return prev - 1;

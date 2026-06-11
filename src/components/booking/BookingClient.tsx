@@ -368,7 +368,7 @@ export default function BookingClient({ property }: BookingClientProps) {
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
                 <a
-                  href={`/${locale}/properties`}
+                  href={`/${locale}/stays`}
                   className="btn-secondary text-sm"
                 >
                   Browse more properties

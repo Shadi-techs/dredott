@@ -144,7 +144,7 @@ export default function HeroSection({ locale }: { locale: string }) {
 
         {/* Browse link */}
         <a
-          href={`/${locale}/properties`}
+          href={`/${locale}/stays`}
           className="block mt-3.5 text-white/60 text-xs hover:text-white/90 transition-colors underline underline-offset-2"
         >
           {t('browseAll')}

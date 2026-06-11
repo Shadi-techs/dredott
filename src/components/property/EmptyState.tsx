@@ -112,7 +112,7 @@ export default function EmptyState({ searchParams, locale, onClear }: EmptyState
           {SUGGESTIONS.map((s) => (
             <Link
               key={s.slug}
-              href={`/${locale}/properties/${s.slug}`}
+              href={`/${locale}/stays/${s.slug}`}
               className="bg-[#FAF9F6] border border-[#D4A843]/30 rounded-xl overflow-hidden hover:border-[#B8860B] transition-colors text-left block"
             >
               <div className="h-[70px] bg-[#1e3a5f]" />

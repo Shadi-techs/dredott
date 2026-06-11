@@ -120,7 +120,7 @@ export default function HomePage() {
     const p = new URLSearchParams()
     if (checkIn)  p.set('check_in',  checkIn)
     if (checkOut) p.set('check_out', checkOut)
-    go(`/properties?${p.toString()}`)
+    go(`/stays?${p.toString()}`)
   }
 
   return (
@@ -211,7 +211,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <a onClick={() => go('/properties')} className="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm cursor-pointer transition-colors">
+          <a onClick={() => go('/stays')} className="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm cursor-pointer transition-colors">
             {htx.browse_all}<ChevronRight size={14} />
           </a>
         </div>
@@ -251,7 +251,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Properties Card */}
             <div
-              onClick={() => go('/properties')}
+              onClick={() => go('/stays')}
               className="group cursor-pointer relative rounded-2xl overflow-hidden h-72 flex items-end"
               style={{ background: 'linear-gradient(135deg, #1a2440 0%, #2C3A6B 100%)' }}
             >
@@ -311,7 +311,7 @@ export default function HomePage() {
               </h2>
               <p className="text-gray-500 text-sm max-w-xl">{htx.every_listing}</p>
             </div>
-            <a onClick={() => go('/properties')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
+            <a onClick={() => go('/stays')} className="hidden lg:flex items-center gap-2 text-[#2A9D8F] hover:text-[#2C3A6B] font-medium cursor-pointer transition-colors text-sm">
               {htx.view_all_props} <ChevronRight size={14} />
             </a>
           </div>
@@ -323,7 +323,7 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProperties.slice(0, 6).map((property, index) => (
-                <article key={property.id} onClick={() => go(`/properties/${property.slug}`)}
+                <article key={property.id} onClick={() => go(`/stays/${property.slug}`)}
                   className="group cursor-pointer bg-white rounded-xl border border-[rgba(26,36,64,0.08)] hover:border-[#D4A843] transition-all duration-300 overflow-hidden hover:shadow-lg relative">
                   <div className="absolute top-4 left-4 z-10 text-xs tracking-wider text-white/80 bg-black/30 backdrop-blur-sm px-2 py-1 rounded" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                     № {String(index + 1).padStart(2, '0')}
@@ -370,7 +370,7 @@ export default function HomePage() {
           )}
 
           <div className="mt-10 text-center lg:hidden">
-            <button onClick={() => go('/properties')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
+            <button onClick={() => go('/stays')} className="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-sm">
               {htx.view_all_props} <ChevronRight size={14} />
             </button>
           </div>
@@ -538,7 +538,7 @@ export default function HomePage() {
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-xl mx-auto">{htx.final_sub}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button onClick={() => go('/properties')} className="bg-white hover:bg-gray-100 text-[#2C3A6B] px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg">
+            <button onClick={() => go('/stays')} className="bg-white hover:bg-gray-100 text-[#2C3A6B] px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg">
               {htx.browse_stays_btn}
             </button>
             <a href="https://wa.me/201200481043" target="_blank"

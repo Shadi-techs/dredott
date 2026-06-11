@@ -260,7 +260,7 @@ export default function BookingsPage({ params }: BookingsPageProps) {
               }
             </p>
             <Link
-              href={`/${locale}/properties`}
+              href={`/${locale}/stays`}
               className="inline-flex items-center gap-2 bg-[var(--navy)] hover:bg-[var(--teal)] text-[var(--gold)] px-6 py-3 rounded-lg font-semibold transition-all"
             >
               {isRtl ? 'تصفح العقارات' : 'Browse Properties'}
@@ -293,7 +293,7 @@ export default function BookingsPage({ params }: BookingsPageProps) {
                       <div>
                         <div className="flex items-start justify-between mb-2">
                           <Link
-                            href={`/${locale}/properties/${property?.id}`}
+                            href={`/${locale}/stays/${property?.id}`}
                             className="text-lg font-semibold text-[var(--navy)] hover:text-[var(--teal)]"
                           >
                             {property?.name}

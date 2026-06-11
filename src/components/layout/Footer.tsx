@@ -45,7 +45,7 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex gap-4 flex-wrap">
-          <Link href={`/${locale}/properties`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">
+          <Link href={`/${locale}/stays`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">
             Properties
           </Link>
           <Link href={`/${locale}/cars`} className="text-[#A0A8B4] text-xs hover:text-[#D4A843] transition-colors">

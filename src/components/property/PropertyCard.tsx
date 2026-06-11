@@ -53,7 +53,7 @@ export default function PropertyCard({
   if (view === 'list') {
     return (
       <Link
-        href={`/${locale}/properties/${property.slug}`}
+        href={`/${locale}/stays/${property.slug}`}
         className="card flex hover:border-[#B8860B] transition-colors group"
       >
         {/* Image */}
@@ -113,7 +113,7 @@ export default function PropertyCard({
   // Grid view (default)
   return (
     <Link
-      href={`/${locale}/properties/${property.slug}`}
+      href={`/${locale}/stays/${property.slug}`}
       className="card hover:border-[#B8860B] transition-colors group block"
     >
       {/* Image */}

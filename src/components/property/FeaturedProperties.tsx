@@ -22,7 +22,7 @@ export default function FeaturedProperties({
           <span className="text-[#B8860B]">Properties</span>
         </h2>
         <Link
-          href={`/${locale}/properties`}
+          href={`/${locale}/stays`}
           className="text-xs text-[#B8860B] underline underline-offset-2 hover:text-[#9A6E09]"
         >
           View all →
