@@ -37,11 +37,12 @@ const LANGUAGES = [
 ]
 
 const TAB_LABELS: Record<string, Record<string, string>> = {
-  stays:    { en: 'Stays',    ar: 'إقامات', ru: 'Жильё',  uk: 'Житло',   de: 'Unterkünfte', it: 'Soggiorni' },
-  cars:     { en: 'Cars',     ar: 'سيارات', ru: 'Авто',   uk: 'Авто',    de: 'Autos',       it: 'Auto'      },
-  blog:     { en: 'Blog',     ar: 'مدونة',  ru: 'Блог',   uk: 'Блог',    de: 'Blog',        it: 'Blog'      },
-  services: { en: 'Services', ar: 'خدمات',  ru: 'Услуги', uk: 'Послуги', de: 'Dienste',     it: 'Servizi'   },
-  jobs:     { en: 'Jobs',     ar: 'وظائف',  ru: 'Работа', uk: 'Робота',  de: 'Jobs',        it: 'Lavoro'    },
+  stays:       { en: 'Stays',       ar: 'إقامات',   ru: 'Жильё',  uk: 'Житло',   de: 'Unterkünfte', it: 'Soggiorni'   },
+  cars:        { en: 'Cars',        ar: 'سيارات',   ru: 'Авто',   uk: 'Авто',    de: 'Autos',       it: 'Auto'        },
+  blog:        { en: 'Blog',        ar: 'مدونة',    ru: 'Блог',   uk: 'Блог',    de: 'Blog',        it: 'Blog'        },
+  services:    { en: 'Services',    ar: 'خدمات',    ru: 'Услуги', uk: 'Послуги', de: 'Dienste',     it: 'Servizi'     },
+  jobs:        { en: 'Jobs',        ar: 'وظائف',    ru: 'Работа', uk: 'Робота',  de: 'Jobs',        it: 'Lavoro'      },
+  real_estate: { en: 'Real Estate', ar: 'عقارات',   ru: 'Недвиж', uk: 'Нерух',   de: 'Immobilien',  it: 'Immobiliare' },
 }
 
 const TX: Record<string, any> = {
@@ -54,9 +55,10 @@ const TX: Record<string, any> = {
 }
 
 const ALL_TABS = [
-  { flag: 'module_properties', key: 'stays',    path: '/stays'    },
-  { flag: 'module_cars',       key: 'cars',     path: '/cars'     },
-  { flag: 'module_services',   key: 'services', path: '/services' },
+  { flag: 'module_properties',  key: 'stays',       path: '/stays'       },
+  { flag: 'module_cars',        key: 'cars',        path: '/cars'        },
+  { flag: 'module_services',    key: 'services',    path: '/services'    },
+  { flag: 'module_real_estate', key: 'real_estate', path: '/real-estate' },
 ]
 
 

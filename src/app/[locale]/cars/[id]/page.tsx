@@ -15,8 +15,6 @@ import {
   Check, CalendarDays
 } from 'lucide-react'
 import { useTrackView } from '@/lib/hooks/useTrackView'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { useCurrency } from '@/contexts/CurrencyContext'
 
 const supabase = createBrowserClient(
@@ -91,18 +89,15 @@ export default function CarDetailPage() {
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh' }}>
         <div style={{ width: 36, height: 36, border: '3px solid #D4A843', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
-      <Footer />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 
   if (notFound) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70vh', gap: 16 }}>
         <p style={{ fontSize: 48 }}>🚗</p>
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#2C3A6B' }}>
@@ -112,14 +107,12 @@ export default function CarDetailPage() {
           {isAr ? 'تصفح كل السيارات' : 'Browse all cars'}
         </button>
       </div>
-      <Footer />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
 
       {/* Lightbox */}
       {lightbox && photos.length > 0 && (
@@ -315,7 +308,6 @@ export default function CarDetailPage() {
           </div>
         </div>
       </div>
-      <Footer />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )

@@ -2,8 +2,6 @@
 
 import { useState, useEffect, use } from 'react'
 import { MapPin, Phone, Star, ExternalLink, ArrowLeft, MessageCircle } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function ProviderPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = use(params)
@@ -27,7 +25,6 @@ export default function ProviderPage({ params }: { params: Promise<{ locale: str
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh' }}>
         <div style={{ width: 36, height: 36, border: '3px solid #e5e7eb', borderTopColor: '#D4A843', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
@@ -37,7 +34,6 @@ export default function ProviderPage({ params }: { params: Promise<{ locale: str
 
   if (!provider) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70vh', gap: 16 }}>
         <p style={{ fontSize: 48 }}>🔍</p>
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: '#2C3A6B' }}>
@@ -59,7 +55,6 @@ export default function ProviderPage({ params }: { params: Promise<{ locale: str
 
   return (
     <div style={{ background: '#FAF9F6', minHeight: '100vh' }} dir={isRTL ? 'rtl' : 'ltr'}>
-      <Header />
 
       {/* ── Hero — same structure as properties/cars pages ───────────────── */}
       <div style={{ position: 'relative', paddingTop: 64, overflow: 'hidden' }}>
@@ -188,7 +183,6 @@ export default function ProviderPage({ params }: { params: Promise<{ locale: str
         </div>
       </div>
 
-      <Footer />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )

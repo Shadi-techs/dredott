@@ -1,15 +1,14 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import { useRouter, usePathname } from 'next/navigation'
 
 export default function AboutPage() {
   const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '80px 24px 80px' }}>
 
         <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.3em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 16 }}>
@@ -49,16 +48,15 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: 40, display: 'flex', gap: 12 }}>
-          <button onClick={() => router.push('/en/properties')} style={{ padding: '12px 24px', background: '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 12, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
+        <div style={{ marginTop: 40, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <button onClick={() => router.push(`/${locale}/stays`)} style={{ padding: '12px 24px', background: '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 12, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
             Browse Stays
           </button>
-          <button onClick={() => router.push('/en/pricing')} style={{ padding: '12px 24px', background: 'transparent', color: '#2C3A6B', border: '1px solid rgba(44,58,107,0.2)', borderRadius: 12, cursor: 'pointer', fontSize: 14 }}>
+          <button onClick={() => router.push(`/${locale}/pricing`)} style={{ padding: '12px 24px', background: 'transparent', color: '#2C3A6B', border: '1px solid rgba(44,58,107,0.2)', borderRadius: 12, cursor: 'pointer', fontSize: 14 }}>
             List Your Property
           </button>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

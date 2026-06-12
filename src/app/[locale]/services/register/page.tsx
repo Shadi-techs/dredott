@@ -8,7 +8,6 @@ import { useState, useEffect, use } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { Check, ChevronRight, ChevronLeft, AlertCircle, Loader2, Star } from 'lucide-react'
-import Header from '@/components/Header'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,7 +20,7 @@ const TX: Record<string, any> = {
     tag: 'Service Provider Registration',
     title: 'List Your Service on DREDOTT',
     sub: 'Reach guests and owners in Sharm El-Sheikh',
-    steps: ['Category', 'Services', 'Business', 'Contact', 'Documents', 'Plan'],
+    steps: ['Category', 'Services', 'Business', 'Contact', 'Documents', 'Plan', 'Payment'],
     selectCategory: 'What type of service do you provide?',
     selectServices: 'Which specific services do you offer?',
     selectServicesHint: 'Select all that apply',
@@ -59,7 +58,7 @@ const TX: Record<string, any> = {
     tag: 'تسجيل مزود خدمة',
     title: 'أضف خدمتك على DREDOTT',
     sub: 'تواصل مع الضيوف والملاك في شرم الشيخ',
-    steps: ['الفئة', 'الخدمات', 'بيانات النشاط', 'التواصل', 'الوثائق', 'الباقة'],
+    steps: ['الفئة', 'الخدمات', 'بيانات النشاط', 'التواصل', 'الوثائق', 'الباقة', 'الدفع'],
     selectCategory: 'ما نوع الخدمة التي تقدمها؟',
     selectServices: 'ما الخدمات التي تقدمها تحديداً؟',
     selectServicesHint: 'اختر كل ما ينطبق',
@@ -97,7 +96,7 @@ const TX: Record<string, any> = {
     tag: 'Регистрация поставщика услуг',
     title: 'Добавьте услугу на DREDOTT',
     sub: 'Охватите гостей и владельцев в Шарм-эль-Шейхе',
-    steps: ['Категория', 'Услуги', 'Компания', 'Контакты', 'Документы', 'Тариф'],
+    steps: ['Категория', 'Услуги', 'Компания', 'Контакты', 'Документы', 'Тариф', 'Оплата'],
     selectCategory: 'Какой тип услуг вы предоставляете?',
     selectServices: 'Какие конкретно услуги вы предлагаете?',
     selectServicesHint: 'Выберите все подходящие',
@@ -133,7 +132,7 @@ const TX: Record<string, any> = {
     tag: 'Реєстрація постачальника послуг',
     title: 'Додайте послугу на DREDOTT',
     sub: 'Охопіть гостей та власників у Шарм-ель-Шейху',
-    steps: ['Категорія', 'Послуги', 'Компанія', 'Контакти', 'Документи', 'Тариф'],
+    steps: ['Категорія', 'Послуги', 'Компанія', 'Контакти', 'Документи', 'Тариф', 'Оплата'],
     selectCategory: 'Який тип послуг ви надаєте?',
     selectServices: 'Які конкретно послуги ви пропонуєте?',
     selectServicesHint: 'Виберіть усі відповідні',
@@ -169,7 +168,7 @@ const TX: Record<string, any> = {
     tag: 'Dienstleister-Registrierung',
     title: 'Ihren Service auf DREDOTT eintragen',
     sub: 'Erreichen Sie Gäste und Eigentümer in Sharm El-Sheikh',
-    steps: ['Kategorie', 'Dienste', 'Firma', 'Kontakt', 'Dokumente', 'Tarif'],
+    steps: ['Kategorie', 'Dienste', 'Firma', 'Kontakt', 'Dokumente', 'Tarif', 'Zahlung'],
     selectCategory: 'Welche Art von Dienstleistung bieten Sie an?',
     selectServices: 'Welche konkreten Leistungen bieten Sie an?',
     selectServicesHint: 'Alle Zutreffenden auswählen',
@@ -205,7 +204,7 @@ const TX: Record<string, any> = {
     tag: 'Registrazione Fornitore di Servizi',
     title: 'Aggiungi il tuo servizio su DREDOTT',
     sub: 'Raggiungi ospiti e proprietari a Sharm El-Sheikh',
-    steps: ['Categoria', 'Servizi', 'Azienda', 'Contatti', 'Documenti', 'Piano'],
+    steps: ['Categoria', 'Servizi', 'Azienda', 'Contatti', 'Documenti', 'Piano', 'Pagamento'],
     selectCategory: 'Che tipo di servizio offri?',
     selectServices: 'Quali servizi specifici offri?',
     selectServicesHint: 'Seleziona tutto ciò che si applica',
@@ -302,6 +301,8 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
   const [loading, setLoading]         = useState(false)
   const [submitted, setSubmitted]     = useState(false)
   const [errors, setErrors]           = useState<Record<string, string>>({})
+  const [savedProviderId, setSavedProviderId] = useState<string | null>(null)
+  const [paymentLoading, setPaymentLoading] = useState(false)
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [suggestedService, setSuggestedService] = useState('')
 
@@ -356,7 +357,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
         return
       }
 
-      const { error } = await supabase.from('service_providers').insert({
+      const { data: provider, error } = await supabase.from('service_providers').insert({
         user_id:          user.id,
         category_id:      form.category_id,
         business_name:    form.business_name,
@@ -373,16 +374,46 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
         services_offered:    selectedServices,
         suggested_service:   suggestedService.trim() || null,
         review_status:       'pending',
+        payment_status:      'awaiting_payment',
         is_active:        false,
         submission_count: 1,
-      })
+      }).select().single()
 
       if (error) throw error
-      setSubmitted(true)
+      setSavedProviderId(provider.id)
+      setStep(6)
     } catch {
       setErrors({ submit: tx.errSubmit })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handlePayOnline = async () => {
+    if (!savedProviderId) return
+    setPaymentLoading(true)
+    try {
+      const selectedCategory = categories.find(c => c.id === form.category_id)
+      const price = form.plan_type === 'premium' ? (selectedCategory?.price_premium || 1500) : (selectedCategory?.price_basic || 800)
+      const res = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_provider_id: savedProviderId,
+          amount: price,
+          currency: 'egp',
+          description: `Dredott Services — ${form.plan_type === 'premium' ? 'Premium' : 'Basic'} Plan`,
+          success_url: `${window.location.origin}/${locale}/services/register/success?provider_id=${savedProviderId}`,
+          cancel_url: `${window.location.origin}/${locale}/services/register?step=6`,
+        }),
+      })
+      const { url } = await res.json()
+      if (url) window.location.href = url
+      else throw new Error('No URL')
+    } catch {
+      setErrors({ submit: tx.errSubmit })
+    } finally {
+      setPaymentLoading(false)
     }
   }
 
@@ -393,7 +424,6 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
   // ── Success ─────────────────────────────────────────────────────────────────
   if (submitted) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ maxWidth: 480, margin: '0 auto', padding: '100px 24px', textAlign: 'center' }}>
         <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(42,157,143,0.1)', border: '2px solid #2A9D8F', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
           <Check size={32} color="#2A9D8F" />
@@ -412,7 +442,6 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }} dir={isRTL ? 'rtl' : 'ltr'}>
-      <Header />
 
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '80px 16px 80px' }}>
 
@@ -518,7 +547,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
                 <label style={lbl}>{tx.description}</label>
                 <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={3} style={{ ...inp, resize: 'none' }} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
                 <div>
                   <label style={lbl}>{tx.area}</label>
                   <select value={form.area} onChange={e => set('area', e.target.value)} style={inp}>
@@ -584,7 +613,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
           {step === 5 && (
             <div>
               <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 18, textAlign: isRTL ? 'right' : 'left' }}>{tx.planSub}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 18 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 18 }}>
                 {(['basic', 'premium'] as const).map(type => {
                   const isSelected = form.plan_type === type
                   const price      = type === 'basic' ? (selectedCategory?.price_basic || 800) : (selectedCategory?.price_premium || 1500)
@@ -628,7 +657,61 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
             </div>
           )}
 
+          {/* ── STEP 6: Payment ──────────────────────────────────── */}
+          {step === 6 && savedProviderId && (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#f0fdf4', border: '2px solid #4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <Check size={24} color="#4ade80" />
+              </div>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: '#2C3A6B', marginBottom: 8 }}>
+                {isAr ? 'تم حفظ طلبك!' : 'Application Saved!'}
+              </h3>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 24, lineHeight: 1.6 }}>
+                {isAr
+                  ? 'لتفعيل ملفك وعرضه للعملاء، أكمل عملية الدفع.'
+                  : 'To activate your profile and get visible to customers, complete payment.'}
+              </p>
+
+              {/* Plan summary */}
+              {(() => {
+                const selectedCat = categories.find(c => c.id === form.category_id)
+                const price = form.plan_type === 'premium' ? (selectedCat?.price_premium || 1500) : (selectedCat?.price_basic || 800)
+                return (
+                  <div style={{ background: '#f9fafb', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: '14px 18px', marginBottom: 20, textAlign: isRTL ? 'right' : 'left' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, color: '#6b7280' }}>{isAr ? 'الباقة' : 'Plan'}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#2C3A6B', textTransform: 'capitalize' }}>{form.plan_type}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12, color: '#6b7280' }}>{isAr ? 'المبلغ (سنوي)' : 'Amount (annual)'}</span>
+                      <span style={{ fontSize: 18, fontWeight: 700, color: '#D4A843' }}>EGP {price.toLocaleString()}</span>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {/* Pay online button */}
+              <button onClick={handlePayOnline} disabled={paymentLoading}
+                style={{ width: '100%', padding: '13px 20px', background: paymentLoading ? '#9ca3af' : '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: paymentLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                {paymentLoading ? <Loader2 size={16} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Check size={16} />}
+                {isAr ? 'ادفع الآن بالبطاقة' : 'Pay Now by Card'}
+              </button>
+
+              {/* Manual payment note */}
+              <p style={{ fontSize: 11, color: '#9ca3af', lineHeight: 1.6 }}>
+                {isAr
+                  ? 'أو تواصل معنا عبر واتساب لترتيب الدفع النقدي أو التحويل البنكي.'
+                  : 'Or contact us via WhatsApp to arrange cash or bank transfer payment.'}
+              </p>
+              <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-block', marginTop: 10, padding: '9px 18px', background: '#2A9D8F', color: '#fff', borderRadius: 10, textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
+                WhatsApp
+              </a>
+            </div>
+          )}
+
           {/* Navigation */}
+          {step < 6 && (
           <div style={{ display: 'flex', gap: 10, marginTop: 20, paddingTop: 18, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
             {step > 0 && (
               <button onClick={() => setStep(s => s - 1)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', border: '1px solid rgba(0,0,0,0.1)', borderRadius: 10, background: '#fff', color: '#6b7280', cursor: 'pointer', fontSize: 13 }}>
@@ -636,7 +719,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
               </button>
             )}
             <div style={{ flex: 1 }} />
-            {step < tx.steps.length - 1 ? (
+            {step < 5 ? (
               <button onClick={() => { if (validate(step)) setStep(s => s + 1) }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 22px', background: '#2C3A6B', color: '#D4A843', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
                 {tx.next} <ChevronRight size={15} />
               </button>
@@ -646,6 +729,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
               </button>
             )}
           </div>
+          )}
         </div>
 
       </div>

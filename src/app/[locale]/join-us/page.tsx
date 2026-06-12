@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CheckCircle, MessageCircle } from 'lucide-react'
  
-import Footer from '@/components/layout/Footer'
 
 const joinSchema = z.object({
   first_name: z.string().min(2, 'Required'),
@@ -203,7 +202,6 @@ export default function JoinUsPage() {
         </div>
       </div>
 
-      <Footer />
     </div>
   )
 }

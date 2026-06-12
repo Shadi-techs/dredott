@@ -81,6 +81,37 @@ export async function POST(req: NextRequest) {
       .eq('stripe_payment_intent_id', paymentIntent.id)
   }
 
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session
+    const { subscription_id, service_provider_id } = session.metadata || {}
+
+    if (subscription_id) {
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'active', stripe_session_id: session.id, paid_at: new Date().toISOString() })
+        .eq('id', subscription_id)
+      await supabase.from('admin_notifications').insert({
+        type: 'payment', category: 'payment',
+        title: 'Subscription payment received',
+        body: `Subscription #${subscription_id.slice(0, 8)} activated`,
+        link: '/admin/subscriptions', priority: 'normal', read: false,
+      })
+    }
+
+    if (service_provider_id) {
+      await supabase
+        .from('service_providers')
+        .update({ payment_status: 'paid', stripe_session_id: session.id })
+        .eq('id', service_provider_id)
+      await supabase.from('admin_notifications').insert({
+        type: 'payment', category: 'payment',
+        title: 'Service provider payment received',
+        body: `Provider #${service_provider_id.slice(0, 8)} paid — pending review`,
+        link: '/admin/service-providers', priority: 'normal', read: false,
+      })
+    }
+  }
+
   return NextResponse.json({ received: true })
 }
 

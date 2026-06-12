@@ -11,8 +11,6 @@ import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { MapPin, Bed, Maximize2, Search, SlidersHorizontal, X } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import CitySelector from '@/components/CitySelector'
 
 const supabase = createBrowserClient(
@@ -68,7 +66,6 @@ export default function RealEstatePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
 
       <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingTop: 70 }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '10px 24px 0' }}>
@@ -213,7 +210,6 @@ export default function RealEstatePage() {
         )}
       </div>
 
-      <Footer />
       <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}`}</style>
     </div>
   )

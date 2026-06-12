@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
  
-import Footer from '@/components/layout/Footer'
 import BookingClient from '@/components/booking/BookingClient'
 import { createClient } from '@/lib/supabase/server'
 
@@ -29,7 +28,6 @@ export default async function BookingPage({ params, searchParams }: BookingPageP
     <div className="min-h-screen flex flex-col">
         
       <BookingClient property={property} />
-      <Footer />
     </div>
   )
 }

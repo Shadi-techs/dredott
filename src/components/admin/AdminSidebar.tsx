@@ -73,6 +73,7 @@ const NAV_SECTIONS: NavSection[] = [
       { href: '/admin/blog',           icon: Newspaper,       label: 'Blog',              roles: ['super_admin', 'admin'] },
       { href: '/admin/service-providers', icon: HeartHandshake, label: 'Services',        roles: ['super_admin', 'admin'] },
       { href: '/admin/jobs',           icon: Briefcase,       label: 'Jobs',              roles: ['super_admin', 'admin'] },
+      { href: '/admin/real-estate',    icon: Building2,       label: 'Real Estate',       roles: ['super_admin'] },
     ],
   },
   {

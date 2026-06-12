@@ -1,12 +1,9 @@
 'use client'
 
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function TermsPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '80px 24px 80px' }}>
         <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.3em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 16 }}>
           — Legal
@@ -32,7 +29,6 @@ export default function TermsPage() {
           </div>
         ))}
       </div>
-      <Footer />
     </div>
   )
 }

@@ -9,8 +9,6 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Check, X, Tag, ChevronRight, Crown } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 const supabase = createClient()
 
@@ -92,6 +90,7 @@ export default function PricingPage() {
   const total = basePrice - discount
 
   const reason = searchParams.get('reason')
+  const context = searchParams.get('context')
 
   useEffect(() => {
     if (reason === 'upgrade_to_manager') {
@@ -199,9 +198,20 @@ export default function PricingPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '60px 24px 80px' }}>
+
+        {/* Jobs context — unlock job contacts */}
+        {context === 'jobs' && (
+          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: '14px 18px', marginBottom: 24, textAlign: 'center' }}>
+            <p style={{ color: '#1d4ed8', fontWeight: 600, fontSize: 14, marginBottom: 4 }}>
+              {isRtl ? '🔓 اشترك للوصول لبيانات التواصل' : '🔓 Subscribe to Unlock Job Contact Details'}
+            </p>
+            <p style={{ color: '#3b82f6', fontSize: 12 }}>
+              {isRtl ? 'باقة واحدة تفتح لك كل بيانات أصحاب العمل' : 'One plan gives you access to all employer contact information'}
+            </p>
+          </div>
+        )}
 
         {/* Marketing message when redirected from property-manager */}
         {showUpgradeMessage && (
@@ -426,7 +436,6 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <Footer />
     </div>
   )
 }

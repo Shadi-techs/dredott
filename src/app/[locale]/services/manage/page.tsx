@@ -8,7 +8,6 @@ import { useState, useEffect, use } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { Check, Edit2, Clock, ShieldCheck, AlertCircle, Loader2, RefreshCw, ChevronRight, Eye } from 'lucide-react'
-import Header from '@/components/Header'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -160,7 +159,6 @@ export default function ProviderManagePage({ params }: { params: Promise<{ local
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Header />
       <Loader2 size={28} color="#D4A843" style={{ animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -168,7 +166,6 @@ export default function ProviderManagePage({ params }: { params: Promise<{ local
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }} dir={isAr ? 'rtl' : 'ltr'}>
-      <Header />
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '80px 16px 80px' }}>
 
         <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.28em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 8, textAlign: isAr ? 'right' : 'left' }}>— {tx.tag}</p>

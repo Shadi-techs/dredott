@@ -1,12 +1,9 @@
 'use client'
 
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function ContactPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#FAF9F6' }}>
-      <Header />
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '80px 24px 80px' }}>
         <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.3em', color: '#D4A843', textTransform: 'uppercase', marginBottom: 16 }}>
           — Get in Touch
@@ -35,7 +32,6 @@ export default function ContactPage() {
           <p style={{ fontSize: 13, color: '#D4A843', marginTop: 4 }}>Red Sea · South Sinai</p>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }
