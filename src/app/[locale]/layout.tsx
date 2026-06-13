@@ -3,8 +3,10 @@
 // Path: src/app/[locale]/layout.tsx
 // ✅ Header — مش بيظهر في /admin و /owner
 // ✅ Footer — في كل الصفحات العامة
+// ✅ Base SEO metadata + OG tags
 // ============================================
 
+import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -12,7 +14,52 @@ import { routing, isRTL, type Locale } from '@/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { CurrencyProvider } from '@/contexts/CurrencyContext'
+import AnalyticsScripts from '@/components/AnalyticsScripts'
 import '../globals.css'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dredott.vercel.app'
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'DREDOTT — Stays, Cars & Services in Sharm El-Sheikh',
+    template: '%s | DREDOTT',
+  },
+  description: 'Book curated holiday stays, car rentals, and local services in Sharm El-Sheikh, Egypt. No commission. Direct WhatsApp contact. Arabic · English · Russian.',
+  keywords: ['sharm el sheikh', 'rental', 'stays', 'apartments', 'cars', 'egypt', 'red sea', 'holiday', 'شرم الشيخ', 'إيجار', 'شاليه', 'فيلا'],
+  authors: [{ name: 'DREDOTT', url: SITE_URL }],
+  creator: 'DREDOTT',
+  publisher: 'DREDOTT',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'DREDOTT',
+    title: 'DREDOTT — Stays, Cars & Services in Sharm El-Sheikh',
+    description: 'Book curated holiday stays, car rentals, and local services in Sharm El-Sheikh, Egypt. No commission.',
+    images: [{ url: `${SITE_URL}/api/og?title=DREDOTT&sub=Stays · Cars · Services · Sharm El-Sheikh`, width: 1200, height: 630, alt: 'DREDOTT — Sharm El-Sheikh' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@dredott',
+    title: 'DREDOTT — Stays, Cars & Services in Sharm El-Sheikh',
+    description: 'Book curated holiday stays, car rentals, and local services in Sharm El-Sheikh, Egypt.',
+    images: [`${SITE_URL}/api/og?title=DREDOTT&sub=Stays · Cars · Services · Sharm El-Sheikh`],
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+    other: {
+      'facebook-domain-verification': process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION || '',
+    },
+  },
+}
 
 export default async function LocaleLayout({
   children,
@@ -46,6 +93,7 @@ export default async function LocaleLayout({
             <Footer />
           </CurrencyProvider>
         </NextIntlClientProvider>
+        <AnalyticsScripts />
       </body>
     </html>
   )
