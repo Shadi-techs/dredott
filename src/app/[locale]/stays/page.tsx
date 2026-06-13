@@ -4,9 +4,10 @@
 // ============================================
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { search as fbSearch } from '@/lib/facebook-pixel'
 import {
   Search, SlidersHorizontal, X,
   MapPin, Star, Wifi, Wind,
@@ -100,6 +101,17 @@ export default function PropertiesPage() {
   }, [])
 
   useEffect(() => { loadCityData(selectedCity) }, [selectedCity])
+
+  // Fire FB Search event after user stops typing (800ms debounce)
+  const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (!search.trim()) return
+    if (searchDebounce.current) clearTimeout(searchDebounce.current)
+    searchDebounce.current = setTimeout(() => {
+      fbSearch({ search_string: search, content_category: 'property' })
+    }, 800)
+    return () => { if (searchDebounce.current) clearTimeout(searchDebounce.current) }
+  }, [search])
 
   const loadCityData = async (citySlug: string) => {
     setLoading(true)

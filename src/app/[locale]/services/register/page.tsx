@@ -8,6 +8,7 @@ import { useState, useEffect, use } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { Check, ChevronRight, ChevronLeft, AlertCircle, Loader2, Star } from 'lucide-react'
+import { lead } from '@/lib/facebook-pixel'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -381,6 +382,7 @@ export default function ServiceProviderRegisterPage({ params }: { params: Promis
 
       if (error) throw error
       setSavedProviderId(provider.id)
+      lead({ content_name: form.business_name, content_category: 'service_provider' })
       setStep(6)
     } catch {
       setErrors({ submit: tx.errSubmit })

@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useParams } from 'next/navigation'
+import { viewContent } from '@/lib/facebook-pixel'
 import {
   ArrowLeft, Users, Settings, Fuel, Car,
   ChevronLeft, ChevronRight, X,
@@ -57,6 +58,7 @@ export default function CarDetailPage() {
 
     if (!data) { setNotFound(true); setLoading(false); return }
     setCar(data)
+    viewContent({ content_name: `${data.brand} ${data.model} ${data.year || ''}`.trim(), content_category: 'car', content_ids: [data.id] })
 
     if (data.owner_id) {
       const { data: profile } = await supabase

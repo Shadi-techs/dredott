@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useParams } from 'next/navigation'
+import { viewContent } from '@/lib/facebook-pixel'
 import { useCurrency } from '@/contexts/CurrencyContext'
 import {
   MapPin, Users, Bed,
@@ -66,6 +67,7 @@ export default function PropertyDetailPage() {
     if (!data) { setNotFound(true); setLoading(false); return }
     setProperty(data)
     setLoading(false)
+    viewContent({ content_name: data.name || data.name_en || '', content_category: 'property', content_ids: [data.id] })
   }
 
   const handleWhatsApp = () => {
